@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Packaging and Shipping Code"
+title: "Упаковка и доставка кода"
 description: >
-  Learn about project packaging, environments, versioning, and deploying libraries, applications, and services.
+  Узнайте об упаковке проектов, окружениях, версионировании и развёртывании библиотек, приложений и сервисов.
 thumbnail: /static/assets/thumbnails/2026/lec6.png
 date: 2026-01-20
 ready: true
@@ -11,32 +11,32 @@ video:
   id: KBMiB-8P4Ns
 ---
 
-Getting code to work as intended is hard; getting that same code to run on a machine different from your own is often harder.
+Заставить код работать так, как задумано, — трудно; заставить тот же самый код работать на чужой машине зачастую ещё труднее.
 
-Shipping code means taking the code you wrote and converting it into a usable form that someone else can run without your computer's exact setup.
-Shipping code takes many forms and depends on the choices of programming language, system libraries, and operating system, among many other factors.
-It also depends on what you are building: a software library, a command line tool, and a web service all have different requirements and deployment steps.
-Regardless, there is a common pattern between all these scenarios: we need to define what the deliverable is --- a.k.a. the _artifact_ --- and what assumptions it makes about the environment around it.
+Доставить код (ship code) — значит взять написанный вами код и превратить его в пригодную к использованию форму, которую кто-то другой сможет запустить, не воспроизводя в точности настройку вашего компьютера.
+Доставка кода принимает самые разные формы и зависит от выбора языка программирования, системных библиотек и операционной системы, а также от множества других факторов.
+Она зависит и от того, что именно вы создаёте: у программной библиотеки, инструмента командной строки и веб-сервиса разные требования и разные шаги развёртывания.
+Тем не менее у всех этих сценариев есть общая схема: нам нужно определить, что именно мы поставляем — так называемый _артефакт_ (artifact) — и что он предполагает о среде, в которой будет работать.
 
-In this lecture, we'll cover:
+В этой лекции мы рассмотрим:
 
-- [Dependencies & Environments](#dependencies--environments)
-- [Artifacts & Packaging](#artifacts--packaging)
-- [Releases & Versioning](#releases--versioning)
-- [Reproducibility](#reproducibility)
-- [VMs & Containers](#vms--containers)
-- [Configuration](#configuration)
-- [Services & Orchestration](#services--orchestration)
-- [Publishing](#publishing)
+- [Зависимости и окружения](#dependencies--environments)
+- [Артефакты и упаковка](#artifacts--packaging)
+- [Релизы и версионирование](#releases--versioning)
+- [Воспроизводимость](#reproducibility)
+- [Виртуальные машины и контейнеры](#vms--containers)
+- [Конфигурация](#configuration)
+- [Сервисы и оркестрация](#services--orchestration)
+- [Публикация](#publishing)
 
-We'll explain these concepts through examples from the Python ecosystem, as concrete examples are helpful for understanding. While the tools are different for other programming language ecosystems, the concepts will largely be the same.
+Объяснять эти понятия мы будем на примерах из экосистемы Python, поскольку конкретные примеры помогают разобраться. В экосистемах других языков программирования инструменты другие, но сами понятия по большей части те же.
 
-# Dependencies & Environments
+# Зависимости и окружения
 
-In modern software development, layers of abstraction are ubiquitous.
-Programs naturally offload logic to other libraries or services.
-However, this introduces a _dependency_ relationship between your program and the libraries it requires to function.
-For instance, in Python, to fetch the content of a website we often do:
+В современной разработке ПО слои абстракции встречаются повсюду.
+Программы естественным образом перекладывают часть логики на другие библиотеки или сервисы.
+Однако это создаёт отношение _зависимости_ (dependency) между вашей программой и библиотеками, которые нужны ей для работы.
+Например, в Python, чтобы получить содержимое веб-сайта, мы обычно пишем:
 
 ```python
 import requests
@@ -44,7 +44,7 @@ import requests
 response = requests.get("https://missing.csail.mit.edu")
 ```
 
-Yet the `requests` library does not come bundled with the Python runtime, so if we try to run this code without having `requests` installed, Python will raise an error:
+Но библиотека `requests` не входит в поставку среды выполнения Python, поэтому, если попытаться запустить этот код без установленной `requests`, Python выдаст ошибку:
 
 ```console
 $ python fetch.py
@@ -54,14 +54,14 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'requests'
 ```
 
-To make this library available we need to first run `pip install requests` to install it.
-`pip` is the command line tool that the Python programming language provides for installing packages.
-Executing `pip install requests` produces the following sequence of actions:
+Чтобы эта библиотека стала доступна, нужно сначала выполнить `pip install requests` и установить её.
+`pip` — это инструмент командной строки для установки пакетов, который предоставляет сам язык программирования Python.
+Выполнение `pip install requests` приводит к следующей последовательности действий:
 
-1. Search for requests in the Python Package Index ([PyPI](https://pypi.org/))
-1. Search for the appropriate artifact for the platform we are running under
-1. Resolve dependencies --- the `requests` library itself depends on other packages, so the installer must find compatible versions of all transitive dependencies and install them beforehand
-1. Download the artifacts, then unpack and copy the files into the right places in our filesystem
+1. Найти requests в индексе пакетов Python (Python Package Index, [PyPI](https://pypi.org/))
+1. Найти подходящий артефакт для платформы, на которой мы работаем
+1. Разрешить зависимости — библиотека `requests` сама зависит от других пакетов, поэтому установщик должен найти совместимые версии всех транзитивных зависимостей и установить их заранее
+1. Скачать артефакты, затем распаковать их и скопировать файлы в нужные места нашей файловой системы
 
 ```console
 $ pip install requests
@@ -79,8 +79,8 @@ Installing collected packages: urllib3, idna, charset-normalizer, certifi, reque
 Successfully installed certifi-2024.8.30 charset-normalizer-3.4.0 idna-3.10 requests-2.32.3 urllib3-2.2.3
 ```
 
-Here we can see that `requests` has its own dependencies such as `certifi` or `charset-normalizer` and that they have to be installed before `requests` can be installed.
-Once installed, the Python runtime can find this library when importing it.
+Здесь видно, что у `requests` есть собственные зависимости, например `certifi` или `charset-normalizer`, и что их нужно установить до того, как можно будет установить сам `requests`.
+После установки среда выполнения Python сможет найти эту библиотеку при её импорте.
 
 ```console
 $ python -c 'import requests; print(requests.__path__)'
@@ -90,19 +90,19 @@ $ pip list | grep requests
 requests        2.32.3
 ```
 
-Programming languages have different tools, conventions and practices for installing and publishing libraries.
-In some languages like Rust, the toolchain is unified --- `cargo` handles building, testing, dependency management, and publishing.
-In others like Python, the unification happens at a specification level --- rather than a single tool, there are standardized specifications that define how packaging works, allowing multiple competing tools for each task (`pip` vs [`uv`](https://docs.astral.sh/uv/), `setuptools` vs [`hatch`](https://hatch.pypa.io/) vs [`poetry`](https://python-poetry.org/)).
-And in some ecosystems like LaTeX, distributions like TeX Live or MacTeX come bundled with thousands of packages pre-installed.
+В разных языках программирования свои инструменты, соглашения и практики установки и публикации библиотек.
+В некоторых языках, например в Rust, набор инструментов унифицирован — `cargo` отвечает и за сборку, и за тестирование, и за управление зависимостями, и за публикацию.
+В других, например в Python, унификация происходит на уровне спецификаций — вместо единого инструмента существуют стандартизированные спецификации, описывающие, как устроена упаковка (packaging), — поэтому для каждой задачи может существовать несколько конкурирующих инструментов (`pip` против [`uv`](https://docs.astral.sh/uv/), `setuptools` против [`hatch`](https://hatch.pypa.io/) против [`poetry`](https://python-poetry.org/)).
+А в некоторых экосистемах, например в LaTeX, дистрибутивы вроде TeX Live или MacTeX поставляются с тысячами предустановленных пакетов.
 
-Introducing dependencies also introduces dependency conflicts.
-Conflicts happen when programs require incompatible versions of the same dependency.
-For example, if `tensorflow==2.3.0` requires `numpy>=1.16.0,<1.19.0` and `pandas==1.2.0`  requires `numpy>=1.16.5`, then any version satisfying `numpy>=1.16.5,<1.19.0` will be valid.
-But if another package in your project requires `numpy>=1.19`, you have a conflict with no valid version that satisfies all constraints.
+Вместе с зависимостями появляются и конфликты зависимостей.
+Конфликты возникают, когда программам требуются несовместимые версии одной и той же зависимости.
+Например, если `tensorflow==2.3.0` требует `numpy>=1.16.0,<1.19.0`, а `pandas==1.2.0` требует `numpy>=1.16.5`, то подойдёт любая версия, удовлетворяющая `numpy>=1.16.5,<1.19.0`.
+Но если ещё какому-то пакету в вашем проекте нужен `numpy>=1.19`, возникает конфликт: нет ни одной версии, удовлетворяющей всем ограничениям сразу.
 
-This situation --- where multiple packages require mutually incompatible versions of shared dependencies --- is commonly referred to as _dependency hell_.
-One way to deal with conflicts is to isolate the dependencies of each program into their own _environment_.
-In Python we create a virtual environment by running:
+Такую ситуацию — когда нескольким пакетам требуются взаимно несовместимые версии общих зависимостей — принято называть _адом зависимостей_ (dependency hell).
+Один из способов справиться с конфликтами — изолировать зависимости каждой программы в её собственном _окружении_ (environment).
+В Python виртуальное окружение создаётся так:
 
 ```console
 $ which python
@@ -124,17 +124,17 @@ Package Version
 pip     24.0
 ```
 
-You can think of an environment as an entire standalone version of the language runtime with its own set of installed packages.
-This virtual environment or venv isolates the installed dependencies from the global Python installation.
-It is a good practice to have a virtual environment for each project, containing the dependencies it requires.
+Окружение можно представлять себе как отдельную, полностью самостоятельную копию среды выполнения языка со своим набором установленных пакетов.
+Такое виртуальное окружение, или venv, изолирует установленные зависимости от глобальной установки Python.
+Хорошая практика — заводить отдельное виртуальное окружение для каждого проекта, содержащее нужные ему зависимости.
 
-> While many modern operating systems ship with installations of programming language runtimes like Python, it is unwise to modify these installations since the OS might rely on them for its own functionality. Prefer using separate environments instead.
+> Хотя многие современные операционные системы поставляются с уже установленными средами выполнения языков программирования вроде Python, изменять эти установки неразумно: ОС может полагаться на них для собственной работы. Вместо этого лучше использовать отдельные окружения.
 
-In some languages, the installation protocol is not defined by a tool but as a specification.
-In Python [PEP 517](https://peps.python.org/pep-0517/) defines the build system interface and [PEP 621](https://peps.python.org/pep-0621/) specifies how project metadata is stored in `pyproject.toml`.
-This has enabled developers to improve upon `pip` and produce more optimized tools like `uv`. To install `uv` it suffices to do `pip install uv`.
+В некоторых языках протокол установки определяется не инструментом, а спецификацией.
+В Python [PEP 517](https://peps.python.org/pep-0517/) описывает интерфейс системы сборки, а [PEP 621](https://peps.python.org/pep-0621/) задаёт, как метаданные проекта хранятся в `pyproject.toml`.
+Это позволило разработчикам превзойти `pip` и создать более эффективные инструменты вроде `uv`. Чтобы установить `uv`, достаточно выполнить `pip install uv`.
 
-Using `uv` instead of `pip` follows the same interface but is significantly faster:
+У `uv` тот же интерфейс, что и у `pip`, но работает он значительно быстрее:
 
 ```console
 $ uv pip install requests
@@ -148,9 +148,9 @@ Installed 5 packages in 8ms
  + urllib3==2.2.3
 ```
 
-> We strongly recommend using `uv pip` instead of `pip` whenever possible as it dramatically reduces the installation time.
+> Мы настоятельно рекомендуем при любой возможности использовать `uv pip` вместо `pip`: это радикально сокращает время установки.
 
-Beyond dependency isolation, environments also allow you to have different versions of your programming language runtime.
+Помимо изоляции зависимостей, окружения позволяют держать разные версии среды выполнения самого языка программирования.
 
 ```console
 $ uv venv --python 3.12 venv312
@@ -168,15 +168,15 @@ $ source venv311/bin/activate && python --version
 Python 3.11.10
 ```
 
-This helps when you need to test your code across multiple Python versions or when a project requires a specific version.
+Это помогает, когда нужно протестировать код на нескольких версиях Python или когда проекту требуется какая-то конкретная версия.
 
-> In some programming languages, each project automatically gets its own environment for its dependencies rather than you creating it manually, but the principle is the same. Most languages these days also have a mechanism for managing multiple versions of the language on a single system, and then specifying which version to use for individual projects.
+> В некоторых языках программирования каждый проект автоматически получает собственное окружение для своих зависимостей, и создавать его вручную не нужно, но принцип тот же. Кроме того, в большинстве современных языков есть механизм, позволяющий держать на одной системе несколько версий языка и указывать, какую из них использовать для отдельных проектов.
 
-# Artifacts & Packaging
+# Артефакты и упаковка
 
-In software development we differentiate between source code and artifacts. Developers write and read source code, while artifacts are the packaged, distributable outputs produced from that source code --- ready to be installed or deployed.
-An artifact can be as simple as a file of code that we run, and as complex as an entire Virtual Machine that contains all the necessary bits and bobs of an application.
-Consider this example where we have a Python file `greet.py` in our current directory:
+В разработке ПО различают исходный код и артефакты (artifacts). Разработчики пишут и читают исходный код, а артефакты — это упакованные, готовые к распространению результаты, полученные из этого исходного кода, — их можно устанавливать или разворачивать.
+Артефакт может быть чем-то совсем простым, вроде файла с кодом, который мы запускаем, или чем-то сложным, вроде целой виртуальной машины, содержащей всё хозяйство, нужное приложению для работы.
+Рассмотрим пример: в текущем каталоге у нас есть Python-файл `greet.py`:
 
 ```console
 $ cat greet.py
@@ -191,15 +191,15 @@ $ python -c "from greet import greet; print(greet('World'))"
 ModuleNotFoundError: No module named 'greet'
 ```
 
-The import fails once we move to a different directory because Python only searches for modules in specific locations (the current directory, installed packages, and paths in `PYTHONPATH`). Packaging solves this by installing the code into a known location.
+Стоит перейти в другой каталог — и импорт перестаёт работать, потому что Python ищет модули только в определённых местах (текущий каталог, установленные пакеты и пути из `PYTHONPATH`). Упаковка (packaging) решает эту проблему: код устанавливается в известное место.
 
-In Python, packaging a library involves producing an artifact that package installers like `pip` or `uv` can use to install the relevant files.
-Python artifacts are called _wheels_ and contain all the necessary information to install a package: the code files, metadata about the package (name, version, dependencies), and instructions for where to place files in the environment.
-Building an artifact requires that we write a project file (also often known as manifest) detailing the specifics of the project, the required dependencies, the version of the package, and other information. In Python, we use `pyproject.toml` for this purpose.
+В Python упаковать библиотеку — значит собрать артефакт, с помощью которого установщики пакетов вроде `pip` или `uv` смогут установить нужные файлы.
+Артефакты в Python называются _wheels_ («колёсами») и содержат всё необходимое для установки пакета: файлы с кодом, метаданные пакета (имя, версию, зависимости) и указания, куда именно в окружении класть файлы.
+Чтобы собрать артефакт, нужно написать файл проекта (его часто называют манифестом), в котором описаны особенности проекта, требуемые зависимости, версия пакета и прочая информация. В Python для этого используется `pyproject.toml`.
 
-> `pyproject.toml` is the modern and recommended way. While earlier packaging methods like `requirements.txt` or `setup.py` are still supported, you should prefer `pyproject.toml` whenever possible.
+> `pyproject.toml` — современный и рекомендуемый способ. Более ранние подходы к упаковке, такие как `requirements.txt` или `setup.py`, всё ещё поддерживаются, но по возможности предпочитайте `pyproject.toml`.
 
-Here's a minimal `pyproject.toml` for a library that also provides a command-line tool:
+Вот минимальный `pyproject.toml` для библиотеки, которая заодно предоставляет инструмент командной строки:
 
 ```toml
 [project]
@@ -216,9 +216,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 ```
 
-The `typer` library is a popular Python package for creating command-line interfaces with minimal boilerplate.
+Библиотека `typer` — популярный Python-пакет для создания интерфейсов командной строки с минимумом шаблонного кода.
 
-And the corresponding `greeting.py`:
+А вот соответствующий `greeting.py`:
 
 ```python
 import typer
@@ -236,7 +236,7 @@ if __name__ == "__main__":
     cli()
 ```
 
-With this file, we can now build the wheel:
+С этим файлом мы можем собрать wheel:
 
 ```console
 $ uv build
@@ -250,9 +250,9 @@ greeting-0.1.0-py3-none-any.whl
 greeting-0.1.0.tar.gz
 ```
 
-The `.whl` file is the wheel (a zip archive with a specific structure), and the `.tar.gz` is a source distribution for systems that need to build from source.
+Файл `.whl` — это и есть wheel (zip-архив определённой структуры), а `.tar.gz` — дистрибутив исходного кода (source distribution) для систем, которым нужно собирать пакет из исходников.
 
-You can inspect the contents of a wheel to see what gets packaged:
+Можно заглянуть внутрь wheel и посмотреть, что именно попадает в пакет:
 
 ```console
 $ unzip -l dist/greeting-0.1.0-py3-none-any.whl
@@ -268,7 +268,7 @@ Archive:  dist/greeting-0.1.0-py3-none-any.whl
       998                     5 files
 ```
 
-Now if we were to give this wheel to someone else, they could install it by running:
+Теперь, если передать этот wheel кому-то другому, он сможет установить его так:
 
 ```console
 $ uv pip install ./greeting-0.1.0-py3-none-any.whl
@@ -276,45 +276,45 @@ $ greet Alice
 Hello, Alice!
 ```
 
-This would install the library we built earlier into their environment, including the `greet` cli tool.
+Это установит собранную нами ранее библиотеку в его окружение, включая инструмент командной строки `greet`.
 
-There are limitations to this approach. In particular if our library depends on platform-specific libraries, e.g. CUDA for GPU acceleration, then our artifact only works on systems with those specific libraries installed, and we may need to build separate wheels for different platforms (Linux, macOS, Windows) and architectures (x86, ARM).
-
-
-When installing software, there's an important distinction between installing from source and installing a prebuilt binary. Installing from source means downloading the original code and compiling it on your machine --- this requires having a compiler and build tools installed, and can take significant time for large projects.
-
-Installing a prebuilt binary means downloading an artifact that was already compiled by someone else --- faster and simpler, but the binary must match your platform and architecture.
-For example, [ripgrep's releases page](https://github.com/BurntSushi/ripgrep/releases) shows prebuilt binaries for Linux (x86_64, ARM), macOS (Intel, Apple Silicon), and Windows.
+У этого подхода есть ограничения. В частности, если наша библиотека зависит от платформенно-специфичных библиотек, например CUDA для ускорения на GPU, то наш артефакт будет работать только на системах, где эти библиотеки установлены, и нам, возможно, придётся собирать отдельные wheel для разных платформ (Linux, macOS, Windows) и архитектур (x86, ARM).
 
 
-# Releases & Versioning
+При установке программ важно различать установку из исходников и установку готового бинарного файла. Установка из исходников означает, что вы скачиваете оригинальный код и компилируете его на своей машине — для этого нужны установленные компилятор и инструменты сборки, а для больших проектов это может занять немало времени.
 
-Code is built in a continuous process but is released on a discrete basis.
-In software development there is a clear distinction between development and production environments.
-Code needs to be proven to work in a dev environment before getting _shipped_ to prod.
-The release process involves many steps, including testing, dependency management, versioning, configuration, deployment and publishing.
+Установка готового бинарника означает, что вы скачиваете артефакт, который уже скомпилировал кто-то другой, — быстрее и проще, но бинарник должен подходить под вашу платформу и архитектуру.
+Например, на [странице релизов ripgrep](https://github.com/BurntSushi/ripgrep/releases) выложены готовые бинарники для Linux (x86_64, ARM), macOS (Intel, Apple Silicon) и Windows.
 
 
-Software libraries are not static and evolve over time getting fixes and new features.
-We track this evolution by discrete version identifiers that correspond to the state of the library at a certain point in time.
-Changes in the behavior of a library can range from patches that fix noncritical functionality, new features that extend its functionality, to changes breaking backwards compatibility.
-Changelogs document what changes a version introduces --- these are documents that software developers use to communicate the changes associated with a new release.
+# Релизы и версионирование
 
-However, keeping track of the ongoing changes in each and every dependency is impractical, even more so when we consider the transitive dependencies --- i.e. the dependencies of our dependencies.
+Код пишется непрерывно, но выпускается дискретно.
+В разработке ПО есть чёткое разделение между средой разработки и продакшеном.
+Прежде чем код будет _доставлен_ в продакшен, он должен доказать свою работоспособность в среде разработки.
+Процесс выпуска релиза включает множество шагов, в том числе тестирование, управление зависимостями, версионирование, конфигурацию, развёртывание и публикацию.
 
-> You can visualize the entire dependency tree of your project with `uv tree`, which shows all packages and their transitive dependencies in a tree format.
 
-To simplify this problem there are conventions on how to version software, and one of the most prevalent is [Semantic Versioning](https://semver.org/) or SemVer.
-Under Semantic Versioning a version has an identifier of the form MAJOR.MINOR.PATCH where each one of the values takes an integer value. The short version is that upgrading:
+Программные библиотеки не статичны: со временем они развиваются, получают исправления и новые возможности.
+Мы отслеживаем эту эволюцию с помощью дискретных идентификаторов версий, каждый из которых соответствует состоянию библиотеки в определённый момент времени.
+Изменения в поведении библиотеки бывают самыми разными: от патчей, исправляющих некритичную функциональность, и новых возможностей, расширяющих её, до изменений, ломающих обратную совместимость.
+Список изменений (changelog) документирует, что именно привносит новая версия, — с помощью таких документов разработчики сообщают об изменениях, связанных с новым релизом.
 
-- PATCH (e.g., 1.2.3 → 1.2.4) should only contain bug fixes and be fully backwards compatible
-- MINOR (e.g., 1.2.3 → 1.3.0) adds new functionality in a backwards-compatible way
-- MAJOR (e.g., 1.2.3 → 2.0.0) indicates breaking changes that may require code modifications
+Однако следить за текущими изменениями в каждой отдельной зависимости непрактично, тем более если учесть транзитивные зависимости — то есть зависимости наших зависимостей.
 
-> This is a simplification and we encourage reading the full SemVer specification to understand for instance why going from 0.1.3 to 0.2.0 might cause breaking changes or what 1.0.0-rc.1 means.
-Python packaging supports semantic versioning natively, so when we specify the versions of our dependencies we can use various specifiers:
+> Всё дерево зависимостей проекта можно посмотреть командой `uv tree`, которая показывает все пакеты и их транзитивные зависимости в виде дерева.
 
-In the `pyproject.toml` we have different ways of constraining the ranges of compatible versions of our dependencies:
+Чтобы упростить эту задачу, существуют соглашения о том, как версионировать ПО, и одно из самых распространённых — [семантическое версионирование](https://semver.org/), или SemVer.
+При семантическом версионировании версия имеет идентификатор вида MAJOR.MINOR.PATCH, где каждое из значений — целое число. Если коротко, то повышение:
+
+- PATCH (например, 1.2.3 → 1.2.4) должно содержать только исправления ошибок и быть полностью обратно совместимым
+- MINOR (например, 1.2.3 → 1.3.0) добавляет новую функциональность с сохранением обратной совместимости
+- MAJOR (например, 1.2.3 → 2.0.0) означает ломающие изменения, которые могут потребовать правок в коде
+
+> Это упрощение, и мы советуем прочитать полную спецификацию SemVer, чтобы понять, например, почему переход с 0.1.3 на 0.2.0 может привести к ломающим изменениям или что означает 1.0.0-rc.1.
+Упаковка в Python поддерживает семантическое версионирование «из коробки», поэтому, указывая версии зависимостей, мы можем использовать разные спецификаторы:
+
+В `pyproject.toml` есть несколько способов ограничить диапазон совместимых версий наших зависимостей:
 
 ```toml
 [project]
@@ -326,22 +326,22 @@ dependencies = [
 ]
 ```
 
-Version specifiers exist across many package managers (npm, cargo, etc.) with varying exact semantics. The `~=` operator is Python's "compatible release" operator --- `~=2.1.0` means "any version that is compatible with 2.1.0", which translates to `>=2.1.0` and `<2.2.0`. This is roughly equivalent to the caret (`^`) operator in npm and cargo, which follows SemVer's notion of compatibility.
+Спецификаторы версий есть во многих менеджерах пакетов (npm, cargo и т. д.), хотя точная семантика у них различается. Оператор `~=` — это питоновский оператор «совместимого релиза»: `~=2.1.0` означает «любая версия, совместимая с 2.1.0», то есть `>=2.1.0` и `<2.2.0`. Это примерно соответствует оператору «крышка» (`^`) в npm и cargo, который следует понятию совместимости из SemVer.
 
-Not all software uses semantic versioning. A common alternative is Calendar Versioning (CalVer), where versions are based on release dates rather than semantic meaning. For example, Ubuntu uses versions like `24.04` (April 2024) and `24.10` (October 2024). CalVer makes it easy to see how old a release is, though it doesn't communicate anything about compatibility.  Lastly, semantic versioning is not infallible, and sometimes maintainers inadvertently introduce breaking changes in minor or patch releases.
+Не всё ПО использует семантическое версионирование. Распространённая альтернатива — календарное версионирование (Calendar Versioning, CalVer), где версии основаны на датах выпуска, а не на семантическом смысле. Например, Ubuntu использует версии вида `24.04` (апрель 2024) и `24.10` (октябрь 2024). CalVer позволяет легко понять, насколько стар релиз, но ничего не сообщает о совместимости. Наконец, семантическое версионирование не безупречно: иногда мейнтейнеры непреднамеренно вносят ломающие изменения в minor- или patch-релизах.
 
 
-# Reproducibility
+# Воспроизводимость
 
-In modern software development the code you write sits atop a significant number of layers of abstraction.
-This includes things like your programming language runtime, third party libraries, the operating system, or even the hardware itself.
-Any difference across any of these layers might change the behavior of your code or even prevent it from working as intended.
-Furthermore, even differences in the underlying hardware impact your ability to ship software.
+В современной разработке ПО код, который вы пишете, стоит поверх немалого числа слоёв абстракции.
+Это и среда выполнения вашего языка программирования, и сторонние библиотеки, и операционная система, и даже само железо.
+Любое различие в любом из этих слоёв может изменить поведение вашего кода или вовсе помешать ему работать так, как задумано.
+Более того, даже различия в нижележащем оборудовании влияют на вашу возможность доставлять ПО пользователям.
 
-Pinning a library refers to specifying an exact version rather than a range, e.g. `requests==2.32.3` instead of `requests>=2.0`.
+Закрепление (pinning) библиотеки — это указание точной версии вместо диапазона, например `requests==2.32.3` вместо `requests>=2.0`.
 
-Part of the job of a package manager is to consider all the constraints provided by the dependencies --- and transitive dependencies --- and then produce a valid list of versions that will satisfy all the constraints.
-The specific list of versions can then be saved to a file for reproducibility purposes; these files are referred to as _lock files_.
+Часть работы менеджера пакетов — учесть все ограничения, заданные зависимостями (и транзитивными зависимостями), и выдать корректный список версий, который удовлетворяет всем ограничениям.
+Этот конкретный список версий затем можно сохранить в файл ради воспроизводимости; такие файлы называют _lock-файлами_.
 
 ```console
 $ uv lock
@@ -362,37 +362,37 @@ wheels = [
 ...
 ```
 
-One critical distinction when dealing with dependency versioning and reproducibility is the difference between libraries and applications/services.
-A library is intended to be imported and used by other code which might have its own dependencies, so specifying overly strict version constraints can cause conflicts with the user's other dependencies.
-In contrast, applications or services are final consumers of the software and typically expose their functionality through a user interface or an API, not through a programming interface.
-For libraries, it is good practice to specify version ranges to maximize compatibility with the wider package ecosystem. For applications, pinning exact versions ensures reproducibility --- everyone running the application uses the exact same dependencies.
+Одно принципиальное различие, о котором нужно помнить, говоря о версионировании зависимостей и воспроизводимости, — это разница между библиотеками и приложениями/сервисами.
+Библиотека предназначена для того, чтобы её импортировал и использовал другой код, у которого могут быть свои зависимости, поэтому слишком жёсткие ограничения на версии могут вызвать конфликты с другими зависимостями пользователя.
+Приложения же и сервисы — конечные потребители ПО, и свою функциональность они обычно предоставляют через пользовательский интерфейс или API, а не через программный интерфейс.
+Для библиотек хорошая практика — указывать диапазоны версий, чтобы максимизировать совместимость с широкой экосистемой пакетов. Для приложений закрепление точных версий обеспечивает воспроизводимость — все, кто запускает приложение, используют в точности одни и те же зависимости.
 
 
-For projects requiring maximum reproducibility, tools like [Nix](https://nixos.org/) and [Bazel](https://bazel.build/) provide _hermetic_ builds --- where every input including compilers, system libraries, and even the build environment itself is pinned and content-addressed. This guarantees bit-for-bit identical outputs regardless of when or where the build runs.
+Для проектов, которым нужна максимальная воспроизводимость, инструменты вроде [Nix](https://nixos.org/) и [Bazel](https://bazel.build/) предоставляют _герметичные_ (hermetic) сборки — в них каждый входной компонент, включая компиляторы, системные библиотеки и даже само окружение сборки, закреплён и адресуется по содержимому. Это гарантирует побитово идентичный результат независимо от того, когда и где выполняется сборка.
 
-> You can even use NixOS to manage your entire computer install so that you can trivially spin up new copies of your computer setup and manage their complete configuration through version-controlled configuration files.
+> С помощью NixOS можно даже управлять всей установкой своего компьютера: тогда вы сможете без труда разворачивать новые копии своей настроенной системы и управлять всей их конфигурацией через файлы конфигурации под контролем версий.
 
-A neverending tension in software development is that new software versions introduce breakage either intentionally or unintentionally, while on the other hand, old software versions become compromised with security vulnerabilities over time.
-We can address this by using continuous integration pipelines (we'll see more in the [Code Quality and CI](/2026/code-quality/) lecture) that test our application against new software versions and having automation in place for detecting when new versions of our dependencies are released, such as [Dependabot](https://github.com/dependabot).
+Вечное противоречие в разработке ПО: новые версии программ вносят поломки — намеренно или нет, — а с другой стороны, в старых версиях со временем накапливаются уязвимости безопасности.
+Справиться с этим можно, используя конвейеры непрерывной интеграции (подробнее — в лекции [Качество кода и CI](/2026/code-quality/)), которые тестируют наше приложение с новыми версиями ПО, и настроив автоматику, которая замечает выход новых версий наших зависимостей, например [Dependabot](https://github.com/dependabot).
 
-Even with CI testing in place, issues still occur when upgrading software versions, often because of the inevitable mismatch between dev and prod environments.
-In those circumstances the best course of action is to have a _rollback_ plan, where the version upgrade is reverted and a known good version is redeployed instead.
+Даже при наличии CI-тестов при обновлении версий ПО всё равно случаются проблемы — часто из-за неизбежного расхождения между окружениями разработки и продакшена.
+В таких обстоятельствах лучше всего иметь план _отката_ (rollback): обновление версии отменяется, и вместо него заново разворачивается заведомо рабочая версия.
 
-# VMs & Containers
+# Виртуальные машины и контейнеры
 
-As you start relying on more complex dependencies, it is likely that the dependencies of your code will span beyond the boundaries of what the package manager can handle.
-One common reason is having to interface with specific system libraries or hardware drivers.
-For example, in scientific computing and AI, programs often need specialized libraries and drivers to utilize GPU hardware.
-Many system-level dependencies (GPU drivers, specific compiler versions, shared libraries like OpenSSL) still require system-wide installation.
+По мере того как вы начинаете полагаться на всё более сложные зависимости, вполне вероятно, что зависимости вашего кода выйдут за границы того, с чем способен справиться менеджер пакетов.
+Одна из частых причин — необходимость взаимодействовать с конкретными системными библиотеками или драйверами оборудования.
+Например, в научных вычислениях и ИИ программам часто нужны специализированные библиотеки и драйверы, чтобы задействовать GPU.
+Многие зависимости системного уровня (драйверы GPU, конкретные версии компиляторов, разделяемые библиотеки вроде OpenSSL) по-прежнему требуют установки на уровне всей системы.
 
-Traditionally this wider dependency problem was solved with Virtual Machines (VMs).
-VMs abstract the entire computer and provide a completely isolated environment with its own dedicated operating system.
-A more modern approach is containers, which package an application along with its dependencies, libraries, and filesystem, but share the host's operating system kernel rather than virtualizing an entire computer.
-Containers are lighter weight than VMs because they share the kernel, making them faster to start and more efficient to run.
+Традиционно эта более широкая проблема зависимостей решалась с помощью виртуальных машин (Virtual Machines, VM).
+Виртуальные машины абстрагируют компьютер целиком и предоставляют полностью изолированное окружение с собственной выделенной операционной системой.
+Более современный подход — контейнеры: они упаковывают приложение вместе с его зависимостями, библиотеками и файловой системой, но используют ядро операционной системы хоста, а не виртуализируют весь компьютер.
+Контейнеры легче виртуальных машин, потому что делят с хостом ядро, — за счёт этого они быстрее запускаются и эффективнее работают.
 
-The most popular container platform is [Docker](https://www.docker.com/). Docker introduced a standardized way to build, distribute, and run containers. Under the hood, Docker uses containerd as its container runtime --- an industry standard that other tools like Kubernetes also use.
+Самая популярная контейнерная платформа — [Docker](https://www.docker.com/). Docker ввёл стандартизированный способ собирать, распространять и запускать контейнеры. Под капотом Docker использует containerd в качестве среды выполнения контейнеров — это отраслевой стандарт, который применяют и другие инструменты, например Kubernetes.
 
-Running a container is straightforward. For example, to run a Python interpreter inside a container we use `docker run` (The `-it` flags make the container interactive with a terminal. When you exit, the container stops.).
+Запустить контейнер несложно. Например, чтобы запустить интерпретатор Python внутри контейнера, мы используем `docker run` (флаги `-it` делают контейнер интерактивным и подключают к нему терминал; когда вы выходите, контейнер останавливается).
 
 ```console
 $ docker run -it python:3.12 python
@@ -401,9 +401,9 @@ Python 3.12.7 (main, Nov  5 2024, 02:53:25) [GCC 12.2.0] on linux
 Hello from inside a container!
 ```
 
-In practice your program might depend on the entire filesystem.
-To overcome this, we can use container images that ship the entire filesystem of the application as the artifact.
-The container images are created programmatically. With docker we specify exactly the dependencies, system libraries, and configuration of the image using a Dockerfile syntax:
+На практике ваша программа может зависеть от всей файловой системы целиком.
+Чтобы справиться с этим, можно использовать образы контейнеров, которые поставляют в качестве артефакта всю файловую систему приложения.
+Образы контейнеров создаются программно. В Docker мы в точности описываем зависимости, системные библиотеки и конфигурацию образа с помощью синтаксиса Dockerfile:
 
 ```dockerfile
 FROM python:3.12
@@ -417,11 +417,11 @@ WORKDIR /app
 RUN pip install .
 ```
 
-An important distinction: a Docker **image** is the packaged artifact (like a template), while a **container** is a running instance of that image. You can run multiple containers from the same image. Images are built in layers, where each instruction (`FROM`, `RUN`, `COPY`, etc) in a Dockerfile creates a new layer. Docker caches these layers, so if you change a line in your Dockerfile, only that layer and subsequent layers need to be rebuilt.
+Важное различие: **образ** (image) Docker — это упакованный артефакт (что-то вроде шаблона), а **контейнер** — это запущенный экземпляр этого образа. Из одного образа можно запустить несколько контейнеров. Образы собираются послойно: каждая инструкция (`FROM`, `RUN`, `COPY` и т. д.) в Dockerfile создаёт новый слой. Docker кэширует эти слои, так что если вы измените одну строку в Dockerfile, пересобрать придётся только этот слой и все последующие.
 
-The previous Dockerfile has several issues: it uses the full Python image instead of a slim variant, runs separate `RUN` commands creating unnecessary layers, versions are not pinned, and it doesn't clean up package manager caches, shipping unnecessary files. Other frequent mistakes include insecurely running containers as root and accidentally embedding secrets in layers.
+У предыдущего Dockerfile есть несколько проблем: он использует полный образ Python вместо slim-варианта, выполняет отдельные команды `RUN`, создавая лишние слои, версии не закреплены, и он не очищает кэши менеджера пакетов, поставляя ненужные файлы. Среди других частых ошибок — небезопасный запуск контейнеров от root и случайное попадание секретов в слои.
 
-Here's an improved version
+Вот улучшенная версия:
 
 ```dockerfile
 FROM python:3.12-slim
@@ -437,19 +437,19 @@ COPY . .
 RUN uv sync --locked --no-dev
 ```
 
-In the previous example we see that instead of installing `uv` from source, we are copying the prebuilt binary from the `ghcr.io/astral-sh/uv:latest` image. This is known as the _builder_ pattern. With this pattern we do not need to ship all the tools needed to compile our code, just the final binary that is needed to run the application (`uv` in this case).
+В предыдущем примере видно, что вместо установки `uv` из исходников мы копируем готовый бинарник из образа `ghcr.io/astral-sh/uv:latest`. Это называется паттерном _builder_ («сборщик»). Благодаря ему нам не нужно поставлять все инструменты, необходимые для компиляции кода, — только итоговый бинарник, который нужен для запуска приложения (в данном случае `uv`).
 
-Docker has important limitations to be aware of. First, container images are often platform-specific --- an image built for `linux/amd64` won't run natively on `linux/arm64` (Apple Silicon Macs) without emulation, which is slow. Second, Docker containers require a Linux kernel, so on macOS and Windows, Docker actually runs a lightweight Linux VM under the hood, adding overhead. Third, Docker's isolation is weaker than VMs --- containers share the host kernel, which is a security concern in multi-tenant environments.
+У Docker есть важные ограничения, о которых стоит знать. Во-первых, образы контейнеров часто привязаны к платформе — образ, собранный для `linux/amd64`, не запустится нативно на `linux/arm64` (Mac на Apple Silicon) без эмуляции, а она медленная. Во-вторых, контейнерам Docker нужно ядро Linux, поэтому на macOS и Windows Docker на самом деле запускает под капотом лёгкую виртуальную машину с Linux, что добавляет накладных расходов. В-третьих, изоляция у Docker слабее, чем у виртуальных машин: контейнеры делят ядро с хостом, а это проблема безопасности в мультитенантных (multi-tenant) средах.
 
-> These days, more projects are also making use of nix to manage even "system-wide" libraries and applications per project through [nix flakes](https://serokell.io/blog/practical-nix-flakes).
+> Сегодня всё больше проектов используют nix, чтобы управлять даже «общесистемными» библиотеками и приложениями на уровне отдельного проекта с помощью [nix flakes](https://serokell.io/blog/practical-nix-flakes).
 
-# Configuration
+# Конфигурация
 
-Software is inherently configurable. In the [command line environment](/2026/command-line-environment/) lecture we saw programs receiving options via flags, environment variables or even configuration files a.k.a. dotfiles. This holds true even for more complex applications, and there are established patterns for managing configuration at scale.
-Software configuration should not be embedded in the code but be provided at runtime.
-A couple of common ones being environment variables and config files.
+Программное обеспечение по своей природе настраиваемо. В лекции о [среде командной строки](/2026/command-line-environment/) мы видели, как программы получают опции через флаги, переменные окружения или даже конфигурационные файлы, они же dotfiles. Это верно и для более сложных приложений, и для управления конфигурацией в больших масштабах существуют устоявшиеся паттерны.
+Конфигурация программы не должна быть зашита в код — её нужно передавать во время выполнения.
+Пара распространённых способов — переменные окружения и конфигурационные файлы.
 
-Here's an example of an application that is configured via environment variables:
+Вот пример приложения, которое настраивается через переменные окружения:
 
 ```python
 import os
@@ -459,7 +459,7 @@ DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
 API_KEY = os.environ["API_KEY"]  # Required - will raise if not set
 ```
 
-An application could also be configured via a configuration file (e.g., a Python program that loads a config via `yaml.load`), `config.yaml`:
+Приложение можно настраивать и через конфигурационный файл (например, Python-программа может загружать его через `yaml.load`) — вот такой `config.yaml`:
 
 ```yaml
 database:
@@ -471,22 +471,22 @@ server:
   debug: false
 ```
 
-A good right-hand rule for thinking about configuration is that the same codebase should be deployable to different environments (development, staging, production) with only configuration changes, never code changes.
+Хорошее эмпирическое правило для конфигурации: одну и ту же кодовую базу должно быть можно развернуть в разных средах (разработка, staging, продакшен), меняя только конфигурацию и никогда — код.
 
-Among the many configuration options there is often sensitive data such as API keys.
-Secrets need to be handled with care to avoid exposing them accidentally, and must not be included in version control.
+Среди множества параметров конфигурации нередко встречаются чувствительные данные, например ключи API.
+С секретами нужно обращаться осторожно, чтобы случайно их не раскрыть, и их ни в коем случае нельзя включать в систему контроля версий.
 
 
-# Services & Orchestration
+# Сервисы и оркестрация
 
-Modern applications rarely exist in isolation. A typical web application might need a database for persistent storage, a cache for performance, a message queue for background tasks, and various other supporting services. Rather than bundling everything into a single monolithic application, modern architectures often decompose functionality into separate services that can be developed, deployed, and scaled independently.
+Современные приложения редко существуют в изоляции. Типичному веб-приложению могут понадобиться база данных для постоянного хранения, кэш для производительности, очередь сообщений для фоновых задач и разнообразные другие вспомогательные сервисы. Вместо того чтобы сваливать всё в одно монолитное приложение, современные архитектуры часто разбивают функциональность на отдельные сервисы, которые можно разрабатывать, разворачивать и масштабировать независимо.
 
-As an example, if we determine our application might benefit from using a cache, instead of rolling our own we can leverage existing battle tested solutions like [Redis](https://redis.io/) or [Memcached](https://memcached.org/).
-We could embed Redis in our application dependencies by building it as part of the container, but that means harmonizing all the dependencies between Redis and our application which could be challenging or even unfeasible.
-Instead what we can do is deploy each application separately in its own container.
-This is commonly referred to as a microservice architecture where each component runs as an independent service that communicates over the network, typically via HTTP APIs.
+Например, если мы решили, что нашему приложению пригодится кэш, вместо того чтобы писать свой, мы можем воспользоваться существующими проверенными в бою решениями вроде [Redis](https://redis.io/) или [Memcached](https://memcached.org/).
+Мы могли бы встроить Redis в зависимости нашего приложения, собирая его как часть контейнера, но тогда пришлось бы согласовывать все зависимости между Redis и нашим приложением, что может оказаться сложно или вовсе невозможно.
+Вместо этого мы можем развернуть каждое приложение отдельно, в собственном контейнере.
+Это обычно называют микросервисной архитектурой: каждый компонент работает как независимый сервис, который общается с другими по сети, как правило, через HTTP API.
 
-[Docker Compose](https://docs.docker.com/compose/) is a tool for defining and running multi-container applications. Rather than managing containers individually, you declare all services in a single YAML file and orchestrate them together. Now our full application encompasses more than one container:
+[Docker Compose](https://docs.docker.com/compose/) — это инструмент для описания и запуска многоконтейнерных приложений. Вместо того чтобы управлять контейнерами по отдельности, вы объявляете все сервисы в одном YAML-файле и оркестрируете их вместе. Теперь наше полное приложение состоит более чем из одного контейнера:
 
 ```yaml
 # docker-compose.yml
@@ -509,10 +509,10 @@ volumes:
   redis_data:
 ```
 
-With `docker compose up`, both services start together, and the web application can connect to Redis using the hostname `cache` (Docker's internal DNS resolves service names automatically).
-Docker Compose lets us declare how we want to deploy one or more services, and handles the orchestration of starting them together, setting up networking between them, and managing shared volumes for data persistence.
+По команде `docker compose up` оба сервиса запускаются вместе, и веб-приложение может подключиться к Redis по имени хоста `cache` (внутренний DNS Docker автоматически разрешает имена сервисов).
+Docker Compose позволяет нам объявить, как мы хотим развернуть один или несколько сервисов, и берёт на себя оркестрацию: совместный запуск, настройку сети между ними и управление общими томами для постоянного хранения данных.
 
-For production deployments, you often want your docker compose services to start automatically on boot and restart on failure. A common approach is to use systemd to manage the docker compose deployment:
+Для продакшен-развёртываний обычно хочется, чтобы сервисы docker compose автоматически запускались при загрузке системы и перезапускались при сбое. Распространённый подход — управлять развёртыванием docker compose с помощью systemd:
 
 ```ini
 # /etc/systemd/system/myapp.service
@@ -532,11 +532,11 @@ ExecStop=/usr/bin/docker compose down
 WantedBy=multi-user.target
 ```
 
-This systemd unit file ensures your application starts when the system boots (after Docker is ready), and provides standard controls like `systemctl start myapp`, `systemctl stop myapp`, and `systemctl status myapp`.
+Этот unit-файл systemd гарантирует, что ваше приложение запустится при загрузке системы (после того как Docker будет готов), и даёт стандартные средства управления вроде `systemctl start myapp`, `systemctl stop myapp` и `systemctl status myapp`.
 
-As deployment requirements grow more complex --- needing scalability across multiple machines, fault tolerance when services crash, and high availability guarantees --- organizations turn to sophisticated container orchestration platforms like Kubernetes (k8s), which can manage thousands of containers across clusters of machines. That said, Kubernetes has a steep learning curve and significant operational overhead, so it's often overkill for smaller projects.
+По мере того как требования к развёртыванию усложняются — нужна масштабируемость на несколько машин, отказоустойчивость при падении сервисов и гарантии высокой доступности — организации обращаются к продвинутым платформам оркестрации контейнеров вроде Kubernetes (k8s), которые способны управлять тысячами контейнеров в кластерах машин. При этом порог входа у Kubernetes высок, а эксплуатационные накладные расходы значительны, так что для небольших проектов он часто избыточен.
 
-This multi-container setup is partly feasible because modern services communicate with each other via standardized APIs, with HTTP REST APIs. For example, whenever a program interacts with an LLM provider like OpenAI or Anthropic, under the hood it is sending an HTTP request to their servers and parsing the response:
+Такая многоконтейнерная схема возможна отчасти потому, что современные сервисы общаются друг с другом через стандартизированные API — HTTP REST API. Например, всякий раз, когда программа взаимодействует с провайдером LLM вроде OpenAI или Anthropic, под капотом она отправляет HTTP-запрос на их серверы и разбирает ответ:
 
 ```console
 $ curl https://api.anthropic.com/v1/messages \
@@ -547,19 +547,19 @@ $ curl https://api.anthropic.com/v1/messages \
          "messages": [{"role": "user", "content": "Explain containers vs VMs in one sentence."}]}'
 ```
 
-# Publishing
+# Публикация
 
-Once you have shown your code to work, you might be interested in distributing it for others to download and install.
-Distribution takes many forms and is intrinsically tied to the programming language and environments that you operate with.
+Когда вы показали, что ваш код работает, возможно, вам захочется распространить его, чтобы другие могли его скачать и установить.
+Распространение принимает множество форм и неразрывно связано с языком программирования и окружениями, с которыми вы работаете.
 
-The simplest form of distribution is uploading artifacts for people to download and install locally.
-This is still common and you can find it in places like [Ubuntu's package archive](http://archive.ubuntu.com/ubuntu/pool/main/), which is essentially an HTTP directory listing of `.deb` files.
+Простейшая форма распространения — выложить артефакты, чтобы люди могли скачать их и установить локально.
+Такой способ по-прежнему распространён: его можно встретить, например, в [архиве пакетов Ubuntu](http://archive.ubuntu.com/ubuntu/pool/main/), который по сути представляет собой HTTP-листинг каталога с `.deb`-файлами.
 
-These days, GitHub has become the de facto platform for publishing source code and artifacts.
-While the source code is often publicly available, GitHub Releases allow maintainers to attach prebuilt binaries and other artifacts to tagged versions.
+Сегодня GitHub стал де-факто платформой для публикации исходного кода и артефактов.
+Исходный код обычно и так открыт для всех, а GitHub Releases позволяет мейнтейнерам прикреплять к версиям, помеченным тегами, готовые бинарники и другие артефакты.
 
 
-Package managers sometimes support installing directly from GitHub, either from source or from a pre-built wheel:
+Менеджеры пакетов иногда поддерживают установку прямо с GitHub — либо из исходного кода, либо из готового wheel:
 
 ```console
 # Install from source (will clone and build)
@@ -572,8 +572,8 @@ $ pip install git+https://github.com/psf/requests.git@v2.32.3
 $ pip install https://github.com/user/repo/releases/download/v1.0/package-1.0-py3-none-any.whl
 ```
 
-In fact, some languages like Go use a decentralized distribution model --- rather than a central package repository, Go modules are distributed directly from their source code repositories.
-Module paths like `github.com/gorilla/mux` indicate where the code lives, and `go get` fetches directly from there. However, most package managers like `pip`, `cargo`, or `brew` have central indexes of pre-packaged projects for ease of distribution and installation. If we run
+Более того, некоторые языки, например Go, используют децентрализованную модель распространения — вместо центрального репозитория пакетов модули Go распространяются напрямую из репозиториев с их исходным кодом.
+Пути модулей вроде `github.com/gorilla/mux` указывают, где живёт код, а `go get` скачивает его прямо оттуда. Впрочем, у большинства менеджеров пакетов, таких как `pip`, `cargo` или `brew`, есть центральные индексы уже упакованных проектов — так их проще распространять и устанавливать. Если мы запустим
 
 ```console
 $ uv pip install requests --verbose --no-cache 2>&1 | grep -F '.whl'
@@ -582,18 +582,18 @@ DEBUG No cache entry for: https://files.pythonhosted.org/packages/1e/db/4254e3ea
 DEBUG No cache entry for: https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl
 ```
 
-we see where we are fetching the `requests` wheel from. Notice the `py3-none-any` in the filename --- this means the wheel works with any Python 3 version, on any OS, on any architecture. For packages with compiled code, the wheel is platform-specific:
+то увидим, откуда именно скачивается wheel для `requests`. Обратите внимание на `py3-none-any` в имени файла — это значит, что wheel работает с любой версией Python 3, на любой ОС и любой архитектуре. Для пакетов с компилируемым кодом wheel платформенно-специфичен:
 
 ```console
 $ uv pip install numpy --verbose --no-cache 2>&1 | grep -F '.whl'
 DEBUG Selecting: numpy==2.2.1 [compatible] (numpy-2.2.1-cp312-cp312-macosx_14_0_arm64.whl)
 ```
 
-Here `cp312-cp312-macosx_14_0_arm64` indicates this wheel is specifically for CPython 3.12 on macOS 14+ for ARM64 (Apple Silicon). If you're on a different platform, `pip` will download a different wheel or build from source.
+Здесь `cp312-cp312-macosx_14_0_arm64` означает, что этот wheel собран именно для CPython 3.12 на macOS 14+ для ARM64 (Apple Silicon). Если вы на другой платформе, `pip` скачает другой wheel или соберёт пакет из исходного кода.
 
-Conversely, for people to be able to find a package we've created, we need to publish it to one of these registries.
-In Python, the main registry is the [Python Package Index (PyPI)](https://pypi.org).
-Like with installing, there are multiple ways of publishing packages. The `uv publish` command provides a modern interface for uploading packages to PyPI:
+И наоборот: чтобы люди могли найти созданный нами пакет, его нужно опубликовать в одном из таких реестров.
+В Python основной реестр — [Python Package Index (PyPI)](https://pypi.org).
+Как и в случае с установкой, публиковать пакеты можно несколькими способами. Команда `uv publish` предоставляет современный интерфейс для загрузки пакетов на PyPI:
 
 ```console
 $ uv publish --publish-url https://test.pypi.org/legacy/
@@ -601,33 +601,33 @@ Publishing greeting-0.1.0.tar.gz
 Publishing greeting-0.1.0-py3-none-any.whl
 ```
 
-Here we are using [TestPyPI](https://test.pypi.org) --- a separate package registry intended for testing your publishing workflow without polluting the real PyPI. Once uploaded, you can install from TestPyPI:
+Здесь мы используем [TestPyPI](https://test.pypi.org) — отдельный реестр пакетов, предназначенный для того, чтобы протестировать свой рабочий процесс публикации, не замусоривая настоящий PyPI. После загрузки пакет можно установить с TestPyPI:
 
 ```console
 $ uv pip install --index-url https://test.pypi.org/simple/ greeting
 ```
 
-A key consideration when publishing software is trust. How do users verify that the package they download actually comes from you and hasn't been tampered with? Package registries use checksums to verify integrity, and some ecosystems support package signing to provide cryptographic proof of authorship.
+Ключевой вопрос при публикации программ — доверие. Как пользователям убедиться, что скачиваемый пакет действительно исходит от вас и его никто не подменил? Реестры пакетов используют контрольные суммы для проверки целостности, а некоторые экосистемы поддерживают подпись пакетов — криптографическое доказательство авторства.
 
-Different languages have their own package registries: [crates.io](https://crates.io) for Rust, [npm](https://www.npmjs.com) for JavaScript, [RubyGems](https://rubygems.org) for Ruby, and [Docker Hub](https://hub.docker.com) for container images. Meanwhile, for private or internal packages, organizations often deploy their own package repositories (such as a private PyPI server or a private Docker registry) or use managed solutions from cloud providers.
+У разных языков свои реестры пакетов: [crates.io](https://crates.io) для Rust, [npm](https://www.npmjs.com) для JavaScript, [RubyGems](https://rubygems.org) для Ruby и [Docker Hub](https://hub.docker.com) для образов контейнеров. А для приватных или внутренних пакетов организации часто разворачивают собственные репозитории пакетов (например, приватный сервер PyPI или приватный Docker-реестр) либо используют управляемые решения от облачных провайдеров.
 
-Deploying a web service to the internet involves additional infrastructure: domain name registration, DNS configuration to point your domain to your server, and often a reverse proxy like nginx to handle HTTPS and route traffic. For simpler use cases like documentation or static sites, [GitHub Pages](https://pages.github.com/) provides free hosting directly from a repository.
+Чтобы развернуть веб-сервис в интернете, понадобится дополнительная инфраструктура: регистрация доменного имени, настройка DNS, чтобы домен указывал на ваш сервер, и зачастую обратный прокси вроде nginx, который берёт на себя HTTPS и маршрутизацию трафика. Для более простых случаев — документации или статических сайтов — [GitHub Pages](https://pages.github.com/) предоставляет бесплатный хостинг прямо из репозитория.
 
 <!--
-## Documentation
+## Документация
 
-So far we have emphasized the deliverable _artifact_ as the main output of packaging and shipping code.
-In addition to the artifact, we need to document for users the code's functionality, installation instructions, and usage examples.
+До сих пор мы делали упор на готовый _артефакт_ как главный результат упаковки и доставки кода.
+Помимо самого артефакта, нам нужно задокументировать для пользователей функциональность кода, инструкции по установке и примеры использования.
 
-Tools like [Sphinx](https://www.sphinx-doc.org/) (Python) and [MkDocs](https://www.mkdocs.org/) can automatically generate browsable documentation from docstrings and markdown files, often hosted on services like [Read the Docs](https://readthedocs.org/).
-For HTTP-based APIs, the [OpenAPI specification](https://www.openapis.org/) (formerly Swagger) provides a standard format for describing API endpoints, which tools can use to generate interactive documentation and client libraries automatically. -->
+Такие инструменты, как [Sphinx](https://www.sphinx-doc.org/) (Python) и [MkDocs](https://www.mkdocs.org/), умеют автоматически генерировать документацию для просмотра в браузере из docstring'ов и markdown-файлов; её часто размещают на сервисах вроде [Read the Docs](https://readthedocs.org/).
+Для HTTP-API [спецификация OpenAPI](https://www.openapis.org/) (ранее известная как Swagger) задаёт стандартный формат описания эндпоинтов API, по которому инструменты могут автоматически генерировать интерактивную документацию и клиентские библиотеки. -->
 
 
-# Exercises
+# Упражнения
 
-1. Save your environment with `printenv` to a file, create a venv, activate it, `printenv` to another file and `diff before.txt after.txt`. What changed in the environment? Why does the shell prefer the venv? (Hint: look at `$PATH` before and after activation.) Run `which deactivate` and reason about what the deactivate bash function is doing.
-1. Create a Python package with a `pyproject.toml` and install it in a virtual environment. Create a lockfile and inspect it.
-1. Install Docker and use it to build the Missing Semester class website locally using docker compose.
-1. Write a Dockerfile for a simple Python application. Then write a `docker-compose.yml` that runs your application alongside a Redis cache.
-1. Publish a Python package to TestPyPI (don't publish to the real PyPI unless it's worth sharing!). Then build a Docker image with said package and push it to `ghcr.io`.
-1. Make a website using [GitHub Pages](https://docs.github.com/en/pages/quickstart). Extra (non-)credit: configure it with a custom domain.
+1. Сохраните своё окружение командой `printenv` в файл, создайте venv, активируйте его, сохраните вывод `printenv` в другой файл и выполните `diff before.txt after.txt`. Что изменилось в окружении? Почему оболочка предпочитает venv? (Подсказка: посмотрите на `$PATH` до и после активации.) Запустите `which deactivate` и порассуждайте, что делает bash-функция deactivate.
+1. Создайте Python-пакет с `pyproject.toml` и установите его в виртуальное окружение. Создайте lock-файл и изучите его.
+1. Установите Docker и соберите с его помощью сайт курса «Пропущенный семестр» локально, используя docker compose.
+1. Напишите Dockerfile для простого Python-приложения. Затем напишите `docker-compose.yml`, который запускает ваше приложение вместе с кэшем Redis.
+1. Опубликуйте Python-пакет в TestPyPI (не публикуйте в настоящий PyPI, если только вашим пакетом действительно не стоит поделиться!). Затем соберите Docker-образ с этим пакетом и отправьте его в `ghcr.io`.
+1. Сделайте сайт с помощью [GitHub Pages](https://docs.github.com/en/pages/quickstart). Дополнительные (не)баллы: настройте для него собственный домен.

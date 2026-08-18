@@ -154,6 +154,11 @@
 | edge case | пограничный случай |
 | sanity check | проверка на здравый смысл |
 | rule of thumb | эмпирическое правило |
+| blob / tree (Git objects) | blob / tree («дерево») — латиницей, пояснение при первом упоминании |
+| leaky abstraction | «дырявая» абстракция (leaky abstraction) |
+| tutorial | туториал |
+| session (terminal/tmux) | сессия |
+| pinning (versions) | закрепление (pinning) версий |
 
 ### Названия лекций 2026 (использовать везде одинаково)
 
