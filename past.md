@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Past Offerings
+title: Прошлые выпуски
 description: >
-  Find all past offerings of Missing Semester.
+  Здесь собраны все прошлые выпуски «Пропущенного семестра».
 ---
 
 {% comment %} pop to remove default "posts" collection {% endcomment %}
@@ -13,4 +13,4 @@ description: >
 {% endfor %}
 </ul>
 
-Each year's lectures are fully self-contained. We recommend starting with the most recent version of the material. There is variation in the topics covered year to year, so we continue to host notes and videos for earlier versions of this course.
+Лекции каждого года полностью самодостаточны. Мы рекомендуем начинать с самой свежей версии материала. Набор тем от года к году меняется, поэтому мы продолжаем размещать конспекты и видео более ранних версий этого курса.

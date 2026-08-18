@@ -1,33 +1,33 @@
 ---
 layout: default
-title: "License"
+title: "Лицензия"
 permalink: /license/
 ---
 
-# License
+# Лицензия
 
-All the content in this course, including the website source code, lecture notes, exercises, and lecture videos is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+Все материалы этого курса, включая исходный код сайта, конспекты лекций, упражнения и видеозаписи лекций, распространяются по лицензии [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-This means that you are free to:
-- **Share** — copy and redistribute the material in any medium or format
-- **Adapt** — remix, transform, and build upon the material
+Это означает, что вы можете свободно:
+- **Делиться** (Share) — копировать и распространять материал на любом носителе и в любом формате
+- **Адаптировать** (Adapt) — перерабатывать, изменять материал и создавать на его основе новое
 
-Under the following terms:
+При соблюдении следующих условий:
 
-- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-- **NonCommercial** — You may not use the material for commercial purposes.
-- **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+- **Атрибуция** (Attribution) — вы обязаны указать авторство надлежащим образом, привести ссылку на лицензию и обозначить, были ли внесены изменения. Вы можете делать это любым разумным способом, но не так, чтобы создавалось впечатление, будто лицензиар одобряет вас или ваш способ использования материала.
+- **Некоммерческое использование** (NonCommercial) — вы не вправе использовать материал в коммерческих целях.
+- **На тех же условиях** (ShareAlike) — если вы перерабатываете, изменяете материал или создаёте что-то на его основе, вы обязаны распространять свой вклад по той же лицензии, что и оригинал.
 
-This is a human-readable summary of (and not a substitute for) the [license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
+Это человекочитаемое краткое изложение [лицензии](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode) (но не её замена).
 
-## Contribution guidelines
+## Правила участия
 
-You can submit corrections and suggestions to the course material by submitting issues and pull requests on our GitHub [repo](https://github.com/missing-semester/missing-semester). This includes the captions for the video lectures which are also in the repo (see [here](https://github.com/missing-semester/missing-semester/tree/master/static/files/subtitles/2020)).
+Исправления и предложения по материалам курса можно присылать через issues и пул-реквесты в нашем [репозитории](https://github.com/missing-semester/missing-semester) на GitHub. Это касается и субтитров к видеолекциям, которые тоже лежат в репозитории (см. [здесь](https://github.com/missing-semester/missing-semester/tree/master/static/files/subtitles/2020)).
 
-## Translation guidelines
+## Правила перевода
 
-You are free to translate the lecture notes and exercises as long as you follow the license terms.
-If your translation mirrors the course structure, please contact us so we can link your translated version from our page.
+Вы можете свободно переводить конспекты лекций и упражнения, если соблюдаете условия лицензии.
+Если ваш перевод повторяет структуру курса, пожалуйста, свяжитесь с нами — мы добавим ссылку на вашу версию перевода на нашей странице.
 
-For translating the video captions, please submit your translations as community contributions in YouTube.
+Переводы субтитров к видео, пожалуйста, отправляйте как вклад сообщества (community contributions) на YouTube.
 

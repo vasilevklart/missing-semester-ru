@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Course Overview + Introduction to the Shell"
+title: "Обзор курса + введение в командную оболочку"
 description: >
-  Learn about the motivation for this class, and get started with the shell.
+  Узнайте, зачем нужен этот курс, и начните работать с командной оболочкой.
 thumbnail: /static/assets/thumbnails/2026/lec1.png
 date: 2026-01-12
 ready: true
@@ -11,156 +11,158 @@ video:
   id: MSgoeuMqUmU
 ---
 
-# Who are we?
+# Кто мы?
 
-This class is co-taught by [Anish](https://anish.io/),
-[Jon](https://thesquareplanet.com/), and [Jose](http://josejg.com/). We
-are all ex-MIT students who started this MIT IAP class back when we were
-students. You can reach us collectively at
+Этот курс совместно ведут [Аниш](https://anish.io/),
+[Джон](https://thesquareplanet.com/) и [Хосе](http://josejg.com/). Мы все
+бывшие студенты MIT и запустили этот курс в рамках MIT IAP ещё в те
+времена, когда сами были студентами. Написать нам всем сразу можно по адресу
 [missing-semester@mit.edu](mailto:missing-semester@mit.edu).
 
-We are not paid to teach this class, and do not monetize the class in
-any way. We make all the [course
-materials](https://missing.csail.mit.edu/) and [recordings of the
-lectures](https://www.youtube.com/@MissingSemester) freely available
-online. If you want to support our work, the best way to do so is to
-simply spread the word about the class. If you're a company, university,
-or other organization that runs this content past larger cohorts, please
-send us experience reports/testimonials by email so we get to hear about
-it :)
+Нам не платят за преподавание этого курса, и мы никак не монетизируем
+его. Все [материалы курса](https://missing.csail.mit.edu/) и [записи
+лекций](https://www.youtube.com/@MissingSemester) мы свободно выкладываем
+в интернет. Если хотите поддержать нашу работу, лучший способ — просто
+рассказывать о курсе другим. Если вы компания, университет или другая
+организация, которая прогоняет эти материалы через большие группы
+слушателей, пришлите нам, пожалуйста, отчёты об опыте или отзывы по
+электронной почте — нам будет приятно об этом узнать :)
 
-# Motivation
+# Мотивация
 
-As computer scientists, we know that computers are great at aiding in
-repetitive tasks. However, far too often, we forget that this applies
-just as much to our _use_ of the computer as it does to the computations
-we want our programs to perform. We have a vast range of tools available
-at our fingertips that enable us to be more productive and solve more
-complex problems when working on any computer-related problem. Yet many
-of us utilize only a small fraction of those tools; we only know enough
-magical incantations by rote to get by, and blindly copy-paste commands
-from the internet when we get stuck.
+Как специалисты по информатике, мы знаем, что компьютеры отлично
+справляются с помощью в повторяющихся задачах. Однако слишком часто мы
+забываем, что это относится к нашему _использованию_ компьютера ничуть не
+меньше, чем к вычислениям, которые мы поручаем своим программам. У нас
+под рукой огромный набор инструментов, которые позволяют работать
+продуктивнее и решать более сложные проблемы при работе над любой
+задачей, связанной с компьютером. И всё же многие из нас пользуются лишь
+малой долей этих инструментов; мы знаем наизусть ровно столько магических
+заклинаний, сколько нужно, чтобы кое-как обходиться, и слепо копируем
+команды из интернета, когда застреваем.
 
-This class is an attempt to [address this](/about/).
+Этот курс — попытка [исправить это](/about/).
 
-We want to teach you how to make the most of the tools you know, show
-you new tools to add to your toolbox, and hopefully instill in you some
-excitement for exploring (and perhaps building) more tools on your own.
-This is what we believe to be the missing semester from most Computer
-Science curricula.
+Мы хотим научить вас выжимать максимум из уже знакомых инструментов,
+показать новые инструменты, которые стоит добавить в свой арсенал, и,
+надеемся, заразить вас интересом к самостоятельному изучению (а может, и
+созданию) новых инструментов. Именно это мы считаем тем самым пропущенным
+семестром большинства учебных программ по Computer Science.
 
-# Class structure
+# Структура курса
 
-The not-for-credit class consists of nine 1-hour lectures, each one
-centering on a [particular topic](/2026/). The lectures are largely
-independent, though as the semester goes on we will presume that you are
-familiar with the content from the earlier lectures. We have lecture
-notes online, but there may be content covered in class (e.g. in the
-form of demos) that may not be in the notes. As for past years, we will
-be recording lectures and posting the recordings
-[online](https://www.youtube.com/@MissingSemester).
+Курс не идёт в зачёт и состоит из девяти часовых лекций, каждая из которых
+посвящена [отдельной теме](/2026/). Лекции в основном независимы друг от
+друга, хотя по ходу семестра мы будем предполагать, что вы знакомы с
+содержанием предыдущих лекций. Конспекты лекций выложены онлайн, но
+что-то из разобранного на занятиях (например, демонстрации) в конспекты
+может не попасть. Как и в прошлые годы, мы будем записывать лекции и
+выкладывать записи [онлайн](https://www.youtube.com/@MissingSemester).
 
-We are trying to cover a lot of ground over the course of just a few
-1-hour lectures, so the lectures are fairly dense. To allow you some
-time to get familiar with the content at your own pace, each lecture
-includes a set of exercises that guide you through the lecture's key
-points. We will not be running dedicated office hours, but we encourage
-you to ask questions on the [OSSU Discord](https://ossu.dev/#community),
-in `#missing-semester-forum`, or email us at
+Мы пытаемся охватить очень многое всего за несколько часовых лекций,
+поэтому лекции довольно насыщенные. Чтобы вы могли освоить материал в
+своём темпе, к каждой лекции прилагается набор упражнений, которые
+проводят вас по её ключевым моментам. Отдельных консультаций мы проводить
+не будем, но приглашаем задавать вопросы в
+[Discord OSSU](https://ossu.dev/#community), в канале
+`#missing-semester-forum` или писать нам на
 [missing-semester@mit.edu](mailto:missing-semester@mit.edu).
 
-Due to the limited time we have, we won't be able to cover all the tools
-in the same level of detail a full-scale class might. Where possible, we
-will try to point you towards resources for digging further into a tool
-or topic, but if something particularly strikes your fancy, don't
-hesitate to reach out to us and ask for pointers!
+Из-за ограниченного времени мы не сможем разобрать все инструменты так
+подробно, как это сделал бы полноценный курс. Где возможно, мы постараемся
+указать вам ресурсы, чтобы копнуть глубже в инструмент или тему, но если
+что-то вас особенно зацепит — не стесняйтесь написать нам и попросить
+подсказок!
 
-Finally, if you have feedback about the class, please send it to us by
-email at [missing-semester@mit.edu](mailto:missing-semester@mit.edu).
+Наконец, если у вас есть отзывы о курсе, пожалуйста, присылайте их нам по
+электронной почте на [missing-semester@mit.edu](mailto:missing-semester@mit.edu).
 
-# Topic 1: The Shell
+# Тема 1: Командная оболочка
 
 {% comment %}
 lecturer: Jon
 {% endcomment %}
 
-## What is the shell?
+## Что такое командная оболочка?
 
-Computers these days have a variety of interfaces for giving them
-commands; fanciful graphical user interfaces, voice interfaces, AR/VR,
-and more recently: LLMs. These are great for 80% of use-cases, but they
-are often fundamentally restricted in what they allow you to do — you
-cannot press a button that isn't there or give a voice command that
-hasn't been programmed. To take full advantage of the tools your
-computer provides, we have to go old-school and drop down to a textual
-interface: The Shell.
+У современных компьютеров есть множество интерфейсов, через которые им
+можно отдавать команды: затейливые графические интерфейсы, голосовые
+интерфейсы, AR/VR, а с недавних пор — LLM. Для 80% задач они отлично
+подходят, но зачастую принципиально ограничены в том, что позволяют
+делать: нельзя нажать кнопку, которой нет, или отдать голосовую команду,
+которую никто не запрограммировал. Чтобы по-настоящему воспользоваться
+всеми инструментами, которые предоставляет компьютер, придётся действовать
+по старинке и спуститься к текстовому интерфейсу — командной оболочке
+(shell).
 
-Nearly all platforms you can get your hands on have a shell in one form
-or another, and many of them have several shells for you to choose from.
-While they may vary in the details, at their core they are all roughly
-the same: they allow you to run programs, give them input, and inspect
-their output in a semi-structured way.
+Почти на любой платформе, которая попадёт вам в руки, есть оболочка в том
+или ином виде, а на многих — сразу несколько на выбор. Они могут
+различаться в деталях, но по сути все примерно одинаковы: они позволяют
+запускать программы, передавать им ввод и изучать их вывод в
+полуструктурированном виде.
 
-To open a shell _prompt_ (where you can type commands), you first need a
-_terminal_, which is the visual interface to a shell. Your device
-probably shipped with one installed, or you can install one fairly
-easily:
+Чтобы открыть _приглашение_ командной строки (куда можно вводить команды),
+сначала нужен _терминал_ — визуальный интерфейс к оболочке. Скорее всего,
+он уже был установлен на вашем устройстве, либо его довольно легко
+установить:
 
 - **Linux:**
-  Press `Ctrl + Alt + T` (works on most distributions). Or search for
-  "Terminal" in your applications menu.
+  Нажмите `Ctrl + Alt + T` (работает в большинстве дистрибутивов). Или
+  найдите «Terminal» в меню приложений.
 - **Windows:**
-  Press `Win + R`, type `cmd` or `powershell`, and press Enter.
-  Alternatively, search "Terminal" or "Command Prompt" in the Start menu.
+  Нажмите `Win + R`, введите `cmd` или `powershell` и нажмите Enter.
+  Либо найдите «Terminal» или «Command Prompt» в меню «Пуск».
 - **macOS:**
-  Press `Cmd + Space` to open Spotlight, type "Terminal", and press Enter.
-  Or find it in Applications → Utilities → Terminal.
+  Нажмите `Cmd + Space`, чтобы открыть Spotlight, введите «Terminal» и
+  нажмите Enter. Или найдите его в Applications → Utilities → Terminal.
 
-On Linux and macOS, this will usually open the Bourne Again SHell, or
-"bash" for short. This is one of the most widely used shells, and its
-syntax is similar to what you will see in many other shells. On Windows,
-you'll be greeted by the "batch" or "powershell" shells, depending on
-which command you ran. These are Windows-specific, and not what we'll be
-focusing on in this class, although it has analogues for most of what
-we'll be teaching. You'll instead want the [Windows Subsystem for
-Linux](https://docs.microsoft.com/en-us/windows/wsl/) or a Linux virtual
-machine.
+На Linux и macOS при этом обычно открывается Bourne Again SHell, или
+сокращённо «bash». Это одна из самых распространённых оболочек, и её
+синтаксис похож на то, что вы увидите во многих других оболочках. На
+Windows вас встретит оболочка «batch» или «powershell» — в зависимости от
+того, какую команду вы запустили. Они специфичны для Windows, и в этом
+курсе мы не будем на них сосредотачиваться, хотя у них есть аналоги
+почти всего, о чём мы будем рассказывать. Вместо этого вам понадобится
+[Windows Subsystem for
+Linux](https://docs.microsoft.com/en-us/windows/wsl/) или виртуальная
+машина с Linux.
 
-Other shells exist, often with many ergonomic improvements over bash
-(fish and zsh are among the most common). While these are very popular
-(all the instructors use one), they're nowhere near as ubiquitous as
-bash, and lean on many of the same concepts, so we won't be focusing on
-those in this lecture.
+Существуют и другие оболочки, зачастую с множеством эргономических
+улучшений по сравнению с bash (fish и zsh — среди самых распространённых).
+Хотя они очень популярны (все преподаватели пользуются одной из них), им
+далеко до повсеместности bash, и опираются они во многом на те же
+концепции, поэтому в этой лекции мы не будем на них останавливаться.
 
-## Why should you care about it?
+## Почему это должно вас волновать?
 
-The shell is not just (usually) much faster than "clicking around", it
-also comes with expressive power you can't easily find in any one
-graphical program. As we'll see, the shell gives you the ability to
-_combine_ programs in creative ways to automate nearly any task.
+Оболочка не просто (как правило) гораздо быстрее, чем «тыкать мышкой», —
+она обладает выразительной мощью, которую нелегко найти ни в одной
+отдельно взятой графической программе. Как мы увидим, оболочка даёт
+возможность _комбинировать_ программы самыми изобретательными способами
+и автоматизировать почти любую задачу.
 
-Knowing your way around a shell is also very useful to navigate the
-world of open-source software (which often come with install
-instructions that require the shell), building continuous integration
-for your software projects (as described in the [Code Quality
-lecture](/2026/code-quality/)), and debugging errors when other programs
-fail.
+Умение ориентироваться в оболочке очень пригодится и в мире открытого
+программного обеспечения (инструкции по установке там часто требуют
+оболочки), и при настройке непрерывной интеграции для ваших проектов
+(об этом рассказывается в [лекции «Качество
+кода»](/2026/code-quality/)), и при отладке ошибок, когда другие
+программы отказываются работать.
 
-## Navigating in the shell
+## Навигация в оболочке
 
-When you launch your terminal, you will see a _prompt_ that often looks
-a little like this:
+Когда вы запустите терминал, вы увидите _приглашение_ командной строки,
+которое обычно выглядит примерно так:
 
 ```console
 missing:~$
 ```
 
-This is the main textual interface to the shell. It tells you that you
-are on the machine `missing` and that your "current working directory",
-or where you currently are, is `~` (short for "home"). The `$` tells you
-that you are not the root user (more on that later). At this prompt you
-can type a _command_, which will then be interpreted by the shell. The
-most basic command is to execute a program:
+Это основной текстовый интерфейс оболочки. Он сообщает вам, что вы
+находитесь на машине `missing` и что ваш «текущий рабочий каталог», то
+есть место, где вы сейчас находитесь, — это `~` (сокращение от «home»,
+домашний каталог). Знак `$` говорит о том, что вы не пользователь root
+(об этом позже). В это приглашение можно ввести _команду_, которую затем
+интерпретирует оболочка. Самая простая команда — запустить программу:
 
 ```console
 missing:~$ date
@@ -168,43 +170,45 @@ Fri 10 Jan 2020 11:49:31 AM EST
 missing:~$
 ```
 
-Here, we executed the `date` program, which (perhaps unsurprisingly)
-prints the current date and time. The shell then asks us for another
-command to execute. We can also execute a command with _arguments_:
+Здесь мы запустили программу `date`, которая (что, пожалуй, неудивительно)
+печатает текущие дату и время. Затем оболочка просит у нас следующую
+команду для выполнения. Мы также можем выполнить команду с _аргументами_:
 
 ```console
 missing:~$ echo hello
 hello
 ```
 
-In this case, we told the shell to execute the program `echo` with the
-argument `hello`. The `echo` program simply prints out its arguments.
-The shell parses the command by splitting it by whitespace, and then
-runs the program indicated by the first word, supplying each subsequent
-word as an argument that the program can access. If you want to provide
-an argument that contains spaces or other special characters (e.g., a
-directory named "My Photos"), you can either quote the argument with `'`
-or `"` (`"My Photos"`), or escape just the relevant characters with `\`
-(`My\ Photos`).
+В этом случае мы велели оболочке запустить программу `echo` с аргументом
+`hello`. Программа `echo` просто печатает свои аргументы. Оболочка
+разбирает команду, разбивая её по пробелам, а затем запускает программу,
+указанную первым словом, и передаёт каждое последующее слово как
+аргумент, к которому программа может обратиться. Если нужно передать
+аргумент, содержащий пробелы или другие специальные символы (например,
+каталог с именем «My Photos»), можно либо заключить аргумент в кавычки
+`'` или `"` (`"My Photos"`), либо экранировать только нужные символы с
+помощью `\` (`My\ Photos`).
 
-Perhaps the most important command when you're starting out is `man`,
-short for "manual". The `man` program, among other things, lets you look
-up more information about any command on your system. For example, if
-you run `man date`, it'll explain what `date` is, and all of the various
-arguments you can pass it to alter its behavior. You can also usually
-get a short version of the help by passing `--help` as an argument to
-most commands.
+Пожалуй, самая важная команда, когда вы только начинаете, — это `man`,
+сокращение от «manual» (руководство). Программа `man`, помимо прочего,
+позволяет посмотреть подробную информацию о любой команде в вашей
+системе. Например, если запустить `man date`, она объяснит, что такое
+`date` и какие аргументы можно ей передать, чтобы изменить её поведение.
+Кроме того, у большинства команд можно получить краткую справку, передав
+им аргумент `--help`.
 
-> Consider installing and using [`tldr`](https://tldr.sh/) in addition
-> to `man`, as it shows you common usage examples right there in the
-> terminal. LLMs are also usually very good at explaining how commands
-> work and how you can call them to achieve what you want to accomplish.
+> Подумайте о том, чтобы установить и использовать
+> [`tldr`](https://tldr.sh/) в дополнение к `man`: она показывает
+> типичные примеры использования прямо в терминале. LLM тоже, как
+> правило, отлично объясняют, как работают команды и как их вызывать,
+> чтобы добиться желаемого.
 
-After `man`, the most important command to learn is `cd`, or "change
-directory". This command is actually built into the shell, and isn't a
-separate program (i.e., `which cd` will say "no cd found"). You pass it
-a path, and that path becomes your current working directory. You'll
-also see the working directory reflected in the shell prompt:
+После `man` самая важная команда, которую стоит выучить, — это `cd`, или
+«change directory» (сменить каталог). На самом деле эта команда встроена
+в оболочку и не является отдельной программой (то есть `which cd` скажет
+«no cd found»). Вы передаёте ей путь, и этот путь становится вашим
+текущим рабочим каталогом. Рабочий каталог также отображается в
+приглашении командной строки:
 
 ```console
 missing:~$ cd /bin
@@ -213,23 +217,23 @@ missing:/$ cd ~
 missing:~$
 ```
 
-> Note that the shell comes with auto-completion, so you can often
-> complete paths faster by pressing `<TAB>`!
+> Обратите внимание, что в оболочке есть автодополнение, так что пути
+> зачастую можно быстрее дописать, нажав `<TAB>`!
 
-A lot of commands operate on the current working directory if nothing
-else is specified. If you're ever unsure where you are, you can run
-`pwd` or print the `$PWD` environment variable (with `echo $PWD`), both
-of which produce the current working directory.
+Многие команды работают с текущим рабочим каталогом, если не указано
+иное. Если вы вдруг не уверены, где находитесь, можно запустить `pwd`
+или напечатать переменную окружения `$PWD` (командой `echo $PWD`) — и
+то и другое выведет текущий рабочий каталог.
 
-The current working directory also comes in handy in that it allows us to
-use _relative_ paths. All the paths we've seen so far have been
-_absolute_ --- they start with `/` and give the full set of directories
-needed to navigate to some location from the root of the file system
-(`/`). In practice, you'll more commonly work with relative paths; so
-called because they are relative to the current working directory. In a
-relative path (anything _not_ starting with `/`), the first path
-component is looked up in the current working directory, and subsequent
-components traverse as usual. For example:
+Текущий рабочий каталог удобен ещё и тем, что позволяет использовать
+_относительные_ пути. Все пути, которые мы видели до сих пор, были
+_абсолютными_ — они начинаются с `/` и задают полный набор каталогов,
+через которые нужно пройти от корня файловой системы (`/`), чтобы
+добраться до нужного места. На практике вы чаще будете работать с
+относительными путями; они так называются, потому что отсчитываются
+относительно текущего рабочего каталога. В относительном пути (любом,
+который _не_ начинается с `/`) первый компонент ищется в текущем рабочем
+каталоге, а последующие компоненты обходятся как обычно. Например:
 
 ```console
 missing:~$ cd /
@@ -237,9 +241,9 @@ missing:/$ cd bin
 missing:/bin$
 ```
 
-There are also two "special" components that exist in every directory:
-`.` and `..`. `.` is "this directory", and `..` is "the parent
-directory". So:
+Есть также два «особых» компонента, которые существуют в каждом
+каталоге: `.` и `..`. `.` — это «этот каталог», а `..` — «родительский
+каталог». Так что:
 
 ```console
 missing:~$ cd /
@@ -247,21 +251,21 @@ missing:/$ cd bin/../bin/../bin/././../bin/..
 missing:/$
 ```
 
-You can usually use absolute and relative paths interchangeably for any
-command argument, just keep in mind what your current working directory
-is when using a relative one!
+Обычно абсолютные и относительные пути можно использовать взаимозаменяемо
+в качестве аргумента любой команды — просто помните, какой у вас текущий
+рабочий каталог, когда используете относительный!
 
-> Consider installing and using
-> [`zoxide`](https://github.com/ajeetdsouza/zoxide) to speed up your
-> `cd`ing --- `z` will remember the paths you frequently visit and let
-> you access with less typing.
+> Подумайте о том, чтобы установить и использовать
+> [`zoxide`](https://github.com/ajeetdsouza/zoxide), чтобы ускорить свои
+> `cd` — `z` запоминает пути, которые вы часто посещаете, и позволяет
+> переходить к ним, набирая меньше символов.
 
-## What is available in the shell?
+## Что доступно в оболочке?
 
-But how does the shell know how to find programs like `date` or `echo`?
-If the shell is asked to execute a command, it consults an _environment
-variable_ called `$PATH` that lists which directories the shell should
-search for programs when it is given a command:
+Но откуда оболочка знает, где искать программы вроде `date` или `echo`?
+Когда оболочку просят выполнить команду, она обращается к _переменной
+окружения_ `$PATH`, в которой перечислены каталоги, где оболочка должна
+искать программы, когда ей дают команду:
 
 ```console
 missing:~$ echo $PATH
@@ -272,122 +276,124 @@ missing:~$ /bin/echo $PATH
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
 
-When we run the `echo` command, the shell sees that it should execute
-the program `echo`, and then searches through the `:`-separated list of
-directories in `$PATH` for a file by that name. When it finds it, it
-runs it (assuming the file is _executable_; more on that later). We can
-find out which file is executed for a given program name using the
-`which` program. We can also bypass `$PATH` entirely by giving the
-_path_ to the file we want to execute.
+Когда мы запускаем команду `echo`, оболочка видит, что должна выполнить
+программу `echo`, и затем ищет файл с таким именем в списке каталогов из
+`$PATH`, разделённых `:`. Найдя его, она его запускает (при условии, что
+файл _исполняемый_; об этом позже). Узнать, какой именно файл выполняется
+для данного имени программы, можно с помощью программы `which`. Мы также
+можем полностью обойти `$PATH`, указав _путь_ к файлу, который хотим
+выполнить.
 
-This also gives a clue for how we can determine _all_ the programs we're
-able to execute in the shell: by listing the contents of all the
-directories on `$PATH`. We can do this by passing a given directory path
-to the `ls` program, which lists files:
+Это же подсказывает, как определить _все_ программы, которые мы можем
+выполнить в оболочке: перечислить содержимое всех каталогов из `$PATH`.
+Для этого можно передать путь к нужному каталогу программе `ls`, которая
+выводит список файлов:
 
 ```console
 missing:~$ ls /bin
 ```
 
-> Consider installing and using [`eza`](https://eza.rocks/) for a more
-> human-friendly `ls`.
+> Подумайте о том, чтобы установить и использовать
+> [`eza`](https://eza.rocks/) — более дружелюбную к человеку версию `ls`.
 
-This will, on most computers, print a _lot_ of programs, but we'll only
-focus on some of the most important ones here. First, some simple ones:
+На большинстве компьютеров это выведет _очень много_ программ, но здесь
+мы сосредоточимся лишь на некоторых самых важных. Сначала — несколько
+простых:
 
-- `cat file`, which prints the contents of `file`.
-- `sort file`, which prints out the lines of `file` in sorted order.
-- `uniq file`, which eliminates consecutive duplicate lines from `file`.
-- `head file` and `tail file`, which respectively print the first and
-  last few lines of `file`.
+- `cat file` выводит содержимое файла `file`.
+- `sort file` выводит строки файла `file` в отсортированном порядке.
+- `uniq file` убирает из `file` идущие подряд повторяющиеся строки.
+- `head file` и `tail file` выводят соответственно первые и последние
+  несколько строк файла `file`.
 
-> Consider installing and using [`bat`](https://github.com/sharkdp/bat)
-> over `cat` for syntax highlighting and scrolling.
+> Подумайте о том, чтобы установить и использовать
+> [`bat`](https://github.com/sharkdp/bat) вместо `cat` — ради подсветки
+> синтаксиса и прокрутки.
 
-There's also `grep pattern file`, which finds lines matching `pattern`
-in `file`. This one deserves slightly more attention as it's both _very_
-useful and sports a wider array of features than one may expect.
-`pattern` is actually a _regular expression_ which can express very
-complex patterns --- we'll [cover
-those](/2026/code-quality/#regular-expressions)
-in the code quality lecture. You can also specify a directory instead of a
-file (or leave it off for `.`) and pass `-r` to recursively search all
-the files in a directory.
+Есть ещё `grep pattern file`, которая находит в `file` строки,
+соответствующие `pattern`. Она заслуживает чуть большего внимания: она
+_очень_ полезна и умеет куда больше, чем можно ожидать. На самом деле
+`pattern` — это _регулярное выражение_, которым можно описывать очень
+сложные шаблоны — мы [разберём
+их](/2026/code-quality/#regular-expressions)
+в лекции о качестве кода. Вместо файла можно также указать каталог (или
+вовсе опустить его, тогда подразумевается `.`) и передать `-r`, чтобы
+рекурсивно искать по всем файлам в каталоге.
 
-> Consider installing and using
-> [`ripgrep`](https://github.com/BurntSushi/ripgrep) over `grep` for a
-> faster and more human-friendly (but less portable) alternative.
-> `ripgrep` will also recursively search the current working directory
-> by default!
+> Подумайте о том, чтобы установить и использовать
+> [`ripgrep`](https://github.com/BurntSushi/ripgrep) вместо `grep` — это
+> более быстрая и дружелюбная к человеку (но менее переносимая)
+> альтернатива. К тому же `ripgrep` по умолчанию рекурсивно ищет по
+> текущему рабочему каталогу!
 
-There are also some very useful tools with a slightly more complicated
-interface. First among those is `sed`, which is a programmatic file
-editor. It has its own programming language for making automated edits
-to files, but the most common use of it is:
+Есть и несколько очень полезных инструментов с чуть более сложным
+интерфейсом. Первый из них — `sed`, программируемый редактор файлов.
+У него есть собственный язык программирования для автоматизированного
+редактирования файлов, но чаще всего его используют так:
 
 ```console
 missing:~$ sed -i 's/pattern/replacement/g' file
 ```
 
-This replaces all instances of `pattern` with `replacement` in `file`.
-The `-i` indicates that we want the substitutions to happen inline (as
-opposed to leaving `file` unmodified and printing the substituted
-contents). The `s/` is the way to express in the sed programming
-language that we want to do a substitution. The `/` separates the
-pattern from the replacement. And the trailing `/g` indicates that we
-want to replace _all_ occurrences on each line rather than just the
-first. As with `grep`, `pattern` here is a regular expression, which
-gives you significant expressive power. Regular expression substitutions
-also allow `replacement` to refer back to parts of the matched pattern;
-we'll see an example of that in a second.
+Это заменяет все вхождения `pattern` на `replacement` в файле `file`.
+Флаг `-i` указывает, что замены нужно сделать прямо в файле (а не
+оставить `file` нетронутым и вывести содержимое с заменами). `s/` — это
+способ сказать на языке sed, что мы хотим выполнить подстановку. `/`
+отделяет шаблон от замены. А завершающий `/g` означает, что мы хотим
+заменить _все_ вхождения в каждой строке, а не только первое. Как и в
+случае с `grep`, `pattern` здесь — регулярное выражение, что даёт вам
+немалую выразительную мощь. Подстановки с регулярными выражениями также
+позволяют `replacement` ссылаться на части совпавшего шаблона; пример мы
+увидим через мгновение.
 
-Next, we have `find`, which lets you find files (recursively) that match
-certain conditions. For example:
+Далее — `find`, которая позволяет находить файлы (рекурсивно),
+удовлетворяющие определённым условиям. Например:
 
 ```console
 missing:~$ find ~/Downloads -type f -name "*.zip" -mtime +30
 ```
 
-Finds ZIP files in the download directory that are older than 30 days.
+Находит в каталоге загрузок ZIP-файлы старше 30 дней.
 
 ```console
 missing:~$ find ~ -type f -size +100M -exec ls -lh {} \;
 ```
 
-Finds files larger than 100M in your home directory and lists them. Note
-that `-exec` takes a _command_ terminated with a stand-alone `;` (which
-we need to escape much like a space) where `{}` is replaced with each
-matching file path by `find`.
+Находит в вашем домашнем каталоге файлы больше 100M и выводит их список.
+Обратите внимание, что `-exec` принимает _команду_, завершённую отдельно
+стоящим `;` (который нужно экранировать, как и пробел), где `{}` `find`
+заменяет на путь к каждому найденному файлу.
 
 ```console
 missing:~$ find . -name "*.py" -exec grep -l "TODO" {} \;
 ```
 
-Finds any `.py` files with TODO items in them.
+Находит все `.py`-файлы, в которых есть пункты TODO.
 
-The syntax of `find` can be a little daunting, but hopefully this gives
-you a sense of how useful it can be!
+Синтаксис `find` может поначалу пугать, но, надеемся, эти примеры дали
+вам представление о том, насколько она может быть полезна!
 
-> Consider installing and using [`fd`](https://github.com/sharkdp/fd)
-> instead of `find` for a more human-friendly (but less portable!)
-> experience.
+> Подумайте о том, чтобы установить [`fd`](https://github.com/sharkdp/fd)
+> и использовать её вместо `find` — она куда дружелюбнее к человеку (но
+> менее переносима!).
 
-Next on the docket is `awk`, which, like `sed`, has its own programming
-language. Where `sed` is built for editing files, `awk` is built for
-parsing them. By far the most common use of `awk` is for data files with
-a regular syntax (like CSV files) where you want to extract only certain
-parts of every record (i.e., line):
+Следующая на очереди — `awk`, у которой, как и у `sed`, есть собственный
+язык программирования. Если `sed` создана для редактирования файлов, то
+`awk` — для их разбора. Чаще всего `awk` применяют к файлам данных с
+регулярным синтаксисом (вроде CSV-файлов), когда нужно извлечь только
+определённые части каждой записи (то есть строки):
 
 ```console
 missing:~$ awk '{print $2}' file
 ```
 
-Prints the second whitespace-separated column of every line of `file`.
-If you add `-F,`, it'll print the second comma-separated column of every
-line. `awk` can do much more --- filtering rows, computing aggregates,
-and more --- see the exercises for a taste.
+Выводит второй столбец (разделитель — пробельные символы) каждой строки
+`file`. Если добавить `-F,`, будет выводиться второй столбец каждой
+строки, разделённой запятыми. `awk` умеет гораздо больше — фильтровать
+строки, вычислять агрегаты и не только — загляните в упражнения, чтобы
+попробовать.
 
-Putting these tools together, we can do fancy things like:
+Соединив эти инструменты вместе, можно делать изящные вещи вроде такой:
 
 ```console
 missing:~$ ssh myserver 'journalctl -u sshd -b-1 | grep "Disconnected from"' \
@@ -398,76 +404,78 @@ missing:~$ ssh myserver 'journalctl -u sshd -b-1 | grep "Disconnected from"' \
 postgres,mysql,oracle,dell,ubuntu,inspur,test,admin,user,root
 ```
 
-This grabs SSH logs from a remote server (we'll talk more about `ssh` in
-the next lecture), searches for disconnect messages, extracts the
-username from each such message, and prints the top 10 usernames
-comma-separated. All in one command! We'll leave dissecting each step as
-an exercise.
+Эта команда забирает логи SSH с удалённого сервера (об `ssh` мы подробнее
+поговорим в следующей лекции), ищет сообщения об отключении, извлекает из
+каждого такого сообщения имя пользователя и выводит 10 самых частых имён
+через запятую. И всё это одной командой! Разбор каждого шага оставим в
+качестве упражнения.
 
-## The shell language (bash)
+## Язык командной оболочки (bash)
 
-The previous example introduced a new concept: pipes (`|`). These let
-you string together the output of one program with the input of another.
-This works because most command-line programs will operate on their
-"standard input" (where your keystrokes normally go) if no `file`
-argument is given. `|` takes the "standard output" (what normally gets
-printed to your terminal) of the program before the `|` and makes it be
-the standard input of the program after the `|`. This allows you to
-_compose_ shell programs, and it's part of what makes the shell such a
-productive environment to work in!
+В предыдущем примере появилось новое понятие: конвейеры (pipes, `|`).
+Они позволяют соединять вывод одной программы со входом другой. Это
+работает потому, что большинство программ командной строки, если им не
+передан аргумент `file`, читают свой «стандартный ввод» (куда обычно
+попадают нажатия клавиш). `|` берёт «стандартный вывод» (то, что обычно
+печатается в терминал) программы слева от `|` и делает его стандартным
+вводом программы справа от `|`. Это позволяет _компоновать_
+shell-программы, и именно это отчасти делает оболочку такой продуктивной
+средой для работы!
 
-In fact, most shells implement a full programming language (like bash),
-just like Python or Ruby. It has variables, conditionals, loops, and
-functions. When you run commands in your shell, you are really writing a
-small bit of code that your shell interprets. We won't teach you all of
-bash today, but there are some bits you'll find particularly useful:
+На самом деле большинство оболочек реализуют полноценный язык
+программирования (как bash) — точно так же, как Python или Ruby. В нём
+есть переменные, условия, циклы и функции. Выполняя команды в оболочке,
+вы на самом деле пишете маленький кусочек кода, который оболочка
+интерпретирует. Мы не будем сегодня учить вас всему bash, но кое-что
+окажется для вас особенно полезным:
 
-First, redirects: `>file` lets you take the standard output of a program
-and write it to `file` instead of to your terminal. This makes it easier
-to analyze after the fact. `>>file` will append to `file` rather than
-overwrite it. There's also `<file` which tells the shell to read from
-`file` instead of from your keyboard as the standard input to a program.
+Во-первых, перенаправления: `>file` позволяет взять стандартный вывод
+программы и записать его в `file` вместо терминала. Так его проще
+анализировать постфактум. `>>file` дописывает в конец `file`, а не
+перезаписывает его. Есть ещё `<file`, которое велит оболочке читать
+стандартный ввод программы из `file`, а не с клавиатуры.
 
-> This is a good time to mention the `tee` program. `tee` will print
-> standard input to standard output (just like `cat`!), but will _also_
-> write it to a file. So `verbose cmd | tee verbose.log | grep CRITICAL`
-> will preserve the full verbose log to a file while keeping your
-> terminal clean!
+> Самое время упомянуть программу `tee`. `tee` печатает стандартный ввод
+> на стандартный вывод (совсем как `cat`!), но _вдобавок_ записывает его
+> в файл. Так что `verbose cmd | tee verbose.log | grep CRITICAL`
+> сохранит полный подробный лог в файл, а ваш терминал при этом
+> останется чистым!
 
-Next, conditionals: `if command1; then command2; command3; fi` will
-execute `command1`, and if it doesn't result in an error, will run
-`command2` and `command3`. You can also have an `else` branch if you
-wish. The most common command to use as `command1` is the `test`
-command, often abbreviated simply as `[`, which lets you evaluate
-conditions like "does a file exist" (`test -f file` / `[ -f file ]`) or
-"does a string equal another" (`[ "$var" = "string" ]`). In bash,
-there's also `[[ ]]`, which is a "safer" built-in version of `test` that
-has fewer odd behaviours around quoting.
+Далее, условия: `if command1; then command2; command3; fi` выполнит
+`command1` и, если та не завершится ошибкой, запустит `command2` и
+`command3`. При желании можно добавить и ветку `else`. Чаще всего в роли
+`command1` используют команду `test`, которую нередко сокращают просто
+до `[`; она позволяет проверять условия вроде «существует ли файл»
+(`test -f file` / `[ -f file ]`) или «равна ли одна строка другой»
+(`[ "$var" = "string" ]`). В bash есть ещё `[[ ]]` — «более безопасная»
+встроенная версия `test`, у которой меньше странностей с кавычками.
 
-Bash also has two forms of loops, `while` and `for`. `while command1; do
-command2; command3; done` functions just like the equivalent `if`
-command, except that it will re-execute the whole thing over and over
-for as long as `command1` does not error. `for varname in a b c d; do
-command; done` executes `command` four times, each time with `$varname`
-set to one of `a`, `b`, `c`, and `d`. Instead of listing the items
-explicitly, you'll often use "command substitution", such as:
+В bash есть также два вида циклов: `while` и `for`. `while command1; do
+command2; command3; done` работает точно так же, как соответствующая
+команда `if`, только повторяет всё это снова и снова до тех пор, пока
+`command1` не завершается ошибкой. `for varname in a b c d; do
+command; done` выполняет `command` четыре раза, каждый раз с
+`$varname`, установленной в одно из значений `a`, `b`, `c` и `d`.
+Вместо явного перечисления элементов вы часто будете использовать
+«подстановку команд» (command substitution), например:
 
 ```bash
 for i in $(seq 1 10); do
 ```
 
-This executes the command `seq 1 10` (which prints the numbers from 1 to
-10 inclusive) and then replaces the whole `$()` with that command's
-output, giving you a 10-iteration for loop. In older code you'll
-sometimes see literal backticks (like ``for i in `seq 1 10`; do``)
-instead of `$()`, but you should strongly prefer the `$()` form as it
-can be nested.
+Это выполняет команду `seq 1 10` (которая печатает числа от 1 до 10
+включительно), а затем подставляет вывод этой команды вместо всего
+`$()`, и получается цикл for на 10 итераций. В старом коде иногда
+встречаются буквальные обратные кавычки (вроде ``for i in `seq 1 10`; do``)
+вместо `$()`, но вам стоит решительно предпочесть форму `$()`, поскольку
+её можно вкладывать.
 
-While you _can_ write long shell scripts directly in your prompt, you'll
-usually want to write them into a `.sh` file instead. For example,
-here's a script that will run a program in a loop until it fails,
-printing the output only of the failed run, while stressing your CPU in
-the background (useful to reproduce flaky tests for example):
+Хотя длинные shell-скрипты _можно_ писать прямо в приглашении командной
+строки, обычно вы будете записывать их в файл `.sh`. Вот, например,
+скрипт, который запускает программу в цикле, пока она не упадёт,
+печатает вывод только неудачного запуска и при этом нагружает процессор
+в фоне (полезно, например, для воспроизведения нестабильных (flaky)
+тестов):
 
 ```bash
 #!/bin/bash
@@ -496,161 +504,168 @@ tail -n 20 "$LOGFILE"
 echo "Full log: $LOGFILE"
 ```
 
-This has a number of new things in it that I recommend you spend some
-time diving into, as they're very useful in crafting useful shell
-invocations like background jobs (`&`) to run programs concurrently,
-trickier [shell
-redirections](https://www.gnu.org/software/bash/manual/html_node/Redirections.html),
-and [arithmetic
-expansion](https://www.gnu.org/software/bash/manual/html_node/Arithmetic-Expansion.html).
+В нём много нового, и я рекомендую потратить время и разобраться в этом,
+потому что всё это очень пригодится при составлении полезных
+shell-команд: фоновые задания (`&`) для одновременного запуска программ,
+более хитрые [перенаправления в
+оболочке](https://www.gnu.org/software/bash/manual/html_node/Redirections.html)
+и [арифметическая
+подстановка](https://www.gnu.org/software/bash/manual/html_node/Arithmetic-Expansion.html).
 
-It's worth spending a second on the first two lines of the program
-though. The first is the "shebang" -- you'll see this at the top of
-other files than shell scripts too. When a file that starts with the
-magic incantation `#!/path` is executed, the shell will start the
-program at `/path`, and pass it the contents of the file as input. In
-the case of a shell script, this means passing the contents of the shell
-script to `/bin/bash`, but you can also write Python scripts with a
-shebang line of `/usr/bin/python`!
+Впрочем, стоит на секунду задержаться на первых двух строках программы.
+Первая — это «шебанг» (shebang); вы увидите его в начале не только
+shell-скриптов, но и других файлов. Когда выполняется файл, начинающийся
+с магического заклинания `#!/path`, оболочка запускает программу по пути
+`/path` и передаёт ей содержимое файла на вход. В случае shell-скрипта
+это означает передачу содержимого скрипта в `/bin/bash`, но можно писать
+и скрипты на Python со строкой шебанга `/usr/bin/python`!
 
-The second line is a way to make bash "stricter", and mitigate a number
-of footguns when writing shell scripts. `set` can take a whole lot of
-arguments, but briefly: `-e` makes it so that if any command fails, the
-script exits early; `-u` makes it so that use of undefined variables
-crashes the script rather than just using an empty string; and `-o
-pipefail` makes it so that if programs in a `|` sequence fail, the
-shell script as a whole also exits early.
+Вторая строка — способ сделать bash «строже» и обезвредить ряд граблей
+(footguns), на которые легко наступить при написании shell-скриптов.
+`set` принимает массу аргументов, но вкратце: `-e` заставляет скрипт
+завершиться досрочно, если любая команда завершилась с ошибкой; `-u`
+делает так, что обращение к неопределённой переменной роняет скрипт,
+вместо того чтобы просто подставить пустую строку; а `-o
+pipefail` — так, что если программы в цепочке `|` завершаются с ошибкой,
+shell-скрипт в целом тоже завершается досрочно.
 
-> Shell programming is a deep topic, just as any programming language
-> is, but be warned: bash has an unusual number of gotchas, to the point
-> that there are [multiple](https://tldp.org/LDP/abs/html/gotchas.html)
-> websites dedicated to [listing them](https://mywiki.wooledge.org/BashPitfalls).
-> I highly recommend making heavy use of
-> [shellcheck](https://www.shellcheck.net/) when writing them. LLMs are
-> also great at writing and debugging shell scripts, as well as
-> translating them to a "real" programming language (like Python) when
-> they've grown too unwieldy for bash (100+ lines).
+> Программирование на shell — глубокая тема, как и любой язык
+> программирования, но имейте в виду: у bash необычайно много подводных
+> камней — настолько, что существует [несколько](https://tldp.org/LDP/abs/html/gotchas.html)
+> сайтов, целиком посвящённых [их перечислению](https://mywiki.wooledge.org/BashPitfalls).
+> Очень рекомендую вовсю пользоваться
+> [shellcheck](https://www.shellcheck.net/), когда пишете скрипты. LLM тоже
+> отлично справляются с написанием и отладкой shell-скриптов, а также с
+> их переводом на «настоящий» язык программирования (вроде Python), когда
+> они разрастаются настолько, что bash уже не тянет (100+ строк).
 
-# Next steps
+# Что дальше
 
-At this point you know your way around a shell enough to accomplish
-basic tasks. You should be able to navigate around to find files of
-interest and use the basic functionality of most programs. In the next
-lecture, we will talk about how to perform and automate more complex
-tasks using the shell and the many handy command-line programs out
-there.
+К этому моменту вы достаточно освоились в оболочке, чтобы решать
+базовые задачи. Вы должны уметь перемещаться по системе, находить нужные
+файлы и пользоваться основными возможностями большинства программ. В
+следующей лекции мы поговорим о том, как выполнять и автоматизировать
+более сложные задачи с помощью оболочки и множества удобных программ
+командной строки.
 
-# Exercises
+# Упражнения
 
-All classes in this course are accompanied by a series of exercises.
-Some give you a specific task to do, while others are open-ended, like
-"try using X and Y programs". We highly encourage you to try them out.
+Все занятия этого курса сопровождаются набором упражнений. Некоторые
+ставят конкретную задачу, другие — открытые, вроде «попробуйте программы
+X и Y». Мы настоятельно рекомендуем их выполнить.
 
-We have not written solutions for the exercises. If you are stuck on
-anything in particular, feel free to post in `#missing-semester-forum`
-on [Discord](https://ossu.dev/#community) or send us an email describing
-what you've tried so far, and we will try to help you out. These
-exercises will also likely work well as initial prompts in a
-conversation with an LLM where you can interactively dive into the
-topic. The real value in these exercises is the journey of discovering
-the answers, not the answer itself. We encourage you to follow tangents
-and ask "why" as you work through them, rather than just looking for the
-shortest path to the solution.
+Решений к упражнениям мы не писали. Если вы застряли на чём-то
+конкретном, смело пишите в канал `#missing-semester-forum`
+в [Discord](https://ossu.dev/#community) или отправьте нам письмо с
+описанием того, что уже пробовали, — мы постараемся помочь. Эти
+упражнения, скорее всего, хорошо подойдут и как начальные промпты в
+разговоре с LLM, где можно интерактивно погрузиться в тему. Настоящая
+ценность упражнений — в пути к ответу, а не в самом ответе. Мы
+призываем вас по ходу дела уходить в сторону и спрашивать «почему», а не
+просто искать кратчайший путь к решению.
 
-1. For this course, you need to be using a Unix shell like Bash or ZSH. If
-   you are on Linux or macOS, you don't have to do anything special. If you
-   are on Windows, you need to make sure you are not running cmd.exe or
-   PowerShell; you can use [Windows Subsystem for
-   Linux](https://docs.microsoft.com/en-us/windows/wsl/) or a Linux virtual
-   machine to use Unix-style command-line tools. To make sure you're running
-   an appropriate shell, you can try the command `echo $SHELL`. If it says
-   something like `/bin/bash` or `/usr/bin/zsh`, that means you're running
-   the right program.
+1. Для этого курса вам понадобится Unix-оболочка вроде Bash или ZSH. Если
+   вы на Linux или macOS, ничего особенного делать не нужно. Если вы на
+   Windows, убедитесь, что запускаете не cmd.exe и не PowerShell; чтобы
+   пользоваться Unix-инструментами командной строки, можно взять
+   [Windows Subsystem for
+   Linux](https://docs.microsoft.com/en-us/windows/wsl/) или виртуальную
+   машину с Linux. Чтобы проверить, что у вас подходящая оболочка,
+   выполните команду `echo $SHELL`. Если она выведет что-то вроде
+   `/bin/bash` или `/usr/bin/zsh`, значит, вы запустили нужную программу.
 
-1. What does the `-l` flag to `ls` do? Run `ls -l /` and examine the output.
-   What do the first 10 characters of each line mean? (Hint: `man ls`)
+1. Что делает флаг `-l` у `ls`? Выполните `ls -l /` и изучите вывод.
+   Что означают первые 10 символов каждой строки? (Подсказка: `man ls`)
 
-1. In the command `find ~/Downloads -type f -name "*.zip" -mtime +30`, the
-   `*.zip` is a "glob". What is a glob? Create a test directory with some
-   files and experiment with patterns like `ls *.txt`, `ls file?.txt`, and
-   `ls {a,b,c}.txt`. See [Pattern
+1. В команде `find ~/Downloads -type f -name "*.zip" -mtime +30`
+   `*.zip` — это «glob». Что такое glob? Создайте тестовый каталог с
+   несколькими файлами и поэкспериментируйте с шаблонами вроде `ls *.txt`,
+   `ls file?.txt` и `ls {a,b,c}.txt`. См. раздел [Pattern
    Matching](https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html)
-   in the Bash manual.
+   в руководстве по Bash.
 
-1. What's the difference between `'single quotes'`, `"double quotes"`, and
-   `$'ANSI quotes'`? Write a command that echoes a string containing a
-   literal `$`, a `!`, and a newline character. See
+1. В чём разница между `'single quotes'`, `"double quotes"` и
+   `$'ANSI quotes'`? Напишите команду, которая выводит строку, содержащую
+   буквальный `$`, `!` и символ перевода строки. См.
    [Quoting](https://www.gnu.org/software/bash/manual/html_node/Quoting.html).
 
-1. The shell has three standard streams: stdin (0), stdout (1), and stderr
-   (2). Run `ls /nonexistent /tmp` and redirect stdout to one file and
-   stderr to another. How would you redirect both to the same file? See
+1. У оболочки есть три стандартных потока: stdin (0), stdout (1) и stderr
+   (2). Выполните `ls /nonexistent /tmp` и перенаправьте stdout в один
+   файл, а stderr — в другой. Как перенаправить оба в один и тот же файл?
+   См.
    [Redirections](https://www.gnu.org/software/bash/manual/html_node/Redirections.html).
 
-1. `$?` holds the exit status of the last command (0 = success). `&&` runs
-   the next command only if the previous succeeded; `||` runs it only if
-   the previous failed. Write a one-liner that creates `/tmp/mydir` only if
-   it doesn't already exist. See [Exit
+1. `$?` хранит код возврата последней команды (0 = успех). `&&`
+   запускает следующую команду, только если предыдущая завершилась
+   успешно; `||` — только если предыдущая завершилась с ошибкой. Напишите
+   однострочник, который создаёт `/tmp/mydir`, только если его ещё нет.
+   См. [Exit
    Status](https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html).
 
-1. Why does `cd` have to be built into the shell itself rather than a
-   standalone program? (Hint: think about what a child process can and
-   cannot affect in its parent.)
+1. Почему `cd` обязана быть встроена в саму оболочку, а не быть отдельной
+   программой? (Подсказка: подумайте, на что дочерний процесс может и на
+   что не может повлиять в родительском.)
 
-1. Write a script that takes a filename as an argument (`$1`) and checks
-   whether the file exists using `test -f` or `[ -f ... ]`. It should print
-   different messages depending on whether the file exists. See [Bash
+1. Напишите скрипт, который принимает имя файла аргументом (`$1`) и
+   проверяет, существует ли файл, с помощью `test -f` или `[ -f ... ]`.
+   Он должен печатать разные сообщения в зависимости от того, существует
+   файл или нет. См. [Bash
    Conditional
    Expressions](https://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html).
 
-1. Save the script from the previous exercise to a file (e.g., `check.sh`).
-   Try running it with `./check.sh somefile`. What happens? Now run
-   `chmod +x check.sh` and try again. Why is this step necessary? (Hint:
-   look at `ls -l check.sh` before and after the `chmod`.)
+1. Сохраните скрипт из предыдущего упражнения в файл (например,
+   `check.sh`). Попробуйте запустить его как `./check.sh somefile`. Что
+   происходит? Теперь выполните `chmod +x check.sh` и попробуйте снова.
+   Почему этот шаг необходим? (Подсказка: посмотрите на `ls -l check.sh`
+   до и после `chmod`.)
 
-1. What happens if you add `-x` to the `set` flags in a script? Try it with
-    a simple script and observe the output. See [The Set
+1. Что произойдёт, если добавить `-x` к флагам `set` в скрипте?
+    Попробуйте на простом скрипте и посмотрите на вывод. См. [The Set
     Builtin](https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html).
 
-1. Write a command that copies a file to a backup with today's date in the
-    filename (e.g., `notes.txt` → `notes_2026-01-12.txt`). (Hint: `$(date
-    +%Y-%m-%d)`). See [Command
+1. Напишите команду, которая копирует файл в резервную копию с
+    сегодняшней датой в имени (например, `notes.txt` →
+    `notes_2026-01-12.txt`). (Подсказка: `$(date
+    +%Y-%m-%d)`). См. [Command
     Substitution](https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html).
 
-1. Modify the flaky test script from the lecture to accept the test command
-    as an argument instead of hardcoding `cargo test my_test`. (Hint: `$1`
-    or `$@`). See [Special
+1. Измените скрипт для нестабильного (flaky) теста из лекции так, чтобы он
+    принимал тестовую команду аргументом, а не содержал жёстко прописанное
+    `cargo test my_test`. (Подсказка: `$1` или `$@`). См. [Special
     Parameters](https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html).
 
-1. Use pipes to find the 5 most common file extensions in your home
-    directory. (Hint: combine `find`, `grep` or `sed` or `awk`, `sort`,
-    `uniq -c`, and `head`.)
+1. С помощью конвейеров найдите 5 самых частых расширений файлов в вашем
+    домашнем каталоге. (Подсказка: скомбинируйте `find`, `grep`, или
+    `sed`, или `awk`, `sort`, `uniq -c` и `head`.)
 
-1. `xargs` converts lines from stdin into command arguments. Use `find` and
-    `xargs` together (not `find -exec`) to find all `.sh` files in a
-    directory and count the lines in each with `wc -l`. Bonus: make it
-    handle filenames with spaces. (Hint: `-print0` and `-0`). See `man
+1. `xargs` превращает строки из stdin в аргументы команды. Используйте
+    `find` вместе с `xargs` (а не `find -exec`), чтобы найти все файлы
+    `.sh` в каталоге и посчитать строки в каждом с помощью `wc -l`. Бонус:
+    сделайте так, чтобы это работало с именами файлов, содержащими
+    пробелы. (Подсказка: `-print0` и `-0`). См. `man
     xargs`.
 
-1. Use `curl` to fetch the HTML of the course website
-    (`https://missing.csail.mit.edu/`) and pipe it to `grep` to count how
-    many lectures are listed. (Hint: look for a pattern that appears once
-    per lecture; use `curl -s` to silence the progress output.)
+1. С помощью `curl` получите HTML сайта курса
+    (`https://missing.csail.mit.edu/`) и передайте его по конвейеру в
+    `grep`, чтобы посчитать, сколько лекций там перечислено. (Подсказка:
+    поищите шаблон, который встречается по одному разу на лекцию; используйте
+    `curl -s`, чтобы отключить вывод прогресса.)
 
-1. [`jq`](https://jqlang.github.io/jq/) is a powerful tool for processing
-    JSON data. Fetch the sample data at
-    `https://microsoftedge.github.io/Demos/json-dummy-data/64KB.json` with
-    `curl` and use `jq` to extract just the names of people whose version
-    is greater than 6. (Hint: pipe to `jq .` first to see the structure;
-    then try `jq '.[] | select(...) | .name'`)
+1. [`jq`](https://jqlang.github.io/jq/) — мощный инструмент для обработки
+    данных в формате JSON. Скачайте с помощью `curl` тестовые данные по
+    адресу `https://microsoftedge.github.io/Demos/json-dummy-data/64KB.json`
+    и с помощью `jq` извлеките только имена людей, у которых версия
+    (version) больше 6. (Подсказка: сначала передайте данные в `jq .`,
+    чтобы увидеть структуру; затем попробуйте
+    `jq '.[] | select(...) | .name'`)
 
-1. `awk` can filter lines based on column values and manipulate output.
-    For example, `awk '$3 ~ /pattern/ {$4=""; print}'` prints only lines
-    where the third column matches `pattern`, while omitting the fourth
-    column. Write an `awk` command that prints only lines where the second
-    column is greater than 100, and swaps the first and third columns. Test
-    with: `printf 'a 50 x\nb 150 y\nc 200 z\n'`
+1. `awk` умеет фильтровать строки по значениям столбцов и менять вывод.
+    Например, `awk '$3 ~ /pattern/ {$4=""; print}'` печатает только те
+    строки, в которых третий столбец совпадает с `pattern`, опуская при этом
+    четвёртый столбец. Напишите команду `awk`, которая печатает только
+    строки, где второй столбец больше 100, и меняет местами первый и третий
+    столбцы. Проверьте на: `printf 'a 50 x\nb 150 y\nc 200 z\n'`
 
-1. Dissect the SSH log pipeline from the lecture: what does each step do?
-    Then build something similar to find your most-used shell commands from
-    `~/.bash_history` (or `~/.zsh_history`).
+1. Разберите по шагам конвейер с логами SSH из лекции: что делает каждый
+    шаг? Затем соберите что-то похожее, чтобы найти самые часто используемые
+    вами команды оболочки по `~/.bash_history` (или `~/.zsh_history`).

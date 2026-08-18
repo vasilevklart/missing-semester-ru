@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Command-line Environment"
+title: "Среда командной строки"
 description: >
-  Learn how command-line programs work, including input/output streams, environment variables, and remote machines with SSH.
+  Узнайте, как устроены программы командной строки: потоки ввода-вывода, переменные окружения и работа с удалёнными машинами по SSH.
 thumbnail: /static/assets/thumbnails/2026/lec2.png
 date: 2026-01-13
 ready: true
@@ -11,24 +11,25 @@ video:
   id: ccBGsPedE9Q
 ---
 
-As we covered in the previous lecture, most shells are not a mere launcher to start up other programs,
-but in practice they provide an entire programming language full of common patterns and abstractions.
-However, unlike the majority of programming languages, in shell scripting everything is designed around running programs and getting them to communicate with each other simply and efficiently.
+Как мы уже говорили на предыдущей лекции, большинство командных оболочек (shell) — это не просто
+пусковая площадка для других программ: на практике они предоставляют целый язык программирования
+со своими устоявшимися паттернами и абстракциями.
+Однако, в отличие от большинства языков программирования, в shell-скриптах всё построено вокруг запуска программ и того, чтобы они просто и эффективно общались друг с другом.
 
-In particular, shell scripting is tightly bound by _conventions_. For a command line interface (CLI) program to play nicely within the broader shell environment there are some common patterns that it needs to follow.
-We will now cover many of the concepts required to understand how command line programs work as well as ubiquitous conventions on how to use and configure them.
+В частности, программирование на shell жёстко связано _соглашениями_. Чтобы программа с интерфейсом командной строки (command line interface, CLI) хорошо уживалась с остальным окружением оболочки, она должна следовать ряду общепринятых паттернов.
+Сейчас мы разберём многие концепции, необходимые для понимания того, как устроены программы командной строки, а также повсеместные соглашения о том, как их использовать и настраивать.
 
-# The Command Line Interface
+# Интерфейс командной строки
 
-Writing a function in most programming languages looks something like:
+В большинстве языков программирования функция выглядит примерно так:
 
 ```
 def add(x: int, y: int) -> int:
     return x + y
 ```
 
-Here we can explicitly see the inputs and the outputs of the program.
-In contrast, shell scripts can look quite different at first glance.
+Здесь мы явно видим входные и выходные данные программы.
+Shell-скрипты же на первый взгляд могут выглядеть совсем иначе.
 
 ```shell
 #!/usr/bin/env bash
@@ -46,39 +47,39 @@ else
 fi
 ```
 
-To properly understand what is going in scripts like this one we first need to introduce a few concepts that appear often when shell programs communicate with each other or with the shell environment:
+Чтобы как следует понять, что происходит в подобных скриптах, нам сначала нужно ввести несколько понятий, которые часто встречаются, когда программы в оболочке общаются друг с другом или с окружением оболочки:
 
-- Arguments
-- Streams
-- Environment variables
-- Return codes
-- Signals
+- Аргументы
+- Потоки
+- Переменные окружения
+- Коды возврата
+- Сигналы
 
-## Arguments
+## Аргументы
 
-Shell programs receive a list of arguments when they are executed.
-Arguments are plain strings in shell, and it is up to the program how to interpret them.
-For instance when we do `ls -l folder/`, we are executing the program `/bin/ls` with arguments `['-l', 'folder/']`.
+Программы в командной оболочке при запуске получают список аргументов.
+В shell аргументы — это просто строки, и как их интерпретировать, решает сама программа.
+Например, когда мы выполняем `ls -l folder/`, мы запускаем программу `/bin/ls` с аргументами `['-l', 'folder/']`.
 
-From within a shell script we access these via special shell syntax.
-To access the first argument we access the variable `$1`, second argument `$2` and so on and so forth until `$9`. To access all arguments as a list we use `$@` and to retrieve the number of arguments `$#`. Additionally we can also access the name of the program with `$0`.
+Внутри shell-скрипта к ним обращаются через специальный синтаксис оболочки.
+Первый аргумент доступен через переменную `$1`, второй — через `$2` и так далее вплоть до `$9`. Чтобы получить все аргументы в виде списка, используем `$@`, а чтобы узнать их количество — `$#`. Кроме того, через `$0` можно получить имя самой программы.
 
-For most programs the arguments will consist of a mixture of _flags_ and regular strings.
-Flags can be identified because they are preceded by a dash (`-`) or double-dash (`--`).
-Flags are usually optional and their role is to modify the behavior of the program.
-For example `ls -l` changes how `ls` formats its output.
+У большинства программ аргументы представляют собой смесь _флагов_ и обычных строк.
+Флаг легко опознать: перед ним стоит дефис (`-`) или двойной дефис (`--`).
+Флаги обычно необязательны, и их задача — изменять поведение программы.
+Например, `ls -l` меняет то, как `ls` форматирует свой вывод.
 
-You will see double dash flags with long names like `--all`, and single dash flags like `-a`, which are most often followed by a single letter.
-The same option might be specified in both formats, `ls -a` and `ls --all` are equivalent.
-Single dash flags are often grouped, so `ls -l -a` and `ls -la` are also equivalent.
-The order of flags usually doesn't matter either, `ls -la` and `ls -al` produce the same result.
-Some flags are quite prevalent and as you get more familiar with the shell environment you'll intuitively reach for them, for example (`--help`, `--verbose`, `--version`).
+Вам будут встречаться флаги с двойным дефисом и длинными именами вроде `--all`, а также флаги с одинарным дефисом вроде `-a`, за которым чаще всего следует одна буква.
+Одна и та же опция может быть задана в обоих форматах: `ls -a` и `ls --all` эквивалентны.
+Флаги с одинарным дефисом часто группируют, так что `ls -l -a` и `ls -la` тоже эквивалентны.
+Порядок флагов обычно тоже не важен: `ls -la` и `ls -al` дают одинаковый результат.
+Некоторые флаги встречаются очень часто, и по мере знакомства со средой командной оболочки вы начнёте интуитивно тянуться к ним (например, `--help`, `--verbose`, `--version`).
 
-> Flags are a first good example of shell conventions. The shell language does not require that our program uses `-` or `--` in this particular way.
-Nothing prevents us from writing a program with syntax `myprogram +myoption myfile`, but it would lead to confusion since the expectation is that we use dashes.
-> In practice, most programming languages provide CLI flag parsing libraries (e.g. `argparse` in python to parse arguments with the dash syntax).
+> Флаги — первый хороший пример соглашений (conventions), принятых в shell. Сам язык оболочки не требует, чтобы наша программа использовала `-` или `--` именно таким образом.
+Ничто не мешает нам написать программу с синтаксисом `myprogram +myoption myfile`, но это приведёт к путанице, ведь все ожидают, что мы используем дефисы.
+> На практике большинство языков программирования предоставляют библиотеки для разбора флагов CLI (например, `argparse` в Python для разбора аргументов с дефисным синтаксисом).
 
-Another common convention in CLI programs is for programs to accept a variable number of arguments of the same type. When given arguments in this way the command performs the same operation on each one of them.
+Ещё одно распространённое соглашение для CLI-программ — принимать переменное число аргументов одного типа. Получив аргументы в таком виде, команда выполняет одну и ту же операцию над каждым из них.
 
 ```shell
 mkdir src
@@ -87,10 +88,10 @@ mkdir docs
 mkdir src docs
 ```
 
-This syntax sugar might seem unnecessary at first, but it becomes really powerful when combined with _globbing_.
-Globbing or globs are special patterns that the shell will expand before calling the program.
+Поначалу этот синтаксический сахар может показаться лишним, но в сочетании с _подстановкой_ (globbing) он становится по-настоящему мощным.
+Подстановка, или глобы (globs), — это специальные шаблоны, которые оболочка раскрывает до вызова программы.
 
-Say we wanted to delete all .py files in the current folder nonrecursively. From what we learned in the previous lecture we could achieve this by running
+Допустим, мы хотим удалить все файлы .py в текущей папке, не заходя в подкаталоги. Пользуясь тем, что мы узнали на предыдущей лекции, мы могли бы добиться этого, запустив
 
 ```shell
 for file in $(ls | grep -P '\.py$'); do
@@ -98,16 +99,16 @@ for file in $(ls | grep -P '\.py$'); do
 done
 ```
 
-But we can replace that with just `rm *.py`!
+Но всё это можно заменить простым `rm *.py`!
 
-When we type `rm *.py` into the terminal, the shell will not call the `/bin/rm` program with arguments `['*.py']`.
-Instead, the shell will search for files in the current folder matching the pattern `*.py` where `*` can match any string of zero or more characters of any type.
-So if our folder has `main.py` and `utils.py` then the `rm` program will receive arguments `['main.py', 'utils.py']`.
+Когда мы набираем `rm *.py` в терминале, оболочка не станет вызывать программу `/bin/rm` с аргументами `['*.py']`.
+Вместо этого она поищет в текущей папке файлы, подходящие под шаблон `*.py`, где `*` соответствует любой строке из нуля или более символов любого типа.
+Так что если в нашей папке лежат `main.py` и `utils.py`, то программа `rm` получит аргументы `['main.py', 'utils.py']`.
 
-The most common globs you will find are wildcards `*` (zero or more of anything), `?` (exactly one of anything) and curly braces.
-Curly braces `{}` expand a comma-separated list of patterns into multiple arguments.
+Самые распространённые глобы, которые вам встретятся, — это wildcard-символы `*` (ноль или более чего угодно), `?` (ровно один любой символ) и фигурные скобки.
+Фигурные скобки `{}` раскрывают разделённый запятыми список шаблонов в несколько аргументов.
 
-In practice, globs are best understood with motivating examples.
+На практике глобы лучше всего понимать на наглядных примерах.
 
 ```shell
 touch folder/{a,b,c}.py
@@ -127,25 +128,25 @@ mv *{.py,.sh} folder
 # Will move all *.py and *.sh files
 ```
 
-> Some shells (e.g. zsh) support even more advanced forms of globbing such as `**` that will expand to include recursive paths. So `rm **/*.py` will delete all .py files recursively.
+> Некоторые оболочки (например, zsh) поддерживают ещё более продвинутые формы подстановки, такие как `**`, которая раскрывается с учётом рекурсивных путей. Так что `rm **/*.py` удалит все файлы .py рекурсивно.
 
 
-## Streams
+## Потоки
 
-Whenever we execute a program pipeline like
+Всякий раз, когда мы запускаем конвейер программ вроде
 
 ```shell
 cat myfile | grep -P '\d+' | uniq -c
 ```
 
-we see that the `grep` program is communicating with both the `cat` and `uniq` programs.
+мы видим, что программа `grep` общается и с программой `cat`, и с программой `uniq`.
 
-An important observation here is that all three programs are executing at once.
-Namely, the shell is not first calling cat, then grep, and then uniq.
-Instead, all three programs are being spawned and the shell is connecting the output of cat to the input of grep and the output of grep to the input of uniq.
-When using the pipe operator `|`, the shell operates on streams of data that flow from one program to the next in the chain.
+Важное наблюдение: все три программы выполняются одновременно.
+То есть оболочка не вызывает сначала cat, потом grep, а потом uniq.
+Вместо этого все три программы запускаются сразу, а оболочка соединяет вывод cat со входом grep и вывод grep со входом uniq.
+Используя оператор конвейера `|`, оболочка работает с потоками данных, которые текут от одной программы к следующей в цепочке.
 
-We can demonstrate this concurrency, all commands in a pipeline start immediately:
+Мы можем продемонстрировать эту параллельность — все команды в конвейере стартуют немедленно:
 
 ```console
 $ (sleep 15 && cat numbers.txt) | grep -P '^\d$' | sort | uniq  &
@@ -158,9 +159,9 @@ $ ps | grep -P '(sleep|cat|grep|sort|uniq)'
   32948 pts/1    00:00:00 grep
 ```
 
-We can see that all processes but `cat` are running right away. The shell spawns all processes and connects their streams before any of them finish. `cat` will only get started once sleep finishes, and the output of `cat` will be sent to grep and so on and so forth.
+Видно, что все процессы, кроме `cat`, работают сразу же. Оболочка порождает все процессы и соединяет их потоки до того, как хоть один из них завершится. `cat` запустится только после того, как отработает sleep, а вывод `cat` будет отправлен в grep, и так далее.
 
-Every program has an input stream, labeled stdin (for standard input). When piping, stdin is connected automatically. Within a script, many programs accept `-` as a filename to mean "read from stdin":
+У каждой программы есть входной поток, называемый stdin (от standard input — стандартный ввод). При работе через конвейер stdin подключается автоматически. В скриптах многие программы принимают `-` в качестве имени файла, что означает «читать из stdin»:
 
 ```shell
 # These are equivalent when data comes from a pipe
@@ -168,9 +169,9 @@ echo "hello" | grep "hello"
 echo "hello" | grep "hello" -
 ```
 
-Similarly, every program has two output streams: stdout and stderr.
-The standard output is the one most commonly encountered and it is the one that is used for piping the output of the program to the next command in the pipeline.
-The standard error is an alternative stream that is intended for programs to report warnings and other types of issues, without that output getting parsed by the next command in the chain.
+Аналогично у каждой программы есть два выходных потока: stdout и stderr.
+Стандартный вывод — тот, который встречается чаще всего, и именно он используется, чтобы передать вывод программы по конвейеру следующей команде.
+Стандартный поток ошибок — альтернативный поток, предназначенный для предупреждений и прочих сообщений о проблемах: этот вывод не попадает на разбор следующей команде в цепочке.
 
 ```console
 $ ls /nonexistent
@@ -182,7 +183,7 @@ $ ls /nonexistent 2>/dev/null
 # No output - stderr was redirected to /dev/null
 ```
 
-The shell provides syntax for redirecting these streams. Here are some illustrative examples.
+Оболочка предоставляет синтаксис для перенаправления этих потоков. Вот несколько наглядных примеров.
 
 ```shell
 # Redirect stdout to a file (overwrite)
@@ -204,26 +205,26 @@ grep "pattern" < input.txt
 cmd > /dev/null 2>&1
 ```
 
-Another powerful tool that exemplifies the Unix philosophy is [`fzf`](https://github.com/junegunn/fzf), a fuzzy finder. It reads lines from stdin and provides an interactive interface to filter and select:
+Ещё одна мощная программа, воплощающая философию Unix, — [`fzf`](https://github.com/junegunn/fzf), инструмент нечёткого поиска (fuzzy finder). Он читает строки из stdin и предоставляет интерактивный интерфейс для фильтрации и выбора:
 
 ```console
 $ ls | fzf
 $ cat ~/.bash_history | fzf
 ```
 
-`fzf` can be integrated with many shell operations. We'll see more uses of it when we discuss shell customization.
+`fzf` можно встроить во множество операций оболочки. Мы увидим и другие способы его применения, когда будем обсуждать настройку оболочки.
 
 
-## Environment variables
+## Переменные окружения
 
-To assign variables in bash we use the syntax `foo=bar`, and then access the value of the variable with the `$foo` syntax.
-Note that `foo = bar` is invalid syntax as the shell will parse it as calling the program `foo` with arguments `['=', 'bar']`.
-In shell scripting the role of the space character is to perform argument splitting.
-This behavior can be confusing and tricky to get used to, so keep it in mind.
+Чтобы присвоить значение переменной в bash, мы используем синтаксис `foo=bar`, а затем обращаемся к значению переменной через `$foo`.
+Обратите внимание, что `foo = bar` — некорректный синтаксис: оболочка разберёт его как вызов программы `foo` с аргументами `['=', 'bar']`.
+В shell-скриптах роль пробела — разделять аргументы.
+Такое поведение может сбивать с толку, и к нему непросто привыкнуть, так что имейте это в виду.
 
-Shell variables do not have types, they are all strings.
-Note that when writing string expressions in the shell single and double quotes are not interchangeable.
-Strings delimited with `'` are literal strings and will not expand variables, perform command substitution, or process escape sequences, whereas `"` delimited strings will.
+У переменных оболочки нет типов — все они строки.
+Заметьте, что при записи строковых выражений в оболочке одинарные и двойные кавычки не взаимозаменяемы.
+Строки в кавычках `'` — это буквальные строки: в них не подставляются переменные, не выполняется подстановка команд и не обрабатываются escape-последовательности, тогда как в строках в кавычках `"` всё это происходит.
 
 ```shell
 foo=bar
@@ -233,32 +234,32 @@ echo '$foo'
 # prints $foo
 ```
 
-To capture the output of a command into a variable we use _command substitution_.
-When we execute
+Чтобы записать вывод команды в переменную, используется _подстановка команд_ (command substitution).
+Когда мы выполняем
 ```shell
 files=$(ls)
 echo "$files" | grep README
 echo "$files" | grep ".py"
 ```
-the output (concretely the stdout) of ls is placed into the variable `$files` which we can access later.
-The content of the `$files` variable does include the newlines from the ls output, which is how programs like `grep` know to operate on each item independently.
+вывод (а точнее, stdout) команды ls помещается в переменную `$files`, к которой мы можем обратиться позже.
+Содержимое переменной `$files` включает и переводы строк из вывода ls — именно поэтому программы вроде `grep` понимают, что каждый элемент нужно обрабатывать по отдельности.
 
-A lesser known similar feature is _process substitution_, `<( CMD )` will execute `CMD` and place the output in a temporary file and substitute the `<()` with that file's name.
-This is useful when commands expect values to be passed by file instead of by STDIN.
-For example, `diff <(ls src) <(ls docs)` will show differences between files in dirs `src` and `docs`.
+Менее известная похожая возможность — _подстановка процессов_ (process substitution): `<( CMD )` выполнит `CMD`, поместит вывод во временный файл и подставит вместо `<()` имя этого файла.
+Это удобно, когда команды ожидают, что значения будут переданы через файл, а не через STDIN.
+Например, `diff <(ls src) <(ls docs)` покажет различия между файлами в каталогах `src` и `docs`.
 
-Whenever a shell program calls another program it passes along a set of variables that are often referred to as _environment variables_.
-From within a shell we can find the current environment variables by running `printenv`.
-To pass an environment variable explicitly we can prepend a command with a variable assignment
+Всякий раз, когда одна программа в оболочке вызывает другую, она передаёт ей набор переменных, которые обычно называют _переменными окружения_.
+Находясь в оболочке, мы можем посмотреть текущие переменные окружения, выполнив `printenv`.
+Чтобы явно передать переменную окружения, можно поставить присваивание переменной перед командой
 
-> Environment variables are conventionally written in ALL_CAPS (e.g., `HOME`, `PATH`, `DEBUG`). This is a convention, not a technical requirement, but following it helps distinguish environment variables from local shell variables which are typically lowercase.
+> Переменные окружения по соглашению пишутся ЗАГЛАВНЫМИ_БУКВАМИ (например, `HOME`, `PATH`, `DEBUG`). Это соглашение, а не техническое требование, но его соблюдение помогает отличать переменные окружения от локальных переменных оболочки, которые обычно пишутся строчными.
 
 ```shell
 TZ=Asia/Tokyo date  # prints the current time in Tokyo
 echo $TZ  # this will be empty, since TZ was only set for the child command
 ```
 
-Alternatively, we can use the `export` built-in function that will modify our current environment and thus all child processes will inherit the variable:
+Кроме того, можно воспользоваться встроенной функцией `export`, которая изменит наше текущее окружение, и тогда все дочерние процессы унаследуют эту переменную:
 
 ```shell
 export DEBUG=1
@@ -267,23 +268,23 @@ bash -c 'echo $DEBUG'
 # prints 1
 ```
 
-To delete a variable use the `unset` built-in command, e.g. `unset DEBUG`.
+Чтобы удалить переменную, используйте встроенную команду `unset`, например `unset DEBUG`.
 
-> Environment variables are another shell convention. They can be used to modify the behavior of many programs implicitly rather than explicitly. For example, the shell sets the `$HOME` environment variable with the path of the home folder of the current user. Then programs can access this variable to get this information instead of requiring an explicit `--home /home/alice`. Another common example is `$TZ`, which many programs use to format dates and times according to the specified timezone.
+> Переменные окружения — ещё одно соглашение оболочки. С их помощью можно менять поведение многих программ неявно, а не явно. Например, оболочка записывает в переменную окружения `$HOME` путь к домашнему каталогу текущего пользователя. Программы могут прочитать эту переменную и получить нужную информацию, вместо того чтобы требовать явного `--home /home/alice`. Другой распространённый пример — `$TZ`: многие программы используют её, чтобы форматировать даты и время в соответствии с указанным часовым поясом.
 
-## Return codes
+## Коды возврата
 
-As we saw earlier, the main output of a shell program is conveyed through the stdout/stderr streams and filesystem side effects.
+Как мы уже видели, основной результат работы программы в оболочке передаётся через потоки stdout/stderr и через побочные эффекты в файловой системе.
 
-By default a shell script will return exit code zero.
-The convention is that zero means everything went well whereas nonzero means some issues were encountered.
-To return a nonzero exit code we have to use the `exit NUM` shell built-in.
-We can access the return code of the last command that was run by accessing the special variable `$?`.
+По умолчанию shell-скрипт возвращает код возврата ноль.
+По соглашению ноль означает, что всё прошло хорошо, а ненулевое значение — что возникли какие-то проблемы.
+Чтобы вернуть ненулевой код возврата, нужно использовать встроенную команду оболочки `exit NUM`.
+Код возврата последней выполненной команды можно получить через специальную переменную `$?`.
 
-The shell has boolean operators `&&` and `||` for performing AND and OR operations respectively.
-Unlike those encountered in regular programming languages, the ones in the shell operate on the return code of programs.
-Both of these are [short-circuiting](https://en.wikipedia.org/wiki/Short-circuit_evaluation) operators.
-This means that they can be used to conditionally run commands based on the success or failure of previous commands, where success is determined based on whether the return code is zero or not. Some examples:
+В оболочке есть логические операторы `&&` и `||`, выполняющие операции И и ИЛИ соответственно.
+В отличие от аналогичных операторов в обычных языках программирования, в оболочке они работают с кодами возврата программ.
+Оба этих оператора — [короткозамкнутые](https://en.wikipedia.org/wiki/Short-circuit_evaluation) (short-circuiting).
+Это значит, что с их помощью можно запускать команды в зависимости от того, успешно или неуспешно завершились предыдущие, причём успех определяется тем, равен ли код возврата нулю. Несколько примеров:
 
 ```shell
 # echo will only run if grep succeeds (finds a match)
@@ -299,7 +300,7 @@ true && echo "This will always print"
 false || echo "This will always print"
 ```
 
-The same principle applies to `if` and `while` statements, they both use return codes to make decisions:
+Тот же принцип действует для конструкций `if` и `while` — обе они принимают решения на основе кодов возврата:
 
 ```shell
 # if uses the return code of the condition command (0 = true, nonzero = false)
@@ -313,11 +314,11 @@ while read line; do
 done < file.txt
 ```
 
-## Signals
+## Сигналы
 
-In some cases you will need to interrupt a program while it is executing, for instance if a command is taking too long to complete.
-The simplest way to interrupt a program is to press `Ctrl-C` and the command will probably stop.
-But how does this actually work and why does it sometimes fail to stop the process?
+Иногда программу нужно прервать прямо во время выполнения — например, если команда выполняется слишком долго.
+Самый простой способ прервать программу — нажать `Ctrl-C`, и команда, скорее всего, остановится.
+Но как это на самом деле работает и почему иногда процесс всё-таки не останавливается?
 
 ```console
 $ sleep 100
@@ -325,21 +326,21 @@ $ sleep 100
 $
 ```
 
-> Note, here `^C` is how `Ctrl-C` is displayed when typed in the terminal.
+> Обратите внимание: `^C` — так `Ctrl-C` отображается при вводе в терминале.
 
-Under the hood, what happened here is the following:
+Под капотом произошло следующее:
 
-1. We pressed `Ctrl-C`
-2. The shell identified the special combination of characters
-3. The shell process sent a SIGINT signal to the `sleep` process
-4. The signal interrupted the execution of the `sleep` process
+1. Мы нажали `Ctrl-C`
+2. Оболочка распознала эту специальную комбинацию символов
+3. Процесс оболочки отправил процессу `sleep` сигнал SIGINT
+4. Сигнал прервал выполнение процесса `sleep`
 
-Signals are a special communication mechanism.
-When a process receives a signal it stops its execution, deals with the signal and potentially changes the flow of execution based on the information that the signal delivered. For this reason, signals are _software interrupts_.
+Сигналы — это особый механизм взаимодействия.
+Получив сигнал, процесс приостанавливает выполнение, обрабатывает сигнал и, возможно, меняет ход своей работы в зависимости от того, какую информацию этот сигнал принёс. Поэтому сигналы называют _программными прерываниями_ (software interrupts).
 
 
-In our case, when typing `Ctrl-C` this prompts the shell to deliver a `SIGINT` signal to the process.
-Here's a minimal example of a Python program that captures `SIGINT` and ignores it, no longer stopping. To kill this program we can now use the `SIGQUIT` signal instead, by typing `Ctrl-\`.
+В нашем случае нажатие `Ctrl-C` заставляет оболочку доставить процессу сигнал `SIGINT`.
+Вот минимальный пример программы на Python, которая перехватывает `SIGINT` и игнорирует его, из-за чего больше не останавливается. Чтобы убить такую программу, теперь можно воспользоваться сигналом `SIGQUIT`, нажав `Ctrl-\`.
 
 ```python
 #!/usr/bin/env python
@@ -356,7 +357,7 @@ while True:
     i += 1
 ```
 
-Here's what happens if we send `SIGINT` twice to this program, followed by `SIGQUIT`. Note that `^` is how `Ctrl` is displayed when typed in the terminal.
+Вот что происходит, если отправить этой программе `SIGINT` дважды, а затем `SIGQUIT`. Обратите внимание: `^` — так `Ctrl` отображается при вводе в терминале.
 
 ```console
 $ python sigint.py
@@ -367,25 +368,25 @@ I got a SIGINT, but I am not stopping
 30^\[1]    39913 quit       python sigint.py
 ```
 
-While `SIGINT` and `SIGQUIT` are both usually associated with terminal related requests, a more generic signal for asking a process to exit gracefully is the `SIGTERM` signal.
-To send this signal we can use the [`kill`](https://www.man7.org/linux/man-pages/man1/kill.1.html) command, with the syntax `kill -TERM <PID>`.
+Хотя и `SIGINT`, и `SIGQUIT` обычно связаны с запросами со стороны терминала, более универсальный сигнал, которым процесс просят корректно завершиться, — это `SIGTERM`.
+Отправить его можно командой [`kill`](https://www.man7.org/linux/man-pages/man1/kill.1.html) с синтаксисом `kill -TERM <PID>`.
 
-Signals can do other things beyond killing a process. For instance, `SIGSTOP` pauses a process. In the terminal, typing `Ctrl-Z` will prompt the shell to send a `SIGTSTP` signal, short for Terminal Stop (i.e. the terminal's version of `SIGSTOP`).
+Сигналы умеют не только убивать процессы. Например, `SIGSTOP` приостанавливает процесс. В терминале нажатие `Ctrl-Z` заставит оболочку отправить сигнал `SIGTSTP` — сокращение от Terminal Stop (то есть терминальная версия `SIGSTOP`).
 
-We can then continue the paused job in the foreground or in the background using [`fg`](https://www.man7.org/linux/man-pages/man1/fg.1p.html) or [`bg`](https://man7.org/linux/man-pages/man1/bg.1p.html), respectively.
+Затем приостановленное задание можно продолжить на переднем плане или в фоне с помощью [`fg`](https://www.man7.org/linux/man-pages/man1/fg.1p.html) или [`bg`](https://man7.org/linux/man-pages/man1/bg.1p.html) соответственно.
 
-The [`jobs`](https://www.man7.org/linux/man-pages/man1/jobs.1p.html) command lists the unfinished jobs associated with the current terminal session.
-You can refer to those jobs using their pid (you can use [`pgrep`](https://www.man7.org/linux/man-pages/man1/pgrep.1.html) to find that out).
-More intuitively, you can also refer to a process using the percent symbol followed by its job number (displayed by `jobs`). To refer to the last backgrounded job you can use the `$!` special parameter.
+Команда [`jobs`](https://www.man7.org/linux/man-pages/man1/jobs.1p.html) выводит список незавершённых заданий, связанных с текущей сессией терминала.
+Ссылаться на эти задания можно по их pid (узнать его можно с помощью [`pgrep`](https://www.man7.org/linux/man-pages/man1/pgrep.1.html)).
+Более наглядный способ — ссылаться на процесс через знак процента и номер задания (его показывает `jobs`). Чтобы обратиться к последнему отправленному в фон заданию, можно использовать специальный параметр `$!`.
 
-One more thing to know is that the `&` suffix in a command will run the command in the background, giving you the prompt back, although it will still use the shell's STDOUT which can be annoying (use shell redirections in that case). Equivalently, to background an already running program you can do `Ctrl-Z` followed by `bg`.
+Ещё стоит знать, что суффикс `&` у команды запускает её в фоне и сразу возвращает вам приглашение командной строки, хотя команда по-прежнему будет писать в STDOUT оболочки, что может раздражать (в таком случае используйте перенаправления оболочки). Аналогично, чтобы отправить в фон уже запущенную программу, можно нажать `Ctrl-Z`, а затем выполнить `bg`.
 
 
-Note that backgrounded processes are still children processes of your terminal and will die if you close the terminal (this will send yet another signal, `SIGHUP`).
-To prevent that from happening you can run the program with [`nohup`](https://www.man7.org/linux/man-pages/man1/nohup.1.html) (a wrapper to ignore `SIGHUP`), or use `disown` if the process has already been started.
-Alternatively, you can use a terminal multiplexer as we will see in the next section.
+Обратите внимание, что фоновые процессы всё равно остаются дочерними процессами вашего терминала и умрут, если вы его закроете (при этом отправляется ещё один сигнал — `SIGHUP`).
+Чтобы этого не произошло, можно запустить программу через [`nohup`](https://www.man7.org/linux/man-pages/man1/nohup.1.html) (обёртку, игнорирующую `SIGHUP`) или воспользоваться `disown`, если процесс уже запущен.
+Как вариант, можно использовать мультиплексор терминала — о нём мы поговорим в следующем разделе.
 
-Below is a sample session to showcase some of these concepts.
+Ниже приведён пример сеанса, демонстрирующий некоторые из этих понятий.
 
 ```
 $ sleep 1000
@@ -412,11 +413,11 @@ $ kill %2
 [2]  + 18745 terminated  nohup sleep 2000
 ```
 
-A special signal is `SIGKILL` since it cannot be captured by the process and it will always terminate it immediately. However, it can have bad side effects such as leaving orphaned children processes.
+Особый сигнал — `SIGKILL`: процесс не может его перехватить, и этот сигнал всегда немедленно завершает процесс. Однако у него могут быть неприятные побочные эффекты — например, осиротевшие дочерние процессы.
 
-You can learn more about these and other signals [here](https://en.wikipedia.org/wiki/Signal_(IPC)) or typing [`man signal`](https://www.man7.org/linux/man-pages/man7/signal.7.html) or `kill -l`.
+Подробнее об этих и других сигналах можно почитать [здесь](https://en.wikipedia.org/wiki/Signal_(IPC)), а также набрав [`man signal`](https://www.man7.org/linux/man-pages/man7/signal.7.html) или `kill -l`.
 
-Within shell scripts, you can use the `trap` built-in to execute commands when signals are received. This is useful for cleanup operations:
+В shell-скриптах можно использовать встроенную команду `trap`, чтобы выполнять команды при получении сигналов. Это удобно для операций очистки:
 
 ```shell
 #!/usr/bin/env bash
@@ -428,20 +429,20 @@ trap cleanup EXIT  # Run cleanup when script exits
 trap cleanup SIGINT SIGTERM  # Also on Ctrl-C or kill
 ```
 {% comment %}
-### Users, Files and Permissions
+### Пользователи, файлы и права доступа
 
-Lastly, another way programs have to indirectly communicate with each other is using files.
-For a program to be able to correctly read/write/delete files and folders, the file permissions must allow the operation.
+Наконец, ещё один способ, которым программы могут косвенно общаться друг с другом, — это файлы.
+Чтобы программа могла корректно читать/записывать/удалять файлы и папки, права доступа к файлам должны разрешать эту операцию.
 
-Listing a specific file will give the following output
+Если вывести информацию о конкретном файле, мы получим следующее
 
 ```console
 $ ls -l notes.txt
 -rw-r--r--  1 alice  users  12693 Jan 11 23:05 notes.txt
 ```
 
-Here `ls` is listing what is the owner of the file, user `alice`, and the group `users`. Then the `rw-r--r--` are a shorthand notation for the permissions.
-In this case, the file `notes.txt` has read/write permissions for the user alice `rw-`, and only read permissions for the group and the rest of users in the file system.
+Здесь `ls` показывает, кто владелец файла — пользователь `alice`, — и группу `users`. Далее `rw-r--r--` — это сокращённая запись прав доступа.
+В данном случае у файла `notes.txt` есть права на чтение/запись для пользователя alice (`rw-`) и только на чтение для группы и всех остальных пользователей файловой системы.
 
 ```console
 $ ./script.sh
@@ -452,9 +453,9 @@ $ ls -l script.sh
 $ ./script.sh
 ```
 
-For a script to be executable, the executable rights must be set, hence why we had to use the `chmod` (change mode) program.
-`chmod` syntax, while intuitive, is not obvious when first encountered.
-If you, like me, prefer to learn by example, this is a good usecase of the `tldr` tool (note that you need to install it first).
+Чтобы скрипт можно было запустить, у него должны быть выставлены права на исполнение — именно поэтому нам пришлось воспользоваться программой `chmod` (change mode).
+Синтаксис `chmod`, хоть и интуитивный, при первой встрече вовсе не очевиден.
+Если вы, как и я, предпочитаете учиться на примерах, это хороший повод воспользоваться инструментом `tldr` (учтите, что сначала его нужно установить).
 
 ```console
 ❯ tldr chmod
@@ -474,33 +475,33 @@ If you, like me, prefer to learn by example, this is a good usecase of the `tldr
       chmod a+rx path/to/file
 ```
 
-Run `tldr chmod` to see more examples, including recursive operations and group permissions.
+Запустите `tldr chmod`, чтобы увидеть больше примеров, включая рекурсивные операции и права для групп.
 
-> Your shell might show you something like `command not found: tldr`. That is because it is a more modern tool and it is not pre-installed in most systems. A good reference for how to install tools is the [https://command-not-found.com](https://command-not-found.com) website. It contains instructions for a huge collection of CLI tools for popular OS distributions.
+> Ваша оболочка может выдать что-то вроде `command not found: tldr`. Дело в том, что это более современный инструмент, и в большинстве систем он не предустановлен. Хороший справочник по установке инструментов — сайт [https://command-not-found.com](https://command-not-found.com). На нём собраны инструкции для огромного набора CLI-инструментов под популярные дистрибутивы ОС.
 
-Each program is run as a specific user in the system. We can use the `whoami` command to find our user name and `id -u` to find our UID (user id) which is the integer value that the OS associates with the user.
+Каждая программа выполняется от имени определённого пользователя системы. Командой `whoami` можно узнать своё имя пользователя, а командой `id -u` — свой UID (user id), целое число, которое ОС сопоставляет пользователю.
 
-When running `sudo command`, the `command` is run as the root user which can bypass most permissions in the system.
-Try running `sudo whoami` and `sudo id -u` to see how the output changes (you might be prompted for your password).
-To change the owner of a file or folder, we use the `chown` command.
+При запуске `sudo command` команда `command` выполняется от имени пользователя root, который может обходить большинство прав доступа в системе.
+Попробуйте выполнить `sudo whoami` и `sudo id -u` и посмотрите, как изменится вывод (у вас могут запросить пароль).
+Чтобы сменить владельца файла или папки, используется команда `chown`.
 
-You can learn more about UNIX file permissions [here](https://en.wikipedia.org/wiki/File-system_permissions#Traditional_Unix_permissions)
+Подробнее о правах доступа к файлам в UNIX можно почитать [здесь](https://en.wikipedia.org/wiki/File-system_permissions#Traditional_Unix_permissions)
 
-So far we've focused on your local machine, but many of these skills become even more valuable when working with remote servers.
+До сих пор мы говорили о вашей локальной машине, но многие из этих навыков становятся ещё ценнее при работе с удалёнными серверами.
 
 {% endcomment %}
 
-# Remote Machines
+# Удалённые машины
 
-It has become more and more common for programmers to work with remote servers in their everyday work. The most common tool for the job here is SSH (Secure Shell) which will help us connect to a remote server and provide the now familiar shell interface. We connect to a server with a command like:
+Программистам всё чаще приходится работать с удалёнными серверами в повседневных задачах. Самый распространённый инструмент для этого — SSH (Secure Shell), который позволяет подключиться к удалённому серверу и получить уже знакомый нам интерфейс командной оболочки. К серверу мы подключаемся командой вроде:
 
 ```bash
 ssh alice@server.mit.edu
 ```
 
-Here we are trying to ssh as user `alice` in server `server.mit.edu`.
+Здесь мы пытаемся подключиться по ssh как пользователь `alice` к серверу `server.mit.edu`.
 
-An often overlooked feature of `ssh` is the ability to run commands non-interactively. `ssh` correctly handles sending the stdin and receiving the stdout of the command, so we can combine it with other commands
+Часто упускаемая из виду возможность `ssh` — запуск команд в неинтерактивном режиме. `ssh` корректно передаёт stdin и принимает stdout команды, поэтому его можно комбинировать с другими командами
 
 ```shell
 # here ls runs in the remote, and wc runs locally
@@ -511,22 +512,22 @@ ssh alice@server 'ls | wc -l'
 
 ```
 
-> Try installing [Mosh](https://mosh.org/) as a SSH replacement that can handle disconnections, entering/exiting sleep, changing networks and dealing with high latency links.
+> Попробуйте установить [Mosh](https://mosh.org/) — замену SSH, которая умеет переживать обрывы соединения, уход в сон и выход из него, смену сети и справляется с каналами с высокой задержкой.
 
-For `ssh` to let us run commands in the remote server we need to prove that we are authorized to do so.
-We can do this via passwords or ssh keys.
-Key-based authentication utilizes public-key cryptography to prove to the server that the client owns the secret private key without revealing the key.
-Key based authentication is both more convenient and more secure, so you should prefer it.
-Note that the private key (often `~/.ssh/id_rsa` and more recently `~/.ssh/id_ed25519`) is effectively your password, so treat it like so and never share its contents.
+Чтобы `ssh` позволил нам выполнять команды на удалённом сервере, нужно доказать, что у нас есть на это право.
+Сделать это можно с помощью пароля или ssh-ключей.
+Аутентификация по ключу использует криптографию с открытым ключом, чтобы доказать серверу, что клиент владеет секретным закрытым ключом, не раскрывая сам ключ.
+Аутентификация по ключу одновременно и удобнее, и безопаснее, так что предпочитайте именно её.
+Учтите, что закрытый ключ (обычно `~/.ssh/id_rsa`, а в последнее время `~/.ssh/id_ed25519`) — это фактически ваш пароль, так что относитесь к нему соответственно и никогда никому не показывайте его содержимое.
 
-To generate a pair you can run [`ssh-keygen`](https://www.man7.org/linux/man-pages/man1/ssh-keygen.1.html).
+Чтобы сгенерировать пару ключей, выполните [`ssh-keygen`](https://www.man7.org/linux/man-pages/man1/ssh-keygen.1.html).
 ```bash
 ssh-keygen -a 100 -t ed25519 -f ~/.ssh/id_ed25519
 ```
 
-If you have ever configured pushing to GitHub using SSH keys, then you have probably done the steps outlined [here](https://help.github.com/articles/connecting-to-github-with-ssh/) and have a valid key pair already. To check if you have a passphrase and validate it you can run `ssh-keygen -y -f /path/to/key`.
+Если вы когда-нибудь настраивали push в GitHub по SSH-ключам, то, скорее всего, уже проделали шаги, описанные [здесь](https://help.github.com/articles/connecting-to-github-with-ssh/), и у вас есть действующая пара ключей. Проверить, есть ли у ключа парольная фраза, и убедиться, что она подходит, можно командой `ssh-keygen -y -f /path/to/key`.
 
-At the server side `ssh` will look into `.ssh/authorized_keys` to determine which clients it should let in. To copy a public key over you can use:
+На стороне сервера `ssh` заглядывает в `.ssh/authorized_keys`, чтобы решить, каких клиентов пускать. Скопировать туда открытый ключ можно так:
 
 ```bash
 cat .ssh/id_ed25519.pub | ssh alice@remote 'cat >> ~/.ssh/authorized_keys'
@@ -536,9 +537,9 @@ cat .ssh/id_ed25519.pub | ssh alice@remote 'cat >> ~/.ssh/authorized_keys'
 ssh-copy-id -i .ssh/id_ed25519 alice@remote
 ```
 
-Beyond running commands, the connection that ssh establishes can be used to transfer files from and to the server securely. [`scp`](https://www.man7.org/linux/man-pages/man1/scp.1.html) is the most traditional tool and the syntax is `scp path/to/local_file remote_host:path/to/remote_file`. [`rsync`](https://www.man7.org/linux/man-pages/man1/rsync.1.html) improves upon `scp` by detecting identical files in local and remote, and preventing copying them again. It also provides more fine grained control over symlinks, permissions and has extra features like the `--partial` flag that can resume from a previously interrupted copy. `rsync` has a similar syntax to `scp`.
+Помимо запуска команд, соединение, которое устанавливает ssh, можно использовать для безопасной передачи файлов на сервер и с него. [`scp`](https://www.man7.org/linux/man-pages/man1/scp.1.html) — самый традиционный инструмент, его синтаксис: `scp path/to/local_file remote_host:path/to/remote_file`. [`rsync`](https://www.man7.org/linux/man-pages/man1/rsync.1.html) идёт дальше `scp`: он находит одинаковые файлы на локальной и удалённой машине и не копирует их повторно. Кроме того, он даёт более тонкий контроль над символическими ссылками и правами доступа, а также имеет дополнительные возможности вроде флага `--partial`, который позволяет продолжить прерванное ранее копирование. Синтаксис у `rsync` похож на `scp`.
 
-SSH client configuration is located at `~/.ssh/config` and it lets us declare hosts and set default settings for them. This configuration file is not just read by `ssh` but also other programs like `scp`, `rsync`, `mosh`, &c.
+Конфигурация SSH-клиента находится в `~/.ssh/config` и позволяет объявлять хосты и задавать для них настройки по умолчанию. Этот файл конфигурации читает не только `ssh`, но и другие программы: `scp`, `rsync`, `mosh` и т. д.
 
 ```bash
 Host vm
@@ -555,80 +556,80 @@ Host *.mit.edu
 
 
 
-# Terminal Multiplexers
+# Мультиплексоры терминала
 
-When using the command line interface you will often want to run more than one thing at once.
-For instance, you might want to run your editor and your program side by side.
-Although this can be achieved by opening new terminal windows, using a terminal multiplexer is a more versatile solution.
+При работе в интерфейсе командной строки вам часто будет нужно запускать несколько программ одновременно.
+Например, вам может понадобиться держать рядом редактор и свою программу.
+Этого можно добиться, открыв новые окна терминала, но более гибкое решение — воспользоваться мультиплексором терминала.
 
-Terminal multiplexers like [`tmux`](https://www.man7.org/linux/man-pages/man1/tmux.1.html) allow you to multiplex terminal windows using panes and tabs so you can interact with multiple shell sessions in an efficient manner.
-Moreover, terminal multiplexers let you detach a current terminal session and reattach at some point later in time.
-Because of this, terminal multiplexers are really convenient when working with remote machines, as it avoids the need to use `nohup` and similar tricks.
+Мультиплексоры терминала вроде [`tmux`](https://www.man7.org/linux/man-pages/man1/tmux.1.html) позволяют мультиплексировать окна терминала с помощью панелей и вкладок, чтобы вы могли эффективно работать с несколькими сессиями оболочки.
+Кроме того, мультиплексоры терминала позволяют отсоединиться от текущей сессии терминала и снова подключиться к ней позже.
+Благодаря этому мультиплексоры терминала очень удобны при работе с удалёнными машинами: отпадает нужда в `nohup` и подобных трюках.
 
-The most popular terminal multiplexer these days is [`tmux`](https://www.man7.org/linux/man-pages/man1/tmux.1.html). `tmux` is highly configurable and by using the associated keybindings you can create multiple tabs and panes and quickly navigate through them.
+Самый популярный мультиплексор терминала на сегодня — [`tmux`](https://www.man7.org/linux/man-pages/man1/tmux.1.html). `tmux` очень гибко настраивается, и с помощью связанных с ним сочетаний клавиш можно создавать множество вкладок и панелей и быстро перемещаться между ними.
 
-`tmux` expects you to know its keybindings, and they all have the form `<C-b> x` where that means (1) press `Ctrl+b`, (2) release `Ctrl+b`, and then (3) press `x`. `tmux` has the following hierarchy of objects:
-- **Sessions** - a session is an independent workspace with one or more windows
-    + `tmux` starts a new session.
-    + `tmux new -s NAME` starts it with that name.
-    + `tmux ls` lists the current sessions
-    + Within `tmux` typing `<C-b> d`  detaches the current session
-    + `tmux a` attaches the last session. You can use `-t` flag to specify which
+`tmux` ожидает, что вы знаете его сочетания клавиш, и все они имеют вид `<C-b> x`, что означает: (1) нажать `Ctrl+b`, (2) отпустить `Ctrl+b`, а затем (3) нажать `x`. В `tmux` есть следующая иерархия объектов:
+- **Сессии** — сессия — это независимое рабочее пространство с одним или несколькими окнами
+    + `tmux` запускает новую сессию.
+    + `tmux new -s NAME` запускает её с указанным именем.
+    + `tmux ls` выводит список текущих сессий
+    + Внутри `tmux` нажатие `<C-b> d` отсоединяет текущую сессию
+    + `tmux a` подключается к последней сессии. С помощью флага `-t` можно указать, к какой именно
 
-- **Windows** - Equivalent to tabs in editors or browsers, they are visually separate parts of the same session
-    + `<C-b> c` Creates a new window. To close it you can just terminate the shells doing `<C-d>`
-    + `<C-b> N` Go to the _N_ th window. Note they are numbered
-    + `<C-b> p` Goes to the previous window
-    + `<C-b> n` Goes to the next window
-    + `<C-b> ,` Rename the current window
-    + `<C-b> w` List current windows
+- **Окна** — аналог вкладок в редакторах или браузерах: визуально отдельные части одной и той же сессии
+    + `<C-b> c` Создать новое окно. Чтобы закрыть его, достаточно завершить оболочки, нажав `<C-d>`
+    + `<C-b> N` Перейти к _N_-му окну. Обратите внимание, что они пронумерованы
+    + `<C-b> p` Перейти к предыдущему окну
+    + `<C-b> n` Перейти к следующему окну
+    + `<C-b> ,` Переименовать текущее окно
+    + `<C-b> w` Показать список текущих окон
 
-- **Panes** - Like vim splits, panes let you have multiple shells in the same visual display.
-    + `<C-b> "` Split the current pane horizontally
-    + `<C-b> %` Split the current pane vertically
-    + `<C-b> <direction>` Move to the pane in the specified _direction_. Direction here means arrow keys.
-    + `<C-b> z` Toggle zoom for the current pane
-    + `<C-b> [` Start scrollback. You can then press `<space>` to start a selection and `<enter>` to copy that selection.
-    + `<C-b> <space>` Cycle through pane arrangements.
+- **Панели** — как сплиты в vim, панели позволяют держать несколько оболочек на одном экране.
+    + `<C-b> "` Разделить текущую панель по горизонтали
+    + `<C-b> %` Разделить текущую панель по вертикали
+    + `<C-b> <direction>` Перейти к панели в указанном _направлении_. Направление здесь задаётся клавишами со стрелками.
+    + `<C-b> z` Включить/выключить увеличение текущей панели
+    + `<C-b> [` Начать прокрутку истории. Затем можно нажать `<space>`, чтобы начать выделение, и `<enter>`, чтобы скопировать выделенное.
+    + `<C-b> <space>` Перебирать варианты расположения панелей.
 
-> To learn more about tmux, consider reading [this](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) quick tutorial and [this](https://linuxcommand.org/lc3_adv_termmux.php) more detailed explanation.
+> Чтобы узнать больше о tmux, почитайте [этот](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) краткий туториал и [это](https://linuxcommand.org/lc3_adv_termmux.php) более подробное объяснение.
 
-With tmux and SSH in your toolkit, you'll want to make your environment feel like home on any machine. That's where shell customization comes in.
+Когда в вашем арсенале есть tmux и SSH, вам захочется, чтобы на любой машине окружение ощущалось как родное. Здесь-то и вступает в игру настройка оболочки.
 
-# Customizing the Shell
+# Настройка оболочки
 
-A wide array of command line programs are configured using plain-text files known as _dotfiles_
-(because the file names begin with a `.`, e.g. `~/.vimrc`, so that they are
-hidden in the directory listing `ls` by default).
+Огромное множество программ командной строки настраивается с помощью текстовых файлов, известных как _dotfiles_
+(потому что их имена начинаются с `.`, например `~/.vimrc`, и поэтому по умолчанию они
+скрыты в списке содержимого каталога, который выводит `ls`).
 
-> Dotfiles are yet another shell convention. The dot in the front is to "hide" them when listing (yes, another convention).
+> Dotfiles — ещё одно соглашение оболочки. Точка в начале имени нужна, чтобы «спрятать» их при выводе списка файлов (да, тоже соглашение).
 
-Shells are one example of programs configured with such files. On startup, your shell will read many files to load its configuration.
-Depending on the shell and whether you are starting a login and/or interactive session, the entire process can be quite complex.
-[Here](https://web.archive.org/web/20260329133158/https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html) is an excellent resource on the topic.
+Оболочки — один из примеров программ, которые настраиваются такими файлами. При запуске ваша оболочка читает множество файлов, чтобы загрузить свою конфигурацию.
+В зависимости от оболочки и от того, запускаете ли вы login- и/или интерактивную сессию, весь этот процесс может быть довольно сложным.
+[Вот](https://web.archive.org/web/20260329133158/https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html) отличный материал на эту тему.
 
-For `bash`, editing your `.bashrc` or `.bash_profile` will work in most systems.
-Some other examples of tools that can be configured through dotfiles are:
+Для `bash` в большинстве систем достаточно отредактировать `.bashrc` или `.bash_profile`.
+Вот ещё несколько примеров инструментов, которые можно настраивать через dotfiles:
 
-- `bash` - `~/.bashrc`, `~/.bash_profile`
-- `git` - `~/.gitconfig`
-- `vim` - `~/.vimrc` and the `~/.vim` folder
-- `ssh` - `~/.ssh/config`
-- `tmux` - `~/.tmux.conf`
+- `bash` — `~/.bashrc`, `~/.bash_profile`
+- `git` — `~/.gitconfig`
+- `vim` — `~/.vimrc` и папка `~/.vim`
+- `ssh` — `~/.ssh/config`
+- `tmux` — `~/.tmux.conf`
 
-A common configuration change is adding new locations for the shell to find programs. You will encounter this pattern when installing software:
+Одно из типичных изменений конфигурации — добавление новых мест, где оболочка будет искать программы. Этот приём вы не раз встретите при установке программ:
 
 ```shell
 export PATH="$PATH:path/to/append"
 ```
 
-Here, we are telling the shell to set the value of the $PATH variable to its current value plus a new path, and have all children processes inherit this new value for PATH.
-This will allow children processes to find programs located under `path/to/append`.
+Здесь мы говорим оболочке присвоить переменной $PATH её текущее значение плюс новый путь и передать это новое значение PATH по наследству всем дочерним процессам.
+Благодаря этому дочерние процессы смогут находить программы, расположенные в `path/to/append`.
 
 
-Customizing your shell often means installing new command-line tools. Package managers make this easy. They handle downloading, installing, and updating software. Different operating systems have different package managers: macOS uses [Homebrew](https://brew.sh/), Ubuntu/Debian use `apt`, Fedora uses `dnf`, and Arch uses `pacman`. We'll cover package managers in more depth in the shipping code lecture.
+Настройка оболочки часто означает установку новых инструментов командной строки. Менеджеры пакетов сильно упрощают эту задачу. Они берут на себя скачивание, установку и обновление программ. В разных операционных системах разные менеджеры пакетов: macOS использует [Homebrew](https://brew.sh/), Ubuntu/Debian — `apt`, Fedora — `dnf`, а Arch — `pacman`. Подробнее о менеджерах пакетов мы поговорим в лекции об упаковке и доставке кода.
 
-Here's how to install two useful tools using Homebrew on macOS:
+Вот как установить два полезных инструмента с помощью Homebrew на macOS:
 
 ```shell
 # ripgrep: a faster grep with better defaults
@@ -638,19 +639,19 @@ brew install ripgrep
 brew install fd
 ```
 
-With these installed, you can use `rg` instead of `grep` and `fd` instead of `find`.
+После их установки можно использовать `rg` вместо `grep` и `fd` вместо `find`.
 
-> **Warning about `curl | bash`**: You'll often see installation instructions like `curl -fsSL https://example.com/install.sh | bash`. This pattern downloads a script and immediately executes it, which is convenient but risky; you're running code you haven't inspected. A safer approach is to download first, review, then execute:
+> **Предупреждение насчёт `curl | bash`**: вы часто будете видеть инструкции по установке вроде `curl -fsSL https://example.com/install.sh | bash`. Этот шаблон скачивает скрипт и тут же его выполняет — удобно, но рискованно: вы запускаете код, который не проверили. Более безопасный подход — сначала скачать, посмотреть, а потом уже выполнять:
 > ```shell
 > curl -fsSL https://example.com/install.sh -o install.sh
 > less install.sh  # review the script
 > bash install.sh
 > ```
-> Some installers use a slightly safer variant: `/bin/bash -c "$(curl -fsSL https://url)"` which at least ensures bash interprets the script rather than your current shell.
+> Некоторые установщики используют чуть более безопасный вариант: `/bin/bash -c "$(curl -fsSL https://url)"` — он хотя бы гарантирует, что интерпретировать скрипт будет именно bash, а не ваша текущая оболочка.
 
-When you try to run a command that isn't installed, your shell will show `command not found`. The website [command-not-found.com](https://command-not-found.com) is a helpful resource you can use to search for any command to find out how to install it across different package managers and distributions.
+Когда вы пытаетесь запустить команду, которая не установлена, оболочка выведет `command not found`. Сайт [command-not-found.com](https://command-not-found.com) — полезный ресурс, на котором можно найти любую команду и узнать, как установить её в разных менеджерах пакетов и дистрибутивах.
 
-Another useful tool is [`tldr`](https://tldr.sh/), which provides simplified, example-focused man pages. Instead of reading through lengthy documentation, you can quickly see common usage patterns:
+Ещё один полезный инструмент — [`tldr`](https://tldr.sh/): он предоставляет упрощённые man-страницы, построенные вокруг примеров. Вместо того чтобы читать длинную документацию, можно быстро посмотреть типичные варианты использования:
 
 ```console
 $ tldr fd
@@ -667,19 +668,19 @@ $ tldr fd
       fd --extension txt
 ```
 
-Sometimes you don't need a whole new program, but rather just a shortcut for an existing command with specific flags. That's where aliases come in.
+Иногда нужна не целая новая программа, а всего лишь короткое имя для существующей команды с определёнными флагами. Тут на помощь приходят алиасы (псевдонимы).
 
-We can also create our own command aliases using the `alias` shell built-in.
-A shell alias is a short form for another command that your shell will replace automatically before evaluating the expression.
-For instance, an alias in bash has the following structure:
+Мы также можем создавать собственные алиасы команд с помощью встроенной команды оболочки `alias`.
+Алиас оболочки — это сокращённая запись другой команды; перед вычислением выражения оболочка автоматически заменит его полной командой.
+Например, алиас в bash имеет следующую структуру:
 
 ```bash
 alias alias_name="command_to_alias arg1 arg2"
 ```
 
-> Note that there is no space around the equal sign `=`, because [`alias`](https://www.man7.org/linux/man-pages/man1/alias.1p.html) is a shell command that takes a single argument.
+> Обратите внимание, что вокруг знака равенства `=` нет пробелов, потому что [`alias`](https://www.man7.org/linux/man-pages/man1/alias.1p.html) — это команда оболочки, принимающая один аргумент.
 
-Aliases have many convenient features:
+У алиасов много удобных возможностей:
 
 ```bash
 # Make shorthands for common flags
@@ -711,65 +712,65 @@ alias ll
 # Will print ll='ls -lh'
 ```
 
-Aliases have limitations: they cannot take arguments in the middle of a command. For more complex behavior, you should use shell functions instead.
+У алиасов есть ограничения: они не могут принимать аргументы в середине команды. Для более сложного поведения стоит использовать вместо них функции оболочки.
 
-Most shells support `Ctrl-R` for reverse history search. Type `Ctrl-R` and start typing to search through previous commands. Earlier we introduced `fzf` as a fuzzy finder; with fzf's shell integration configured, `Ctrl-R` becomes an interactive fuzzy search through your entire history, far more powerful than the default.
+Большинство оболочек поддерживают `Ctrl-R` для обратного поиска по истории. Нажмите `Ctrl-R` и начните печатать, чтобы искать среди ранее выполненных команд. Ранее мы уже познакомились с `fzf` — инструментом нечёткого поиска; если настроить интеграцию fzf с оболочкой, `Ctrl-R` превращается в интерактивный нечёткий поиск по всей вашей истории — куда более мощный, чем поиск по умолчанию.
 
-How should you organize your dotfiles? They should be in their own folder,
-under version control, and **symlinked** into place using a script. This has
-the benefits of:
+Как организовать свои dotfiles? Они должны лежать в отдельной папке,
+находиться под контролем версий и расставляться по своим местам скриптом
+через **символические ссылки**. Это даёт следующие преимущества:
 
-- **Easy installation**: if you log in to a new machine, applying your
-customizations will only take a minute.
-- **Portability**: your tools will work the same way everywhere.
-- **Synchronization**: you can update your dotfiles anywhere and keep them all
-in sync.
-- **Change tracking**: you're probably going to be maintaining your dotfiles
-for your entire programming career, and version history is nice to have for
-long-lived projects.
+- **Простая установка**: если вы заходите на новую машину, применение
+ваших настроек займёт всего минуту.
+- **Переносимость**: ваши инструменты будут везде работать одинаково.
+- **Синхронизация**: вы можете обновлять свои dotfiles где угодно и держать
+их все синхронизированными.
+- **Отслеживание изменений**: скорее всего, вы будете сопровождать свои
+dotfiles на протяжении всей карьеры программиста, а для долгоживущих
+проектов история версий — приятная вещь.
 
-What should you put in your dotfiles?
-You can learn about your tool's settings by reading online documentation or
-[man pages](https://en.wikipedia.org/wiki/Man_page). Another great way is to
-search the internet for blog posts about specific programs, where authors will
-tell you about their preferred customizations. Yet another way to learn about
-customizations is to look through other people's dotfiles: you can find tons of
-[dotfiles
-repositories](https://github.com/search?o=desc&q=dotfiles&s=stars&type=Repositories)
-on GitHub --- see the most popular one
-[here](https://github.com/mathiasbynens/dotfiles) (we advise you not to blindly
-copy configurations though).
-[Here](https://dotfiles.github.io/) is another good resource on the topic.
+Что стоит положить в свои dotfiles?
+О настройках инструмента можно узнать из онлайн-документации или
+[man-страниц](https://en.wikipedia.org/wiki/Man_page). Другой отличный
+способ — поискать в интернете блог-посты о конкретных программах, где
+авторы рассказывают о своих любимых настройках. Ещё один способ узнать о
+возможных настройках — заглядывать в чужие dotfiles: на GitHub можно найти
+массу
+[репозиториев с dotfiles](https://github.com/search?o=desc&q=dotfiles&s=stars&type=Repositories)
+— самый популярный смотрите
+[здесь](https://github.com/mathiasbynens/dotfiles) (впрочем, мы не советуем
+слепо копировать чужие конфигурации).
+[Вот](https://dotfiles.github.io/) ещё один хороший ресурс по этой теме.
 
-All of the class instructors have their dotfiles publicly accessible on GitHub: [Anish](https://github.com/anishathalye/dotfiles),
+Dotfiles всех преподавателей курса открыто доступны на GitHub: [Anish](https://github.com/anishathalye/dotfiles),
 [Jon](https://github.com/jonhoo/configs),
 [Jose](https://github.com/jjgo/dotfiles).
 
-**Frameworks and plugins** can improve your shell as well. Some popular general frameworks are [prezto](https://github.com/sorin-ionescu/prezto) or [oh-my-zsh](https://ohmyz.sh/), and smaller plugins that focus on specific features:
+**Фреймворки и плагины** тоже могут улучшить вашу оболочку. Из популярных универсальных фреймворков — [prezto](https://github.com/sorin-ionescu/prezto) или [oh-my-zsh](https://ohmyz.sh/); есть и плагины поменьше, сосредоточенные на конкретных возможностях:
 
-- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) - colors valid/invalid commands as you type
-- [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) - suggests commands from history as you type
-- [zsh-completions](https://github.com/zsh-users/zsh-completions) - additional completion definitions
-- [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) - fish-like history search
-- [powerlevel10k](https://github.com/romkatv/powerlevel10k) - fast, customizable prompt theme
+- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) — подсвечивает корректные и некорректные команды прямо при наборе
+- [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) — по мере набора предлагает команды из истории
+- [zsh-completions](https://github.com/zsh-users/zsh-completions) — дополнительные определения автодополнения
+- [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search) — поиск по истории в стиле fish
+- [powerlevel10k](https://github.com/romkatv/powerlevel10k) — быстрая настраиваемая тема приглашения командной строки
 
-Shells like [fish](https://fishshell.com/) include many of these features by default.
+Оболочки вроде [fish](https://fishshell.com/) включают многие из этих возможностей по умолчанию.
 
-> You don't need a massive framework like oh-my-zsh to get these features. Installing individual plugins is often faster and gives you more control. Large frameworks can significantly slow down shell startup time, so consider installing only what you actually use.
+> Чтобы получить эти возможности, не обязательно ставить громоздкий фреймворк вроде oh-my-zsh. Установка отдельных плагинов часто быстрее и даёт больше контроля. Большие фреймворки могут заметно замедлять запуск оболочки, так что подумайте о том, чтобы ставить только то, чем вы действительно пользуетесь.
 
 
-# AI in the Shell
+# ИИ в командной оболочке
 
-There are many ways to incorporate AI tooling in the shell. Here are a few examples at different levels of integration:
+Способов встроить ИИ-инструменты в командную оболочку много. Вот несколько примеров с разной глубиной интеграции:
 
-**Command generation**: Tools like [`simonw/llm`](https://github.com/simonw/llm) can help generate shell commands from natural language descriptions:
+**Генерация команд**: инструменты вроде [`simonw/llm`](https://github.com/simonw/llm) помогают генерировать команды оболочки из описания на естественном языке:
 
 ```console
 $ llm cmd "find all python files modified in the last week"
 find . -name "*.py" -mtime -7
 ```
 
-**Pipeline integration**: LLMs can be integrated into shell pipelines to process and transform data. They're particularly useful when you need to extract information from inconsistent formats where regex would be painful:
+**Интеграция в конвейеры**: LLM можно встраивать в конвейеры команд для обработки и преобразования данных. Они особенно полезны, когда нужно извлечь информацию из неоднородных форматов, где регулярные выражения превратились бы в мучение:
 
 ```console
 $ cat users.txt
@@ -789,40 +790,42 @@ mike_wilson
 sarah.connor
 ```
 
-Note how we use `"$INSTRUCTIONS"` (quoted) because the variable contains spaces, and `< users.txt` to redirect the file's content to stdin.
+Обратите внимание: мы пишем `"$INSTRUCTIONS"` (в кавычках), потому что переменная содержит пробелы, а `< users.txt` перенаправляет содержимое файла в stdin.
 
-**AI shells**: Tools like [Claude Code](https://docs.anthropic.com/en/docs/claude-code) act as a meta-shell that accepts English commands and translates them into shell operations, file edits, and more complex multi-step tasks.
+**ИИ-оболочки**: инструменты вроде [Claude Code](https://docs.anthropic.com/en/docs/claude-code) действуют как метаоболочка, которая принимает команды на английском языке и превращает их в операции оболочки, правки файлов и более сложные многошаговые задачи.
 
-# Terminal Emulators
+# Эмуляторы терминала
 
-Along with customizing your shell, it is worth spending some time figuring out your choice of **terminal emulator** and its settings.
-A terminal emulator is a GUI program that provides the text-based interface where your shell runs.
-There are many terminal emulators out there.
+Помимо настройки оболочки, стоит потратить немного времени на выбор
+**эмулятора терминала** и его настройку.
+Эмулятор терминала — это GUI-программа, предоставляющая текстовый
+интерфейс, в котором работает ваша оболочка.
+Эмуляторов терминала существует великое множество.
 
-Since you might be spending hundreds to thousands of hours in your terminal it pays off to look into its settings. Some of the aspects that you may want to modify in your terminal include:
+Поскольку в терминале вы, возможно, проведёте сотни, а то и тысячи часов, изучить его настройки — выгодное вложение времени. Вот некоторые аспекты терминала, которые может иметь смысл настроить под себя:
 
-- Font choice
-- Color Scheme
-- Keyboard shortcuts
-- Tab/Pane support
-- Scrollback configuration
-- Performance (some newer terminals like [Alacritty](https://github.com/alacritty/alacritty) or [Ghostty](https://ghostty.org/) offer GPU acceleration).
+- Выбор шрифта
+- Цветовая схема
+- Сочетания клавиш
+- Поддержка вкладок и панелей
+- Настройка буфера прокрутки (scrollback)
+- Производительность (некоторые новые терминалы, например [Alacritty](https://github.com/alacritty/alacritty) или [Ghostty](https://ghostty.org/), поддерживают GPU-ускорение).
 
 
 
-# Exercises
+# Упражнения
 
-## Arguments and Globs
+## Аргументы и подстановка (globbing)
 
-1. You might see commands like `cmd --flag -- --notaflag`. The `--` is a special argument that tells the program to stop parsing flags. Everything after `--` is treated as a positional argument. Why might this be useful? Try running `touch -- -myfile` and then removing it without `--`.
+1. Вам могут встречаться команды вида `cmd --flag -- --notaflag`. `--` — это специальный аргумент, который говорит программе прекратить разбор флагов. Всё, что идёт после `--`, считается позиционным аргументом. Чем это может быть полезно? Попробуйте выполнить `touch -- -myfile`, а затем удалить этот файл без `--`.
 
-1. Read [`man ls`](https://www.man7.org/linux/man-pages/man1/ls.1.html) and write an `ls` command that lists files in the following manner:
-    - Includes all files, including hidden files
-    - Sizes are listed in human readable format (e.g. 454M instead of 454279954)
-    - Files are ordered by recency
-    - Output is colorized
+1. Прочитайте [`man ls`](https://www.man7.org/linux/man-pages/man1/ls.1.html) и составьте команду `ls`, которая выводит список файлов следующим образом:
+    - В список входят все файлы, включая скрытые
+    - Размеры выводятся в человекочитаемом формате (например, 454M вместо 454279954)
+    - Файлы упорядочены по времени изменения, начиная с самых свежих
+    - Вывод раскрашен цветом
 
-    A sample output would look like this:
+    Пример вывода может выглядеть так:
 
     ```
     -rw-r--r--   1 user group 1.1M Jan 14 09:53 baz
@@ -836,11 +839,11 @@ Since you might be spending hundreds to thousands of hours in your terminal it p
 ls -lath --color=auto
 {% endcomment %}
 
-1. Process substitution `<(command)` lets you use a command's output as if it were a file. Use `diff` with process substitution to compare the output of `printenv` and `export`. Why are they different? (Hint: try `diff <(printenv | sort) <(export | sort)`).
+1. Подстановка процессов (process substitution) `<(command)` позволяет использовать вывод команды так, как будто это файл. С помощью `diff` и подстановки процессов сравните вывод `printenv` и `export`. Почему они различаются? (Подсказка: попробуйте `diff <(printenv | sort) <(export | sort)`).
 
-## Environment Variables
+## Переменные окружения
 
-1. Write bash functions `marco` and `polo` that do the following: whenever you execute `marco` the current working directory should be saved in some manner, then when you execute `polo`, no matter what directory you are in, `polo` should `cd` you back to the directory where you executed `marco`. For ease of debugging you can write the code in a file `marco.sh` and (re)load the definitions to your shell by executing `source marco.sh`.
+1. Напишите bash-функции `marco` и `polo`, которые делают следующее: каждый раз, когда вы выполняете `marco`, текущий рабочий каталог должен каким-либо образом сохраняться, а когда вы выполняете `polo` — в каком бы каталоге вы ни находились, `polo` должна возвращать вас (`cd`) в тот каталог, где вы выполнили `marco`. Для удобства отладки можно записать код в файл `marco.sh` и (пере)загружать определения в оболочку командой `source marco.sh`.
 
 {% comment %}
 marco() {
@@ -852,9 +855,9 @@ polo() {
 }
 {% endcomment %}
 
-## Return Codes
+## Коды возврата
 
-1. Say you have a command that fails rarely. In order to debug it you need to capture its output but it can be time consuming to get a failure run. Write a bash script that runs the following script until it fails and captures its standard output and error streams to files and prints everything at the end. Bonus points if you can also report how many runs it took for the script to fail.
+1. Допустим, у вас есть команда, которая сбоит редко. Чтобы отладить её, нужно перехватить её вывод, но дожидаться неудачного запуска может быть долго. Напишите bash-скрипт, который запускает следующий скрипт до тех пор, пока тот не завершится с ошибкой, сохраняет его потоки стандартного вывода и ошибок в файлы и в конце печатает всё это. Дополнительные баллы, если вы к тому же сообщите, сколько запусков понадобилось, чтобы скрипт упал.
 
     ```bash
     #!/usr/bin/env bash
@@ -884,47 +887,47 @@ echo "found error after $count runs"
 cat out.txt
 {% endcomment %}
 
-## Signals and Job Control
+## Сигналы и управление заданиями
 
-1. Start a `sleep 10000` job in a terminal, background it with `Ctrl-Z` and continue its execution with `bg`. Now use [`pgrep`](https://www.man7.org/linux/man-pages/man1/pgrep.1.html) to find its pid and [`pkill`](https://man7.org/linux/man-pages/man1/pgrep.1.html) to kill it without ever typing the pid itself. (Hint: use the `-lf` flags).
+1. Запустите в терминале задание `sleep 10000`, отправьте его в фон с помощью `Ctrl-Z` и возобновите его выполнение командой `bg`. Теперь с помощью [`pgrep`](https://www.man7.org/linux/man-pages/man1/pgrep.1.html) найдите его pid, а с помощью [`pkill`](https://man7.org/linux/man-pages/man1/pgrep.1.html) завершите его, ни разу не набрав сам pid. (Подсказка: используйте флаги `-lf`).
 
-1. Say you don't want to start a process until another completes. How would you go about it? In this exercise, our limiting process will always be `sleep 60 &`. One way to achieve this is to use the [`wait`](https://www.man7.org/linux/man-pages/man1/wait.1p.html) command. Try launching the sleep command and having an `ls` wait until the background process finishes.
+1. Допустим, вы не хотите запускать процесс, пока не завершится другой. Как бы вы это сделали? В этом упражнении ограничивающим процессом всегда будет `sleep 60 &`. Один из способов добиться этого — использовать команду [`wait`](https://www.man7.org/linux/man-pages/man1/wait.1p.html). Попробуйте запустить команду sleep и заставить `ls` подождать, пока фоновый процесс не закончится.
 
-    However, this strategy will fail if we start in a different bash session, since `wait` only works for child processes. One feature we did not discuss in the notes is that the `kill` command's exit status will be zero on success and nonzero otherwise. `kill -0` does not send a signal but will give a nonzero exit status if the process does not exist. Write a bash function called `pidwait` that takes a pid and waits until the given process completes. You should use `sleep` to avoid wasting CPU unnecessarily.
+    Однако эта стратегия не сработает, если запустить её из другой bash-сессии, потому что `wait` работает только с дочерними процессами. Одна особенность, которую мы не обсуждали в конспекте: код возврата команды `kill` равен нулю при успехе и отличен от нуля в противном случае. `kill -0` не посылает сигнал, но вернёт ненулевой код возврата, если процесс не существует. Напишите bash-функцию `pidwait`, которая принимает pid и ждёт, пока указанный процесс не завершится. Используйте `sleep`, чтобы попусту не тратить процессорное время.
 
-## Files and Permissions
+## Файлы и права доступа
 
-1. (Advanced) Write a command or script to recursively find the most recently modified file in a directory. More generally, can you list all files by recency?
+1. (Продвинутое) Напишите команду или скрипт, чтобы рекурсивно найти в каталоге файл, изменённый последним. А в более общем виде: сможете ли вы вывести все файлы в порядке давности изменения?
 
-## Terminal Multiplexers
+## Мультиплексоры терминала
 
-1. Follow this `tmux` [tutorial](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) and then learn how to do some basic customizations following [these steps](https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/).
+1. Пройдите этот [туториал](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) по `tmux`, а затем научитесь делать базовые настройки, следуя [этим шагам](https://www.hamvocke.com/blog/a-guide-to-customizing-your-tmux-conf/).
 
-## Aliases and Dotfiles
+## Алиасы и dotfiles
 
-1. Create an alias `dc` that resolves to `cd` for when you type it wrong.
+1. Создайте алиас `dc`, который разворачивается в `cd`, — на случай опечатки.
 
-1. Run `history | awk '{$1="";print substr($0,2)}' | sort | uniq -c | sort -n | tail -n 10` to get your top 10 most used commands and consider writing shorter aliases for them. Note: this works for Bash; if you're using ZSH, use `history 1` instead of just `history`.
+1. Выполните `history | awk '{$1="";print substr($0,2)}' | sort | uniq -c | sort -n | tail -n 10`, чтобы получить топ-10 самых используемых вами команд, и подумайте, не завести ли для них более короткие алиасы. Примечание: это работает в Bash; если вы пользуетесь ZSH, используйте `history 1` вместо просто `history`.
 
-1. Create a folder for your dotfiles and set up version control.
+1. Создайте папку для своих dotfiles и настройте контроль версий.
 
-1. Add a configuration for at least one program, e.g. your shell, with some customization (to start off, it can be something as simple as customizing your shell prompt by setting `$PS1`).
+1. Добавьте конфигурацию хотя бы для одной программы, например для своей оболочки, с какой-нибудь настройкой (для начала это может быть что-то совсем простое, вроде настройки приглашения командной строки через переменную `$PS1`).
 
-1. Set up a method to install your dotfiles quickly (and without manual effort) on a new machine. This can be as simple as a shell script that calls `ln -s` for each file, or you could use a [specialized utility](https://dotfiles.github.io/utilities/).
+1. Придумайте способ быстро (и без ручных действий) устанавливать свои dotfiles на новой машине. Это может быть простой shell-скрипт, вызывающий `ln -s` для каждого файла, а можно воспользоваться [специализированной утилитой](https://dotfiles.github.io/utilities/).
 
-1. Test your installation script on a fresh virtual machine.
+1. Проверьте свой скрипт установки на свежей виртуальной машине.
 
-1. Migrate all of your current tool configurations to your dotfiles repository.
+1. Перенесите все текущие конфигурации своих инструментов в репозиторий с dotfiles.
 
-1. Publish your dotfiles on GitHub.
+1. Опубликуйте свои dotfiles на GitHub.
 
-## Remote Machines (SSH)
+## Удалённые машины (SSH)
 
-Install a Linux virtual machine (or use an already existing one) for these exercises. If you are not familiar with virtual machines check out [this](https://hibbard.eu/install-ubuntu-virtual-box/) tutorial for installing one.
+Для этих упражнений установите виртуальную машину с Linux (или используйте уже существующую). Если вы не знакомы с виртуальными машинами, загляните в [этот](https://hibbard.eu/install-ubuntu-virtual-box/) туториал по её установке.
 
-1. Go to `~/.ssh/` and check if you have a pair of SSH keys there. If not, generate them with `ssh-keygen -a 100 -t ed25519`. It is recommended that you use a password and use `ssh-agent`, more info [here](https://www.ssh.com/ssh/agent).
+1. Зайдите в `~/.ssh/` и проверьте, есть ли у вас там пара SSH-ключей. Если нет, сгенерируйте их командой `ssh-keygen -a 100 -t ed25519`. Рекомендуется использовать пароль и `ssh-agent`, подробнее [здесь](https://www.ssh.com/ssh/agent).
 
-1. Edit `.ssh/config` to have an entry as follows:
+1. Отредактируйте `.ssh/config`, добавив в него такую запись:
 
     ```bash
     Host vm
@@ -934,12 +937,12 @@ Install a Linux virtual machine (or use an already existing one) for these exerc
         LocalForward 9999 localhost:8888
     ```
 
-1. Use `ssh-copy-id vm` to copy your ssh key to the server.
+1. С помощью `ssh-copy-id vm` скопируйте свой ssh-ключ на сервер.
 
-1. Start a webserver in your VM by executing `python -m http.server 8888`. Access the VM webserver by navigating to `http://localhost:9999` in your machine.
+1. Запустите веб-сервер в своей VM, выполнив `python -m http.server 8888`. Откройте веб-сервер VM, перейдя по адресу `http://localhost:9999` на своей машине.
 
-1. Edit your SSH server config by doing `sudo vim /etc/ssh/sshd_config` and disable password authentication by editing the value of `PasswordAuthentication`. Disable root login by editing the value of `PermitRootLogin`. Restart the `ssh` service with `sudo service sshd restart`. Try sshing in again.
+1. Отредактируйте конфигурацию своего SSH-сервера командой `sudo vim /etc/ssh/sshd_config` и отключите аутентификацию по паролю, изменив значение `PasswordAuthentication`. Запретите вход под root, изменив значение `PermitRootLogin`. Перезапустите службу `ssh` командой `sudo service sshd restart`. Попробуйте снова зайти по ssh.
 
-1. (Challenge) Install [`mosh`](https://mosh.org/) in the VM and establish a connection. Then disconnect the network adapter of the server/VM. Can mosh properly recover from it?
+1. (Со звёздочкой) Установите [`mosh`](https://mosh.org/) в VM и подключитесь. Затем отключите сетевой адаптер сервера/VM. Сможет ли mosh корректно восстановиться после этого?
 
-1. (Challenge) Look into what the `-N` and `-f` flags do in `ssh` and figure out a command to achieve background port forwarding.
+1. (Со звёздочкой) Разберитесь, что делают флаги `-N` и `-f` у `ssh`, и составьте команду для проброса портов в фоновом режиме.
