@@ -1,30 +1,62 @@
-# The Missing Semester of Your CS Education
+# Пропущенный семестр вашего CS-образования (русский перевод, 2026)
 
-[![Build Status](https://github.com/missing-semester/missing-semester/actions/workflows/build.yml/badge.svg)](https://github.com/missing-semester/missing-semester/actions/workflows/build.yml) [![Links Status](https://github.com/missing-semester/missing-semester/actions/workflows/links.yml/badge.svg)](https://github.com/missing-semester/missing-semester/actions/workflows/links.yml)
+Русский перевод сайта [The Missing Semester of Your CS Education](https://missing.csail.mit.edu/)
+(MIT). Это полная копия оригинального репозитория
+[missing-semester/missing-semester](https://github.com/missing-semester/missing-semester)
+с переведёнными на русский язык лекциями 2026 года, служебными страницами и
+интерфейсом сайта. Структура файлов и URL совпадают с оригиналом 1:1.
 
-Website for [The Missing Semester of Your CS Education](https://missing.csail.mit.edu/)!
+Оригинальный курс ведут [Anish](https://anish.io/), [Jon](https://thesquareplanet.com/)
+и [Jose](https://josejg.com/). Перевод не аффилирован с авторами курса
+(«перевод сообщества» в терминах их [правил перевода](https://missing.csail.mit.edu/license/)).
 
-Contributions are most welcome! If you have edits or new content to add, please
-open an issue or submit a pull request.
+## Состав перевода
 
-## Development
+- **Лекции 2026** (`_2026/`) — переведены полностью.
+- Служебные страницы (`index.md`, `about.md`, `past.md`, `license.md`, `404.html`),
+  навигация, шаблоны и строки интерфейса — переведены.
+- **Лекции 2020 и 2019** (`_2020/`, `_2019/`) — пока на английском (структура и
+  ссылки сохранены, чтобы внутренние ссылки из лекций 2026 работали).
+- Видео лекций встроены с официального YouTube-канала курса (на английском).
+  Русские субтитры к видео, согласно правилам курса, следует предлагать как
+  community-контрибуции на YouTube.
 
-To build and view the site locally, run:
+## Как переводился и проверялся текст
+
+Правила перевода, глоссарий терминов и типографика зафиксированы в
+[TRANSLATION_GUIDE.md](TRANSLATION_GUIDE.md). Каждый файл дополнительно
+проверяется скриптом структурной сверки с оригиналом (блоки кода байт-в-байт,
+совпадение ссылок, заголовков, Liquid-тегов и сносок) и двумя проходами
+редактуры: сверка смысла с оригиналом и вычитка русского текста.
+
+## Сборка сайта локально
 
 ```bash
 bundle exec jekyll serve -w
 ```
 
-If you'd prefer to develop the site in a Docker container (e.g., to avoid
-having to install Ruby and dependencies on your host machine), run:
+Либо в Docker:
 
 ```bash
 docker compose up --build
 ```
 
-Then, navigate to <http://localhost:4000> on your host machine to view the
-website. Jekyll will rebuild the website as you make changes to files.
+Сайт будет доступен на <http://localhost:4000>.
 
-## License
+## Синхронизация с оригиналом
 
-All content in this course, including the website source code, lecture notes, exercises, and lecture videos, is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). See [here](https://missing.csail.mit.edu/license) for more information on contributions or translations.
+Репозиторий — форк-клон оригинала (remote `upstream`). Чтобы подтянуть свежие
+изменения оригинала:
+
+```bash
+git fetch upstream
+git merge upstream/master   # затем перевести новые/изменённые фрагменты
+```
+
+## Лицензия
+
+Весь материал курса, включая исходный код сайта, конспекты лекций, упражнения и
+видео, распространяется по лицензии
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) —
+как и этот перевод (условие ShareAlike). Подробнее — на
+[странице лицензии](https://missing.csail.mit.edu/license/) оригинального курса.

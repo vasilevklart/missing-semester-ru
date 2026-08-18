@@ -1,8 +1,8 @@
 ---
 layout: page
-title: "2020 Lectures"
+title: "Лекции 2020"
 description: >
-  Lecture notes and videos for Missing Semester, MIT IAP 2020.
+  Конспекты и видео лекций курса Missing Semester, MIT IAP 2020.
 permalink: /2020/
 phony: true
 ---
@@ -12,13 +12,13 @@ phony: true
   {% for lecture in lectures %}
     {% if lecture.phony != true %}
       <li>
-        <strong>{{ lecture.date | date: '%-m/%-d' }}</strong>:
+        <strong>{{ lecture.date | date: '%-d.%-m' }}</strong>:
         {% if lecture.ready %}
           <a href="{{ lecture.url }}">{{ lecture.title }}</a>
         {% elsif lecture.noclass %}
-          {{ lecture.title }} [no class]
+          {{ lecture.title }} [занятия нет]
         {% else %}
-          {{ lecture.title }} [coming soon]
+          {{ lecture.title }} [скоро]
         {% endif %}
         {% if lecture.details %}
           <br>
@@ -29,11 +29,11 @@ phony: true
   {% endfor %}
 </ul>
 
-Video recordings of the lectures are available [on YouTube](https://www.youtube.com/playlist?list=PLyzOVJj3bHQuloKGG59rS43e29ro7I57J).
+Видеозаписи лекций доступны [на YouTube](https://www.youtube.com/playlist?list=PLyzOVJj3bHQuloKGG59rS43e29ro7I57J).
 
-# Beyond MIT
+# За пределами MIT
 
-We've also shared this class beyond MIT in the hopes that others may benefit from these resources. You can find posts and discussion on
+Мы делимся этим курсом и за пределами MIT в надежде, что эти материалы пригодятся и другим. Публикации и обсуждения можно найти на
 
  - [Hacker News](https://news.ycombinator.com/item?id=22226380)
  - [Lobsters](https://lobste.rs/s/ti1k98/missing_semester_your_cs_education_mit)
@@ -55,6 +55,6 @@ Some more URLs:
 - https://twitter.com/MIT_CSAIL/status/1581313961093484545
 {% endcomment %}
 
-# Acknowledgments
+# Благодарности
 
-We thank Elaine Mello, Jim Cain, and [MIT Open Learning](https://openlearning.mit.edu/) for making it possible for us to record lecture videos; Anthony Zolnik and [MIT AeroAstro](https://aeroastro.mit.edu/) for A/V equipment; and Brandi Adams and [MIT EECS](https://www.eecs.mit.edu/) for supporting this class.
+Мы благодарим Elaine Mello, Jim Cain и [MIT Open Learning](https://openlearning.mit.edu/) за возможность записать видео лекций; Anthony Zolnik и [MIT AeroAstro](https://aeroastro.mit.edu/) за аудио- и видеооборудование; а также Brandi Adams и [MIT EECS](https://www.eecs.mit.edu/) за поддержку курса.

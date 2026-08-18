@@ -10,13 +10,13 @@ layout: default
     <iframe src="https://www.youtube.com/embed/{{ page.video.id }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
   </div>
 {% elsif page.panopto %}
-  <p class="center padded bordered"><strong><a href="{{ page.panopto }}">Click here to view the raw lecture video on Panopto (MIT Kerberos login required).</a></strong><br>
-  An edited version of this video will be posted after the course is over. Edited lecture videos will be posted to YouTube shortly after the conclusion of the course.</p>
+  <p class="center padded bordered"><strong><a href="{{ page.panopto }}">Нажмите здесь, чтобы посмотреть необработанную запись лекции на Panopto (требуется вход через MIT Kerberos).</a></strong><br>
+  Смонтированная версия этого видео появится после окончания курса. Смонтированные записи лекций будут выложены на YouTube вскоре после завершения курса.</p>
 {% elsif page.last_year %}
-  <p class="center padded bordered"><strong><a href="{{ page.last_year }}">Click here to view last year's lecture video.</a></strong><br>
-  This year's lecture video is coming soon.</p>
+  <p class="center padded bordered"><strong><a href="{{ page.last_year }}">Нажмите здесь, чтобы посмотреть видео прошлогодней лекции.</a></strong><br>
+  Видео лекции этого года скоро появится.</p>
 {% elsif page.video %}
-  <p class="center padded bordered"><strong>Lecture video coming soon!</strong></p>
+  <p class="center padded bordered"><strong>Видео лекции скоро появится!</strong></p>
 {% endif %}
 
 {{ content }}
@@ -24,6 +24,6 @@ layout: default
 <hr>
 
 <div class="small center">
-<p><a href="https://github.com/missing-semester/missing-semester/blob/master/{{ page.path }}">Edit this page</a>.</p>
-<p>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA</a>.</p>
+<p><a href="https://github.com/missing-semester-rus/missing-semester-rus.github.io/blob/main/{{ page.path }}">Редактировать страницу</a> · <a href="https://github.com/missing-semester/missing-semester/blob/master/{{ page.path }}">оригинал</a>.</p>
+<p>Лицензия <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA</a>.</p>
 </div>

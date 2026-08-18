@@ -1,36 +1,35 @@
 ---
 layout: page
-title: The Missing Semester of Your CS Education
+title: Пропущенный семестр вашего CS-образования
 description: >
-  Master powerful tools that will make you a more productive computer scientist and programmer.
+  Освойте мощные инструменты, которые сделают вас более продуктивным специалистом по computer science и программистом.
 # subtitle: IAP 2026
 subtitle: "2026"
 nositetitle: true
 ---
 
-Classes teach you all about advanced topics within CS, from operating systems
-to machine learning, but there's one critical subject that's rarely covered,
-and is instead left to students to figure out on their own: proficiency with
-their tools. We'll teach you how to master the command-line, use a powerful
-text editor, use fancy features of version control systems, and much more!
+Учебные курсы рассказывают о продвинутых темах computer science — от операционных
+систем до машинного обучения, — но есть один критически важный предмет, который
+почти никогда не преподают, а оставляют студентам осваивать самостоятельно:
+умение владеть своими инструментами. Мы научим вас уверенно работать в командной
+строке, пользоваться мощным текстовым редактором, применять продвинутые
+возможности систем контроля версий и многому другому!
 
-Students spend hundreds of hours using these tools over the course of their
-education (and thousands over their career), so it makes sense to make the
-experience as fluid and frictionless as possible. Mastering these tools not
-only enables you to spend less time on figuring out how to bend your tools to
-your will, but it also lets you solve problems that would previously seem
-impossibly complex.
+За время учёбы студенты проводят с этими инструментами сотни часов (а за карьеру —
+тысячи), поэтому имеет смысл сделать эту работу максимально гладкой и
+комфортной. Владение инструментами не только позволяет тратить меньше времени на
+попытки подчинить их своей воле, но и даёт возможность решать задачи, которые
+раньше казались невозможно сложными.
 
-These days, many aspects of software engineering are also in flux
-through the introduction of AI-enabled and AI-enhanced tools and
-workflows. When used appropriately and with awareness of their
-shortcomings, these can often provide significant benefits to
-CS practitioners and are thus worth developing working knowledge of.
-Since AI is a cross-functional enabling technology, there is not a
-standalone AI lecture; we've instead folded the use of the latest
-applicable AI tools and techniques into each lecture directly.
+Сегодня многие стороны разработки ПО к тому же меняются с появлением инструментов
+и рабочих процессов на основе ИИ или дополненных ИИ. При уместном использовании и
+понимании их недостатков они часто приносят специалистам по CS ощутимую пользу,
+а значит, стоит выработать практические навыки работы с ними. Поскольку ИИ —
+сквозная вспомогательная технология, отдельной лекции про ИИ нет; вместо этого мы
+встроили использование новейших применимых ИИ-инструментов и приёмов прямо в
+каждую лекцию.
 
-Read about the [motivation behind this class](/about/).
+Прочитайте о [мотивации создания этого курса](/about/).
 
 {% comment %}
 # Registration
@@ -38,7 +37,7 @@ Read about the [motivation behind this class](/about/).
 Sign up for the IAP 2026 class by filling out this [registration form](https://forms.gle/j2wMzi7qeiZmzEWy9).
 {% endcomment %}
 
-# Syllabus
+# Программа
 
 {% comment %}
 **Lecture**: [35-225](https://whereis.mit.edu/?go=35), 1:30--2:30pm (_exception_: 3--4pm on Friday 1/16)<br>
@@ -50,20 +49,22 @@ Sign up for the IAP 2026 class by filling out this [registration form](https://f
 {% for lecture in lectures %}
     {% if lecture.phony != true %}
         <li>
-        <strong>{{ lecture.date | date: '%-m/%-d/%y' }}</strong>:
+        <strong>{{ lecture.date | date: '%-d.%-m.%y' }}</strong>:
         {% if lecture.ready %}
             <a href="{{ lecture.url }}">{{ lecture.title }}</a>
         {% else %}
-            {{ lecture.title }} {% if lecture.noclass %}[no class]{% endif %}
+            {{ lecture.title }} {% if lecture.noclass %}[занятия нет]{% endif %}
         {% endif %}
         </li>
     {% endif %}
 {% endfor %}
 </ul>
 
-## Special topics from previous years
+## Специальные темы прошлых лет
 
-The topics we cover vary from year to year. For students who are interested in the complete set of topics we have covered over the years, we highlight topics covered in previous years that we did not cover in 2026.
+Набор тем от года к году меняется. Для тех, кому интересен полный набор тем,
+которые мы освещали за все годы, мы выделяем темы прошлых лет, не вошедшие в
+программу 2026 года.
 
 {% comment %} pop to remove default "posts" collection {% endcomment %}
 {% assign sorted_collections = site.collections | sort: 'label' | pop | reverse %}
@@ -75,7 +76,7 @@ The topics we cover vary from year to year. For students who are interested in t
         {% for lecture in sorted_lectures %}
             {% if lecture.special == true %}
                 <li>
-                    <strong>{{ lecture.date | date: '%-m/%-d/%y' }}</strong>:
+                    <strong>{{ lecture.date | date: '%-d.%-m.%y' }}</strong>:
                     <a href="{{ lecture.url }}">{{ lecture.title }}</a>
                 </li>
             {% endif %}
@@ -92,16 +93,16 @@ from the [previous offering of the course](/2020/), which covers many of the
 same topics.
 {% endcomment %}
 
-# General information
+# Общая информация
 
-**Staff**: This class is co-taught by [Anish](https://anish.io/), [Jon](https://thesquareplanet.com/), and [Jose](https://josejg.com/).<br>
-**Questions**: Email us at [missing-semester@mit.edu](mailto:missing-semester@mit.edu).<br>
-**Discussion**: [OSSU Discord](https://ossu.dev/#community) (use `#missing-semester-forum` like you would use Piazza, and `#missing-semester` to chat with the class/instructors).
+**Преподаватели**: курс совместно ведут [Anish](https://anish.io/), [Jon](https://thesquareplanet.com/) и [Jose](https://josejg.com/).<br>
+**Вопросы**: пишите нам на [missing-semester@mit.edu](mailto:missing-semester@mit.edu).<br>
+**Обсуждение**: [Discord OSSU](https://ossu.dev/#community) (канал `#missing-semester-forum` используйте как Piazza, а `#missing-semester` — для общения с группой и преподавателями).
 
-# Beyond MIT
+# За пределами MIT
 
-We've also shared this class beyond MIT in the hopes that others may
-benefit from these resources. You can find posts and discussion on
+Мы делимся этим курсом и за пределами MIT в надежде, что эти материалы пригодятся
+и другим. Публикации и обсуждения можно найти на
 
  - Hacker News ([2026](https://news.ycombinator.com/item?id=47124171), [2020](https://news.ycombinator.com/item?id=22226380), [2019](https://news.ycombinator.com/item?id=19078281))
  - Lobsters ([2026](https://lobste.rs/s/q4ykw7/missing_semester_your_cs_education_2026), [2020](https://lobste.rs/s/ti1k98/missing_semester_your_cs_education_mit), [2019](https://lobste.rs/s/h6157x/mit_hacker_tools_lecture_series_on))
@@ -113,49 +114,49 @@ benefit from these resources. You can find posts and discussion on
  - LinkedIn ([2026](https://www.linkedin.com/posts/anishathalye_i-returned-to-mit-during-iap-january-term-activity-7430285026933522433-Ehr9))
  - YouTube ([2026](https://www.youtube.com/playlist?list=PLyzOVJj3bHQunmnnTXrNbZnBaCA-ieK4L), [2020](https://www.youtube.com/playlist?list=PLyzOVJj3bHQuloKGG59rS43e29ro7I57J), [2019](https://www.youtube.com/playlist?list=PLyzOVJj3bHQuiujH1lpn8cA9dsyulbYRv))
 
-# Translations
+# Переводы
 
 {% comment %} keep these in alphabetical order {% endcomment %}
 
-- [Arabic](https://missing-semester-ar.github.io/)
-- [Bengali](https://missing-semester-bn.github.io/)
-- [Chinese (Simplified)](https://missing-semester-cn.github.io/)
-- [Chinese (Traditional, Taiwan)](https://missing-semester-tw.github.io/)
-- [German](https://missing-semester-de.github.io/)
-- [Italian](https://missing-semester-it.github.io/)
-- [Japanese](https://missing-semester-jp.github.io/)
-- [Kannada](https://missing-semester-kn.github.io/)
-- [Korean](https://missing-semester-kr.github.io/)
-- [Mongolian](https://missing-semester-mn.github.io)
-- [Persian](https://missing-semester-fa.github.io/)
-- [Portuguese](https://missing-semester-pt.github.io/)
-- [Russian](https://missing-semester-rus.github.io/)
-- [Serbian](https://netboxify.com/missing-semester/)
-- [Spanish](https://missing-semester-esp.github.io/)
-- [Swedish](https://den-saknade-terminen.l10n.se/)
-- [Thai](https://missing-semester-th.github.io/)
-- [Turkish](https://missing-semester-tr.github.io/)
-- [Vietnamese](https://missing-semester-vn.github.io/)
+- [Английский (оригинал)](https://missing.csail.mit.edu/)
+- [Арабский](https://missing-semester-ar.github.io/)
+- [Бенгальский](https://missing-semester-bn.github.io/)
+- [Вьетнамский](https://missing-semester-vn.github.io/)
+- [Испанский](https://missing-semester-esp.github.io/)
+- [Итальянский](https://missing-semester-it.github.io/)
+- [Каннада](https://missing-semester-kn.github.io/)
+- [Китайский (упрощённый)](https://missing-semester-cn.github.io/)
+- [Китайский (традиционный, Тайвань)](https://missing-semester-tw.github.io/)
+- [Корейский](https://missing-semester-kr.github.io/)
+- [Монгольский](https://missing-semester-mn.github.io)
+- [Немецкий](https://missing-semester-de.github.io/)
+- [Персидский](https://missing-semester-fa.github.io/)
+- [Португальский](https://missing-semester-pt.github.io/)
+- [Сербский](https://netboxify.com/missing-semester/)
+- [Тайский](https://missing-semester-th.github.io/)
+- [Турецкий](https://missing-semester-tr.github.io/)
+- [Шведский](https://den-saknade-terminen.l10n.se/)
+- [Японский](https://missing-semester-jp.github.io/)
 
-Note: these are external links to community translations. We have not vetted
-them.
+Примечание: это внешние ссылки на переводы, сделанные сообществом. Авторы курса
+их не проверяли. Этот сайт — русский перевод сообщества; оригинал находится по
+адресу [missing.csail.mit.edu](https://missing.csail.mit.edu/).
 
-Have you created a translation of the course notes from this class? Submit a
-[pull request](https://github.com/missing-semester/missing-semester/pulls) so
-we can add it to the list!
+Сделали перевод конспектов этого курса? Отправьте [pull request](https://github.com/missing-semester/missing-semester/pulls)
+в оригинальный репозиторий, чтобы его добавили в список!
 
-## Acknowledgments
+## Благодарности
 
 {% comment %}
 2026 acks; previous years' acks are on their respective pages
 {% endcomment %}
 
-We thank Elaine Mello and [MIT Open Learning](https://openlearning.mit.edu/) for making it possible for us to record lecture videos. We thank Luis Turino / [SIPB](https://sipb.mit.edu/) for supporting this class as part of [SIPB IAP 2026](https://sipb.mit.edu/iap/).
+Мы благодарим Elaine Mello и [MIT Open Learning](https://openlearning.mit.edu/) за возможность записать видео лекций. Мы благодарим Luis Turino / [SIPB](https://sipb.mit.edu/) за поддержку курса в рамках [SIPB IAP 2026](https://sipb.mit.edu/iap/).
 
 ---
 
 <div class="small center">
-<p><a href="https://github.com/missing-semester/missing-semester">Source code</a>.</p>
-<p>Licensed under CC BY-NC-SA.</p>
-<p>See <a href="/license/">here</a> for contribution &amp; translation guidelines.</p>
+<p><a href="https://github.com/missing-semester-rus/missing-semester-rus.github.io">Исходный код перевода</a> · <a href="https://github.com/missing-semester/missing-semester">исходный код оригинала</a>.</p>
+<p>Лицензия CC BY-NC-SA.</p>
+<p><a href="/license/">Правила</a> участия и перевода.</p>
 </div>

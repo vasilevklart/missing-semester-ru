@@ -1,6 +1,6 @@
 # Setup
-title: 'Missing Semester'
-url: https://missing.csail.mit.edu
+title: 'Пропущенный семестр'
+url: https://missing-semester-rus.github.io
 thumbnail: "/static/assets/thumbnails/default.png"
 
 # Settings
@@ -14,7 +14,7 @@ future: true
 # safe: true # breaks local rendering if enabled
 timezone: America/New_York
 analytics:
-  tracking_id: G-P7WVHD84D1
+  tracking_id: ''  # set to your own GA4 measurement id to enable analytics
 
 collections:
   '2019':

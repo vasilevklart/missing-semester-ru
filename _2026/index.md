@@ -1,8 +1,8 @@
 ---
 layout: page
-title: "2026 Lectures"
+title: "Лекции 2026"
 description: >
-  Lecture notes and videos for Missing Semester, MIT IAP 2026.
+  Конспекты и видео лекций курса Missing Semester, MIT IAP 2026.
 permalink: /2026/
 phony: true
 ---
@@ -12,13 +12,13 @@ phony: true
   {% for lecture in lectures %}
     {% if lecture.phony != true %}
       <li>
-        <strong>{{ lecture.date | date: '%-m/%-d' }}</strong>:
+        <strong>{{ lecture.date | date: '%-d.%-m' }}</strong>:
         {% if lecture.ready %}
           <a href="{{ lecture.url }}">{{ lecture.title }}</a>
         {% elsif lecture.noclass %}
-          {{ lecture.title }} [no class]
+          {{ lecture.title }} [занятия нет]
         {% else %}
-          {{ lecture.title }} [coming soon]
+          {{ lecture.title }} [скоро]
         {% endif %}
         {% if lecture.details %}
           <br>
@@ -29,11 +29,11 @@ phony: true
   {% endfor %}
 </ul>
 
-Video recordings of the lectures are available [on YouTube](https://www.youtube.com/playlist?list=PLyzOVJj3bHQunmnnTXrNbZnBaCA-ieK4L).
+Видеозаписи лекций доступны [на YouTube](https://www.youtube.com/playlist?list=PLyzOVJj3bHQunmnnTXrNbZnBaCA-ieK4L).
 
-# Beyond MIT
+# За пределами MIT
 
-We've also shared this class beyond MIT in the hopes that others may benefit from these resources. You can find posts and discussion on
+Мы делимся этим курсом и за пределами MIT в надежде, что эти материалы пригодятся и другим. Публикации и обсуждения можно найти на
 
 - [Hacker News](https://news.ycombinator.com/item?id=47124171)
 - [Lobsters](https://lobste.rs/s/q4ykw7/missing_semester_your_cs_education_2026)
@@ -44,6 +44,6 @@ We've also shared this class beyond MIT in the hopes that others may benefit fro
 - [LinkedIn](https://www.linkedin.com/posts/anishathalye_i-returned-to-mit-during-iap-january-term-activity-7430285026933522433-Ehr9)
 - [YouTube](https://www.youtube.com/playlist?list=PLyzOVJj3bHQunmnnTXrNbZnBaCA-ieK4L)
 
-# Acknowledgments
+# Благодарности
 
-We thank Elaine Mello and [MIT Open Learning](https://openlearning.mit.edu/) for making it possible for us to record lecture videos. We thank Luis Turino / [SIPB](https://sipb.mit.edu/) for supporting this class as part of [SIPB IAP 2026](https://sipb.mit.edu/iap/).
+Мы благодарим Elaine Mello и [MIT Open Learning](https://openlearning.mit.edu/) за возможность записать видео лекций. Мы благодарим Luis Turino / [SIPB](https://sipb.mit.edu/) за поддержку курса в рамках [SIPB IAP 2026](https://sipb.mit.edu/iap/).
