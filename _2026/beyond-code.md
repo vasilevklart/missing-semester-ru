@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Beyond the Code"
+title: "За пределами кода"
 description: >
-  Learn about essential soft skills including documentation, open-source community norms, and AI etiquette.
+  Узнайте о важнейших «мягких» навыках (soft skills): документации, нормах open-source-сообществ и этикете работы с ИИ.
 thumbnail: /static/assets/thumbnails/2026/lec8.png
 date: 2026-01-22
 ready: true
@@ -11,408 +11,436 @@ video:
   id: 2DOEATfXT8k
 ---
 
-Being a good software engineer isn't just about writing code that
-works. It's about writing code that others (including future you) can
-understand, maintain, and build upon. It's about communicating
-clearly, contributing thoughtfully, and being a good citizen in the
-ecosystems you participate in—whether open source or proprietary.
+Быть хорошим инженером-программистом — значит не просто писать
+работающий код. Это значит писать код, который другие (включая вас из
+будущего) смогут понять, сопровождать и развивать. Это умение ясно
+излагать мысли, вдумчиво вносить вклад и быть достойным гражданином
+экосистем, в которых вы участвуете, — будь то open source или
+проприетарная разработка.
 
-# One-way communication
+# Односторонняя коммуникация
 
-Much of software engineering involves writing for people who lack your
-current context: teammates who join later, maintainers who inherit
-your code, or yourself in six months when you've forgotten why you
-made a particular choice. A key piece of advice for all this kind of
-writing is that your goal is to capture and convey the *why*, not just
-the *what*. The what tends to be self-explanatory, while the *why* is
-hard-earned knowledge that is easily lost to time.
+Немалая часть программной инженерии — это тексты для людей, у которых
+нет вашего текущего контекста: для коллег, которые присоединятся
+позже, мейнтейнеров, которым достанется ваш код, или вас самих через
+полгода, когда вы уже забудете, почему приняли то или иное решение.
+Ключевой совет для всех текстов такого рода: ваша цель — зафиксировать
+и передать *почему*, а не только *что*. «Что» обычно объясняет само
+себя, а вот *почему* — это добытое тяжким трудом знание, которое легко
+теряется со временем.
 
-Perhaps the most common form of engineer-to-engineer communication
-(apart from the code itself) is code comments. I've personally found
-that a lot of code comments are useless. But they don't have to be! Good
-comments explain things that the code itself cannot: *why* something is
-done a particular way, not *how* it works (which is what the code
-shows). They can save hours of confusion, while bad comments add noise
-or, worse, mislead.
+Пожалуй, самая распространённая форма общения инженера с инженером
+(не считая самого кода) — комментарии в коде. По моему личному опыту,
+немалая доля комментариев бесполезна. Но так быть не должно! Хорошие
+комментарии объясняют то, чего сам код объяснить не может: *почему*
+что-то сделано именно так, а не *как* оно работает (это как раз
+показывает код). Они могут сэкономить часы недоумения, тогда как
+плохие комментарии добавляют шум или, хуже того, вводят в заблуждение.
 
-Types of comments that are nearly always worthwhile:
+Виды комментариев, которые почти всегда себя оправдывают:
 
-- **TODOs**: Mark incomplete or unpolished code, but leave enough
-  context for someone else to understand what's outstanding and why it
-  was deferred. "TODO: optimize" is useless; "TODO: this O(n²) loop is
-  fine for `n<100`, but will need indexing if we scale" is actionable.
-- **References**: Link to external sources when code implements an
-  algorithm from a paper, adapts code from elsewhere, or encodes
-  behaviour specified in documentation. Use permalinks. Note any
-  divergences from the reference.
-- **Correctness arguments**: Explain *why* non-trivial code produces
-  correct results. The code shows the steps; a comment explains why
-  those steps work.
-- **Hard-learned lessons**: If you spent 30+ minutes debugging something
-  and the fix is a non-obvious incantation, document it. Your past self
-  didn't realize it was needed; future readers won't either.
-- **Rationale for constants**: Magic numbers deserve explanation. Why
-  1492? Why 16 bits? Was it chosen randomly, derived from testing, or
-  required for correctness? Even "chosen arbitrarily" is useful
-  information.
-- **Load-bearing choices**: If correctness depends on a
-  seemingly-innocent implementation detail (e.g., "must be a BTreeSet
-  because iteration order matters below"), call it out explicitly.
-- **"Why not"s**: When you deliberately avoid the obvious approach,
-  explain why. Otherwise someone will "fix" it later and break things.
+- **TODO**: Помечайте незавершённый или неотшлифованный код, но
+  оставляйте достаточно контекста, чтобы кто-то другой понял, что
+  осталось сделать и почему это отложили. «TODO: оптимизировать» —
+  бесполезно; «TODO: этот цикл за O(n²) годится при `n<100`, но при
+  масштабировании понадобится индексация» — уже руководство к действию.
+- **Ссылки на источники**: Давайте ссылки на внешние источники, когда
+  код реализует алгоритм из научной статьи, адаптирует чужой код или
+  кодирует поведение, заданное в документации. Используйте постоянные
+  ссылки (permalinks). Отмечайте любые расхождения с источником.
+- **Обоснования корректности**: Объясняйте, *почему* нетривиальный код
+  даёт правильный результат. Код показывает шаги; комментарий
+  объясняет, почему эти шаги работают.
+- **Выстраданные уроки**: Если вы потратили 30+ минут на отладку, а
+  исправлением оказалось неочевидное заклинание, задокументируйте его.
+  Ваше прошлое «я» не догадывалось, что это понадобится; будущие
+  читатели тоже не догадаются.
+- **Обоснование констант**: Магические числа заслуживают объяснения.
+  Почему 1492? Почему 16 бит? Значение выбрано случайно, подобрано по
+  результатам тестов или необходимо для корректности? Даже «выбрано
+  произвольно» — полезная информация.
+- **Несущие решения**: Если корректность зависит от невинной на вид
+  детали реализации (например, «здесь обязан быть BTreeSet, потому что
+  ниже важен порядок итерации»), явно скажите об этом.
+- **«Почему не»**: Когда вы сознательно отказываетесь от очевидного
+  подхода, объясните почему. Иначе кто-нибудь позже это «исправит» и
+  всё сломает.
 
-READMEs (you have one, right?) are also a common first touch-point with
-other developers. A good one answers four questions immediately: What
-does this do? Why should I care? How do I use it? How do I install it?
-In that order. Structure it like a funnel: a one-liner and maybe a
-visual demo at the top so someone can decide in seconds if this solves
-their problem, then progressively add depth. Show usage before
-installation — people want to see what they're getting before committing
-to setup steps.
+README (у вас же он есть, правда?) — тоже нередко первая точка контакта
+с другими разработчиками. Хороший README сразу отвечает на четыре
+вопроса: Что это делает? Почему мне это должно быть интересно? Как этим
+пользоваться? Как это установить? Именно в таком порядке. Стройте его
+как воронку: однострочное описание и, возможно, наглядное демо в самом
+верху, чтобы человек за считанные секунды понял, решает ли это его
+проблему, а дальше постепенно наращивайте глубину. Показывайте
+использование до установки — люди хотят увидеть, что они получат,
+прежде чем ввязываться в шаги настройки.
 
-Commit messages are another kind of "writing for others" that is often
-neglected. They are often written as "fixed blah" or "added foo", and
-while that may be sufficient in some cases, it's easy to forget that
-they form the historical record of *why* the codebase evolved the way it
-did. When someone (including you!) runs `git blame` trying to understand
-a confusing change, good commit messages should give them answers.
+Сообщения коммитов — ещё один вид «письма для других», которым часто
+пренебрегают. Их нередко пишут в духе «fixed blah» или «added foo», и
+хотя иногда этого достаточно, легко забыть, что именно они образуют
+историческую летопись того, *почему* кодовая база развивалась так, а
+не иначе. Когда кто-то (включая вас!) запускает `git blame`, пытаясь понять
+озадачивающее изменение, хорошие сообщения коммитов должны давать ему
+ответы.
 
-In general, the body should answer:
-- What problem forced this change?
-- What alternatives did you consider?
-- What are the trade-offs or implications?
-- What might be surprising about this approach?
+В общем случае тело сообщения должно отвечать на вопросы:
+- Какая проблема вынудила внести это изменение?
+- Какие альтернативы вы рассматривали?
+- Каковы компромиссы и последствия?
+- Что в этом подходе может оказаться неожиданным?
 
-> Obviously you should scale detail with complexity. A one-line typo fix
-> needs only a subject. A subtle race condition fix that took hours to
-> debug deserves paragraphs explaining the problem and solution.
+> Разумеется, уровень детализации должен соответствовать сложности.
+> Исправлению опечатки в одну строку хватит одного заголовка.
+> Исправление коварного состояния гонки, на отладку которого ушли
+> часы, заслуживает нескольких абзацев с описанием проблемы и решения.
 
-For complex changes, it can be useful to follow a Problem → Solution →
-Implications structure: Start with the forcing function or limitation,
-then explain what changed and the key design decisions, and then list
-noteworthy consequences (positive and negative). That last part is
-particularly important; real engineering involves balancing concerns,
-and documenting that a trade-off was intentional prevents future
-developers from thinking you missed the problem.
+Для сложных изменений бывает полезно следовать структуре «Проблема →
+Решение → Последствия»: начните с вынуждающего фактора или
+ограничения, затем объясните, что изменилось и какие ключевые
+проектные решения были приняты, и затем перечислите заслуживающие
+внимания последствия (положительные и отрицательные). Последняя часть
+особенно важна: настоящая инженерия — это баланс интересов, и если
+зафиксировать, что компромисс был намеренным, будущие разработчики не
+подумают, что вы просто не заметили проблему.
 
-LLMs _can_ be helpful in writing commit messages. However, if you simply
-point one at your change and ask it to write the commit message for the
-change, the LLM will only have access to the _what_, not the _why_. And
-the resulting commit message will thus be mostly descriptive (the
-opposite of what we want!). If you used an LLM to help you make the
-change in the first place, asking the LLM to write the commit in that
-same session can be a much better option since your conversation with
-the LLM is inherently a rich source of context about the change!
-Otherwise, or in addition, a useful trick is to specifically tell the
-LLM you'd like a commit message focused on the "why" (and other nuances
-from the notes above), and then _tell it to query you for missing
-context_. Essentially, you're acting like a MCP "tool" for the coding
-agent that it can use to "read" context.
+LLM _могут_ помогать с написанием сообщений коммитов. Однако если
+просто указать модели на ваше изменение и попросить написать к нему
+сообщение коммита, LLM будет видеть только _что_, но не _почему_. И
+получившееся сообщение окажется по большей части описательным (то есть
+противоположностью тому, что нам нужно!). Если вы изначально делали
+изменение с помощью LLM, попросить её написать коммит в той же сессии
+может быть куда лучшим вариантом: ваш разговор с LLM сам по себе —
+богатый источник контекста об изменении! Иначе (или вдобавок) есть
+полезный трюк: явно скажите LLM, что вам нужно сообщение коммита,
+сфокусированное на «почему» (и прочих нюансах из заметок выше), а
+затем _велите ей спрашивать вас о недостающем контексте_. По сути, вы
+играете роль своего рода MCP-«инструмента», с помощью которого агент
+для программирования может «прочитать» контекст.
 
-As your changes get more complex, make sure to also break up commits
-logically (`git add -p` is your friend). Each commit should represent
-one coherent change that could be understood and reviewed independently.
-Don't mix refactoring with new features or combine unrelated bug fixes,
-as this muddies the story for which changes fixed what problem, and will
-almost certainly slow down the eventual review of your changes. It also
-gives you superpowers through `git bisect`, but that's a story for
-another time.
+По мере того как ваши изменения усложняются, не забывайте также
+логично разбивать их на коммиты (`git add -p` вам в помощь). Каждый
+коммит должен представлять одно цельное изменение, которое можно
+понять и отревьюить независимо. Не смешивайте рефакторинг с новыми
+фичами и не объединяйте несвязанные исправления багов: это запутывает
+историю того, какое изменение какую проблему исправило, и почти
+наверняка замедлит последующее ревью ваших изменений. А ещё такая
+дисциплина даёт вам суперспособности через `git bisect`, но это
+история для другого раза.
 
-> One note as you start being more diligent about technical writing, and
-> using it more extensively, make sure you respect the reader. It's easy
-> to end up over-explaining once you start, but you have to resist that
-> urge lest the reader read _none_ of what you've written. Explain the
-> "why" and trust them to figure out the "how" for their situation.
+> Одно замечание: начав внимательнее относиться к техническим текстам
+> и писать их больше, не забывайте уважать читателя. Легко скатиться в
+> избыточные объяснения, но этому порыву нужно сопротивляться — иначе
+> читатель не прочтёт _ничего_ из написанного вами. Объясните
+> «почему» и доверьте ему самому разобраться с «как» применительно к
+> его ситуации.
 
-# Collaboration
+# Совместная работа
 
-As engineers, we may spend a large part of our job coding at our own
-keyboard, but a sizeable chunk of our time is also taken up by
-communicating with others. That time is usually split into collaboration
-and education, and the payoff from investing in getting better at both is
-significant.
+Как инженеры, мы, возможно, проводим большую часть рабочего дня за
+написанием кода на собственной клавиатуре, но заметный кусок нашего
+времени уходит и на общение с другими людьми. Обычно это время делится
+на совместную работу и обучение, и вложения в то, чтобы стать лучше и в
+том, и в другом, окупаются сполна.
 
-## Contributing
+## Вклад в проекты
 
-Whether you are submitting a bug report, contributing a simple bug fix,
-or implementing a huge feature, it's worth keeping in mind that there
-are usually orders of magnitude more users than there are contributors,
-and an order of magnitude more contributors than there are maintainers.
-As a result, maintainer time is highly oversubscribed. If you want to
-increase the likelihood that your contribution goes somewhere
-productive, you have to ensure that your contributions carry a high
-signal-to-noise ratio and are worth the maintainers' time.
+Отправляете ли вы отчёт об ошибке (bug report), вносите простое
+исправление бага или реализуете огромную фичу — стоит помнить, что
+пользователей обычно на порядки больше, чем контрибьюторов, а
+контрибьюторов — на порядок больше, чем мейнтейнеров. В результате
+время мейнтейнеров — крайне дефицитный ресурс. Если вы хотите повысить
+шансы на то, что ваш вклад приведёт к чему-то полезному, позаботьтесь о
+том, чтобы он имел высокое отношение сигнала к шуму и стоил времени
+мейнтейнеров.
 
-For example, a good bug report respects the maintainer's time by
-providing everything needed to understand and reproduce the problem:
+Например, хороший отчёт об ошибке уважает время мейнтейнера — в нём есть
+всё, что нужно, чтобы понять и воспроизвести проблему:
 
-- **Environment**: OS, version numbers, relevant configuration
-- **What you expected** vs **what actually happened**
-- **Steps to reproduce**: Be specific. "Click the button" is less useful
-  than "Click the Submit button on the /settings page while logged in as
-  an admin."
-- **What you've already tried**: This prevents duplicate suggestions and
-  shows you've done some investigation
+- **Окружение**: ОС, номера версий, релевантная конфигурация
+- **Что вы ожидали** и **что произошло на самом деле**
+- **Шаги воспроизведения**: будьте конкретны. «Нажмите кнопку» куда
+  менее полезно, чем «Нажмите кнопку Submit на странице /settings,
+  будучи залогиненным как администратор».
+- **Что вы уже попробовали**: это избавляет от повторных советов и
+  показывает, что вы уже провели какое-то расследование
 
-> If you find a security vulnerability, don't post it publicly. Contact
-> the maintainers privately first and give them reasonable time to fix
-> it before disclosure. Many projects have a SECURITY.md file or
-> similar for this purpose.
+> Если вы нашли уязвимость, не публикуйте её открыто. Сначала свяжитесь
+> с мейнтейнерами приватно и дайте им разумное время на исправление до
+> раскрытия информации. Во многих проектах для этого есть файл
+> SECURITY.md или что-то подобное.
 
-**Make sure you search for existing issues.** Your bug or feature
-request may already be reported, and it's far better to add information
-to existing discussions rather than creating duplicates. Not to mention,
-it reduces noise for the maintainers.
+**Обязательно поищите существующие issue.** О вашем баге или запросе
+фичи, возможно, уже сообщили, и куда лучше добавить информацию в существующее
+обсуждение, чем плодить дубликаты. Не говоря уже о том, что так меньше
+шума для мейнтейнеров.
 
-Minimal reproducible examples are gold, if you can come up with one.
-They save the maintainer a huge amount of time and effort, and
-reliably reproducing the bug is often the hardest part of fixing it. Not
-to mention, the effort you put into isolating the problem often helps
-you understand it better too, and sometimes leads you to find a fix
-yourself.
+Минимальные воспроизводимые примеры — на вес золота, если вам удаётся
+такой составить. Они экономят мейнтейнеру огромное количество времени и
+сил, а надёжно воспроизвести баг — часто самая сложная часть его
+исправления. Не говоря уже о том, что усилия, вложенные в изоляцию
+проблемы, часто помогают и вам лучше её понять, а иногда приводят
+к тому, что вы сами находите исправление.
 
-If you don't hear back right away, keep in mind that maintainers are
-often volunteers with limited time. If you're waiting for a reply from
-them, a polite follow-up after a couple weeks is fine; daily pings are
-not. Similarly, "me too" comments, or bug reports that are just a
-copy-paste of some terminal output tend to be a net-negative in terms of
-getting traction for your issue.
+Если вам не ответили сразу, помните, что мейнтейнеры — часто волонтёры
+с ограниченным временем. Если вы ждёте от них ответа, вежливое
+напоминание через пару недель — это нормально; ежедневные пинги — нет.
+Точно так же комментарии «у меня тоже» или отчёты об ошибках, которые
+представляют собой просто скопированный вывод терминала, обычно лишь
+вредят продвижению вашего issue.
 
-If you're looking to make a code contribution, you'll also want to
-familiarize yourself with the contribution guidelines. Many projects
-have a `CONTRIBUTING.md` — follow it. You'll also usually want to start
-small; a typo fix or documentation improvement is a great first
-contribution as it helps you learn the project's processes without also
-having to go through lots of back and forth on the content.
+Если вы собираетесь внести вклад в виде кода, вам также стоит
+ознакомиться с правилами участия. Во многих проектах есть
+`CONTRIBUTING.md` — следуйте ему. Кроме того, обычно стоит начинать с
+малого: исправление опечатки или улучшение документации — отличный
+первый вклад, ведь так вы знакомитесь с процессами проекта, не увязая
+заодно в долгих обсуждениях содержания.
 
-> Check what license the project uses, as any code you contribute will
-> fall under the same license. In particular, look out for copyleft
-> licenses (like GPL), which requires derivatives to also be open source
-> and may have implications for your employer if you touch it!
-> [choosealicense.com](https://choosealicense.com/) has more useful
-> information.
+> Проверьте, какую лицензию использует проект: любой код, который вы
+> внесёте, попадёт под ту же лицензию. Особенно остерегайтесь
+> copyleft-лицензий (вроде GPL): они требуют, чтобы производные работы
+> тоже были open source, и могут иметь последствия для вашего
+> работодателя, если вы с таким кодом соприкоснётесь!
+> Больше полезной информации — на
+> [choosealicense.com](https://choosealicense.com/).
 
-When you've decided to open a pull request ("PR"), first make sure you
-isolate the change you actually want to be accepted. If your PR changes
-lots of other unrelated things at the same time, chances are the
-reviewer will send it back to you asking you to clean it up. This is
-similar to how you should break down your git commits into semantically
-related chunks.
+Когда вы решили открыть пул-реквест («PR»), сначала убедитесь, что
+изолировали именно то изменение, которое хотите видеть принятым. Если
+ваш PR заодно меняет кучу других, не связанных с ним вещей, велика
+вероятность, что ревьюер вернёт его вам с просьбой навести порядок. Тут
+работает тот же принцип, что и при разбиении git-коммитов на
+семантически связанные части.
 
-In some cases, if you have many seemingly-disparate changes but
-they're all needed to enable one feature, it may be okay to open a
-larger PR that captures all the changes. However, in this case, commit
-hygiene is particularly important so that maintainers have the option
-to review the change "commit by commit".
+В некоторых случаях, когда у вас много на первый взгляд разрозненных
+изменений, но все они нужны для одной фичи, допустимо открыть PR
+покрупнее, охватывающий все эти изменения. Однако тогда особенно важна
+гигиена коммитов, чтобы у мейнтейнеров была возможность ревьюить
+изменение «коммит за коммитом».
 
-Next, make sure you explain the "why" behind the change well. Don't just
-describe _what_ changed — explain _why_ the change is needed and _why_
-this is a good way to address the problem. You should also proactively
-call out parts of the change that warrant special attention in the
-review, if any. Depending on `CONTRIBUTING.md` and the nature of your
-change, reviewers may also expect to see additional information like
-trade-offs you made or how to test the change.
+Дальше позаботьтесь о том, чтобы хорошо объяснить «почему» вашего
+изменения. Не просто описывайте, _что_ поменялось — объясните, _почему_
+изменение нужно и _почему_ это хороший способ решить проблему. Также
+стоит заранее указать на те части изменения, которые заслуживают
+особого внимания на ревью, если такие есть. В зависимости от
+`CONTRIBUTING.md` и характера вашего изменения ревьюеры могут также
+ожидать дополнительной информации — например, на какие компромиссы вы
+пошли или как протестировать изменение.
 
-> We recommend contributing back to upstream projects rather than
-> "forking" the project, at least as a first approach. Forking (license
-> permitting) should be reserved for when the contributions you want to
-> make are out of scope for the original project. If you do fork, make
-> sure you acknowledge the original project!
+> Мы рекомендуем вносить изменения в upstream-проект, а не «форкать»
+> его — по крайней мере в качестве первого подхода. Форк (если лицензия
+> позволяет) стоит приберечь для случаев, когда изменения, которые вы
+> хотите внести, выходят за рамки исходного проекта. А если вы всё же
+> делаете форк, обязательно укажите исходный проект!
 
-AI makes it incredibly easy to generate plausible-looking code and PRs
-quickly, but this doesn't excuse you from understanding what you're
-contributing. Submitting AI-generated code you can't explain burdens
-maintainers with reviewing and potentially maintaining code that even
-its author doesn't understand. It's fine to use AI to help you
-identify issues and produce fixes/features, **so long as you still do
-the due diligence** to polish it into a worthwhile contribution, rather
-than passing that work on to the (already-overloaded) maintainers.
+ИИ позволяет невероятно быстро генерировать правдоподобно выглядящий
+код и PR, но это не освобождает вас от обязанности понимать, что вы
+вносите. Отправляя сгенерированный ИИ код, который вы не можете
+объяснить, вы взваливаете на мейнтейнеров ревью — а потенциально и
+поддержку — кода, который не понимает даже его автор. Использовать ИИ,
+чтобы находить проблемы и готовить исправления и фичи, — нормально,
+**при условии, что вы всё же проделываете должную работу** и доводите
+результат до вклада, который чего-то стоит, а не перекладываете этот
+труд на (и без того перегруженных) мейнтейнеров.
 
-Remember that for maintainers, accepting a PR means accepting long-term
-responsibility. They will be maintaining this code long after the
-contributor has moved on, and so may decline changes that are
-well-intentioned but don't fit the project's direction, add complexity
-they don't want to maintain, or where the need simply isn't sufficiently
-well-documented. It's on _you_ as the contributor to make the case for
-why accepting the contribution is worth the maintenance burden.
+Помните, что для мейнтейнеров принять PR — значит принять долгосрочную
+ответственность. Они будут поддерживать этот код ещё долго после того,
+как контрибьютор двинется дальше, и потому могут отклонять изменения,
+которые сделаны из лучших побуждений, но не вписываются в направление
+проекта, добавляют сложность, которую они не хотят поддерживать, или
+попросту недостаточно хорошо обоснованы. Именно _вам_ как контрибьютору
+предстоит убедительно объяснить, почему этот вклад стоит бремени его
+поддержки.
 
-> When receiving feedback on a PR, remember that your code is not you!
-> Reviewers are trying to make the code better, not criticizing you
-> personally. Ask clarifying questions if you disagree — you might learn
-> something, or maybe they will.
+> Получая отзывы на PR, помните: ваш код — это не вы! Ревьюеры
+> стараются сделать код лучше, а не критикуют вас лично. Если вы не
+> согласны — задавайте уточняющие вопросы: возможно, вы узнаете что-то
+> новое, а может, что-то узнают они.
 
-## Reviewing
+## Ревью
 
-You might think code review is something senior developers do, but
-you'll likely be asked to review code much earlier than you expect, and
-your perspective is valuable. Fresh eyes catch things that experienced
-developers overlook, and questions from someone less familiar with the
-code often reveal assumptions that should be documented or simplified.
+Вам может казаться, что код-ревью — занятие для старших разработчиков,
+но, скорее всего, ревьюить код вас попросят куда раньше, чем вы
+ожидаете, и ваш взгляд ценен. Свежий взгляд замечает то, что опытные
+разработчики упускают, а вопросы человека, менее знакомого с кодом,
+часто вскрывают допущения, которые стоило бы задокументировать или
+упростить.
 
-Review is also one of the fastest ways to learn. You'll see how others
-approach problems, pick up patterns and idioms, and develop intuition
-for what makes code readable. Beyond personal growth, reviews catch bugs
-before they reach production, spread knowledge across the team, and
-improve code quality through collaboration. They are not merely
-bureaucratic overhead.
+Ревью — это ещё и один из самых быстрых способов учиться. Вы увидите,
+как другие подходят к задачам, переймёте паттерны и идиомы и разовьёте
+интуицию в том, что делает код читаемым. Помимо личного роста, ревью
+ловит баги до того, как они доберутся до продакшена, распространяет
+знания по команде и повышает качество кода за счёт совместной работы.
+Это не просто бюрократические накладные расходы.
 
-Good code review is a skill you need to hone over time, but there are
-some tips that can make them much better much faster:
+Хорошее код-ревью — навык, который оттачивается со временем, но есть
+несколько советов, которые быстро сделают ваши ревью заметно лучше:
 
-- **Review the code, not the person**:
-  "This function is confusing" vs "You wrote confusing code."
-- **Prefer actionable comments**:
-  "Can you replace these globals with a config dataclass" is an easier
-  comment to address than "Don't use globals here"
-- **Ask questions rather than making demands**:
-  "What happens if X is null here?" invites discussion better than
-  "Handle the null case."
-- **Explain the "why"**:
-  "Consider using a constant here" is less useful than "Consider using a
-  constant here so we can easily adjust the timeout based on
-  environment."
-- **Distinguish blocking issues from suggestions**:
-  Be clear about what must change versus what's a matter of preference.
-- **Acknowledge what's good**:
-  Pointing out clever solutions or clean implementations is encouraging
-  and helps the author know what to continue doing.
-- **Know when to stop**:
-  Contributors only have so much time and patience, and it's not always
-  best spent handling all the nits. Focus on the big things, and
-  consider tidying up nits yourself after the fact.
+- **Ревьюйте код, а не человека**:
+  «Эта функция сбивает с толку» вместо «Вы написали запутанный код».
+- **Предпочитайте комментарии, по которым понятно, что делать**:
+  на «Можете заменить эти глобальные переменные на датакласс с
+  конфигурацией» отреагировать проще, чем на «Не используйте здесь
+  глобальные переменные»
+- **Задавайте вопросы, а не выдвигайте требования**:
+  «Что случится, если X здесь окажется null?» располагает к обсуждению
+  лучше, чем «Обработайте случай с null».
+- **Объясняйте «почему»**:
+  «Подумайте о том, чтобы использовать здесь константу» менее полезно,
+  чем «Подумайте о том, чтобы использовать здесь константу — так мы
+  сможем легко подстраивать таймаут под окружение».
+- **Отделяйте блокирующие проблемы от предложений**:
+  ясно обозначайте, что изменить необходимо, а что — дело вкуса.
+- **Отмечайте то, что сделано хорошо**:
+  указать на остроумное решение или чистую реализацию — значит
+  подбодрить автора и помочь ему понять, что стоит делать и дальше.
+- **Знайте, когда остановиться**:
+  время и терпение контрибьюторов не безграничны, и тратить их на
+  разбор всех мелких придирок — не всегда лучший вариант.
+  Сосредоточьтесь на главном, а мелочи, возможно, стоит потом
+  подчистить самостоятельно.
 
-> AI tools can catch certain issues, but they're not a substitute for
-> human review. They miss context, don't understand product
-> requirements, and can confidently suggest wrong things. They're worth
-> using as a first pass, but not a replacement for thoughtful human
-> review.
+> ИИ-инструменты способны отлавливать определённые проблемы, но они не
+> заменяют ревью человеком. Они упускают контекст, не понимают
+> продуктовых требований и могут уверенно предлагать неверные решения.
+> Их стоит использовать как первый проход, но не как замену вдумчивому
+> человеческому ревью.
 
-# Education
+# Обучение
 
-A lot of our non-coding time as engineers is spent either asking or
-answering questions, possibly a mixture of both; during collaboration,
-in dialogue with peers, or while trying to learn. Asking good questions
-is a skill that makes you better at learning from anyone, not just
-perfect explainers. Julia Evans has some excellent blog posts on "[How
-to ask good questions](https://jvns.ca/blog/good-questions/)" and "[How
-to get useful answers to your
-questions](https://jvns.ca/blog/2021/10/21/how-to-get-useful-answers-to-your-questions/)"
-that are worth reading.
+Изрядная часть нашего инженерного времени, не связанного с написанием
+кода, уходит на вопросы: мы либо задаём их, либо отвечаем на них, а
+порой и то и другое сразу — при совместной работе, в диалоге с
+коллегами или когда пытаемся чему-то научиться. Умение задавать хорошие
+вопросы — это навык, который позволяет учиться у кого угодно, а не
+только у тех, кто идеально объясняет. У Джулии Эванс есть отличные
+посты «[Как задавать хорошие
+вопросы](https://jvns.ca/blog/good-questions/)» и «[Как получать
+полезные ответы на свои
+вопросы](https://jvns.ca/blog/2021/10/21/how-to-get-useful-answers-to-your-questions/)»,
+которые стоит прочитать.
 
-Some particularly valuable pieces of advice are:
+Вот несколько особенно ценных советов:
 
-- **State your understanding first**: Say what you think you know and
-  ask "is that right?" This helps the answerer identify your actual
-  knowledge gaps.
-- **Ask yes/no questions**: "Is X true?" prevents tangential
-  explanations and usually prompts useful elaboration anyway.
-- **Be specific**: "How do SQL joins work?" is too vague. "Does a LEFT
-  JOIN include rows where the right table has no match?" is answerable.
-- **Admit when you don't understand**: Interrupt to ask about unfamiliar
-  terms. This reflects confidence, not weakness. Similarly, if they ask
-  questions of you that you do not know the answer to, it's best to say
-  "I don't know", and possibly follow up with "but I think ..." or even
-  "but I can find out".
-- **Don't accept incomplete answers**: Keep asking follow-ups until you
-  actually understand.
-- **Do some research first**: Basic investigation helps you ask more
-  targeted questions (though casual questions among colleagues are
-  fine).
+- **Сначала изложите своё понимание**: скажите, что, как вам кажется,
+  вы знаете, и спросите: «Всё верно?» Так отвечающему проще выявить
+  ваши реальные пробелы в знаниях.
+- **Задавайте вопросы «да/нет»**: вопрос «Верно ли X?» не даёт
+  объяснению уйти в сторону и обычно всё равно вызывает полезные
+  уточнения.
+- **Будьте конкретны**: «Как работают JOIN в SQL?» — слишком
+  расплывчато. «Включает ли LEFT JOIN строки, для которых в правой
+  таблице нет совпадений?» — на такой вопрос можно ответить.
+- **Признавайтесь, когда чего-то не понимаете**: перебивайте, чтобы
+  спросить о незнакомых терминах. Это признак уверенности, а не
+  слабости. Точно так же, если вам задают вопрос, ответа на который вы
+  не знаете, лучше всего сказать «я не знаю» — и, возможно, добавить
+  «но я думаю...» или даже «но я могу выяснить».
+- **Не соглашайтесь на неполные ответы**: продолжайте задавать
+  уточняющие вопросы, пока действительно не поймёте.
+- **Сначала немного разберитесь сами**: базовое предварительное
+  изучение помогает задавать более прицельные вопросы (хотя в
+  непринуждённых вопросах между коллегами нет ничего плохого).
 
-Remember: well-crafted questions benefit entire communities. They
-surface hidden assumptions that others need to understand too.
+Помните: хорошо сформулированные вопросы приносят пользу целым
+сообществам. Они вскрывают скрытые допущения, которые нужно понять и
+другим.
 
-> Note that this advice applies just as much when communicating with
-> LLMs!
+> Заметьте, что все эти советы в той же мере применимы и к общению с
+> LLM!
 
-# AI etiquette
+# ИИ-этикет
 
-With the growing use of LLMs and AI across software engineering, the
-social and professional norms around are still in flux. We already
-covered many of the tactical considerations in the [agentic coding
-lecture](/2026/agentic-coding/), but there are also "softer" parts of
-their use that are worth discussing.
+LLM и ИИ используются в разработке ПО всё шире, а социальные и
+профессиональные нормы вокруг них всё ещё не устоялись. Многие
+тактические аспекты мы уже разобрали в [лекции об агентном
+программировании](/2026/agentic-coding/), но есть и более «мягкие»
+стороны их использования, которые стоит обсудить.
 
-The first of these is that when AI meaningfully contributed to your
-work, **disclose it**. This isn't about shame — it's about honesty,
-setting appropriate expectations, and ensuring the resulting work gets
-the appropriate level of review. It's also worthwhile to disclose which
-_parts_ you use AI for — there's a meaningful distinction between "this
-whole thing is vibecoded" and "I wrote this backup tool and used an LLM
-to style the web frontend". For example, we've used LLMs to help write
-some of these lecture notes, including proofreading, brainstorming, and
-generating first drafts of code snippets and exercises.
+Первая из них: если ИИ внёс существенный вклад в вашу работу,
+**сообщайте об этом**. Дело не в стыде — дело в честности, в правильно
+выставленных ожиданиях и в том, чтобы результат прошёл ревью
+соответствующего уровня. Стоит также раскрывать, для каких именно
+_частей_ работы вы использовали ИИ — есть существенная разница между
+«я это всё навайбкодил» и «этот инструмент для бэкапов я написал сам,
+а LLM использовал, чтобы оформить веб-интерфейс». Например, мы
+использовали LLM при подготовке некоторых из этих конспектов лекций —
+в том числе для вычитки, брейнсторминга и генерации первых черновиков
+фрагментов кода и упражнений.
 
-You'll also want to follow the norms of the teams and projects you're
-contributing to here. Some teams have stricter policies around the use
-of AI than others (e.g., for compliance or data residency reasons), and
-you don't want to accidentally run afoul of that. Being open about your
-use helps prevent potentially costly mistakes.
+Кроме того, здесь стоит следовать нормам команд и проектов, в которые
+вы вносите вклад. В одних командах политика использования ИИ строже,
+чем в других — например, из соображений комплаенса или резидентности
+данных (data residency), — и случайно нарушить её вам совсем ни к
+чему. Открытость в этом вопросе помогает предотвратить потенциально
+дорогостоящие ошибки.
 
-> If you're aiming to learn as part of the work you're doing, keep in
-> mind that if you have AI do all or most of the work for you can be
-> self-defeating; you're likely to learn more about prompting (and maybe
-> reviewing AI output) than the task itself. Especially when you're
-> learning, the point may be the journey, not the destination, so using
-> AI to "get the solution quickly" is an anti-goal.
+> Если работа, которую вы делаете, для вас ещё и способ чему-то
+> научиться, имейте в виду: если всю работу или большую её часть за вас
+> делает ИИ, это может свести цель на нет — скорее всего, вы узнаете
+> больше о промптинге (и, может быть, о ревью вывода ИИ), чем о самой
+> задаче. Особенно во время обучения смысл может быть в пути, а не в
+> пункте назначения, так что использовать ИИ, чтобы «быстро получить
+> решение», — это антицель.
 
-A related concern comes up in interviews and other assessment
-situations. These are often intended to specifically evaluate _your_
-skills and abilities, not those of an LLM. More companies now allow you
-to use LLMs and other AI-assisted tooling in interviews as long as you
-let them observe those interactions as part of the interview (i.e., they
-are evaluating your skill in making use of those tools too!), but those
-are still in the minority. If you are unsure about whether AI assistance
-is in scope for a particular task, ask!
+Похожий вопрос встаёт на собеседованиях и в других ситуациях, где вас
+оценивают. Часто их цель — проверить именно _ваши_ навыки и
+способности, а не навыки LLM. Всё больше компаний теперь разрешают
+пользоваться LLM и другими ИИ-инструментами на собеседованиях — при
+условии, что вы позволите наблюдать за этими взаимодействиями как за
+частью собеседования (то есть они заодно оценивают и ваше умение
+пользоваться такими инструментами!), — но такие компании пока в
+меньшинстве. Если вы не уверены, допустима ли помощь ИИ в конкретной
+задаче, — спросите!
 
-> It should go without saying that if an assessment situation explicitly
-> calls for no external tools, no LLMs, etc., you should not use them.
-> Trying to do so discretely without getting caught **will** come back
-> to bite you.
+> Само собой разумеется: если условия оценивания явно запрещают внешние
+> инструменты, LLM и тому подобное, пользоваться ими не следует.
+> Попытка втихую сделать это и не попасться **обязательно** выйдет вам
+> боком.
 
-# Exercises
+# Упражнения
 
-1. Browse the source code of a well-known project (e.g.,
-   [Redis](https://github.com/redis/redis) or
-   [curl](https://github.com/curl/curl)). Find examples of some of the
-   comment types mentioned in the lecture: a useful TODO, a reference to
-   external documentation, a "why not" comment explaining an avoided
-   approach, or a hard-learned lesson. What would be lost if that
-   comment was not there?
+1. Полистайте исходный код какого-нибудь известного проекта (например,
+   [Redis](https://github.com/redis/redis) или
+   [curl](https://github.com/curl/curl)). Найдите примеры некоторых
+   типов комментариев, упомянутых в лекции: полезный TODO, ссылку на
+   внешнюю документацию, комментарий «почему не», объясняющий
+   подход, от которого отказались, или выстраданный урок.
+   Что было бы потеряно, не будь этого комментария?
 
-1. Pick an open-source project you're interested in and look at its
-   recent commit history (`git log`). Find one commit with a good
-   message that explains *why* the change was made, and one with a weak
-   message that only describes *what* changed. For the weak one, look at
-   the diff (`git show <hash>`) and try to write a better commit message
-   following the Problem → Solution → Implications structure. Notice how
-   much work is required to reassemble the necessary context after the
-   fact!
+1. Выберите интересный вам open-source-проект и посмотрите его недавнюю
+   историю коммитов (`git log`). Найдите один коммит с хорошим
+   сообщением, объясняющим, *почему* было сделано изменение, и один со
+   слабым сообщением, которое лишь описывает, *что* изменилось. Для
+   слабого посмотрите на diff (`git show <hash>`) и попробуйте написать
+   сообщение коммита получше, следуя структуре «Проблема → Решение →
+   Последствия». Обратите внимание, сколько труда уходит на то, чтобы
+   задним числом восстановить необходимый контекст!
 
-1. Compare the READMEs of three GitHub projects with 1000+ stars. Are
-   all of them equally useful? Look for things that come across mostly
-   as noise to you as a lesson for future READMEs you write yourself.
+1. Сравните README трёх проектов на GitHub с 1000+ звёзд. Все ли они
+   одинаково полезны? Поищите то, что кажется вам по большей части
+   шумом, — это урок для будущих README, которые вы напишете сами.
 
-1. Find an open issue on a project you use (check the "good first issue"
-   or "help wanted" labels if they have it). Evaluate the issue against
-   the criteria from the lecture: does it seem like it values the
-   maintainer's time and contains all the information necessary to debug
-   it, or do you expect that the maintainer may need to go multiple
-   rounds of questions with the submitter to get to the root problem?
+1. Найдите открытое issue в проекте, которым пользуетесь (загляните в
+   метки «good first issue» или «help wanted», если они там есть).
+   Оцените это issue по критериям из лекции: похоже ли, что оно ценит
+   время мейнтейнера и содержит всю информацию, необходимую для
+   отладки, или же вы ожидаете, что мейнтейнеру придётся пройти с
+   автором несколько раундов вопросов, чтобы добраться до корня
+   проблемы?
 
-1. Think of a bug you've encountered in software you use (or find one in
-   an issue tracker). Practice creating a minimal reproducible example:
-   strip away everything unrelated to the bug until you have the
-   smallest case that still demonstrates the problem. Write up what you
-   removed and why.
+1. Вспомните баг, на который вы натыкались в софте, которым
+   пользуетесь (или найдите такой в каком-нибудь issue-трекере).
+   Потренируйтесь составлять минимальный воспроизводимый пример:
+   убирайте всё, что не относится к багу, пока не останется самый
+   маленький случай, который всё ещё демонстрирует проблему. Опишите,
+   что вы убрали и почему.
 
-1. Find a merged pull request on a project you're familiar with that has
-   substantive review comments (not just "LGTM"). Read through the
-   review. Were all the comments equally productive? If you were the PR
-   author, how would you find the experience of getting all those
-   comments?
+1. Найдите в знакомом вам проекте влитый (merged) пул-реквест с
+   содержательными комментариями ревью (не просто «LGTM»). Прочитайте
+   ревью целиком. Все ли комментарии были одинаково продуктивны? Будь
+   вы автором PR, каково было бы вам получить все эти комментарии?
 
-1. Go to Stack Overflow and find a question in a technology you know
-   that has a highly-voted answer. Then find one that was closed or
-   heavily downvoted. Compare them against the advice from the lecture;
-   was it predictable which question would get better answers?
+1. Зайдите на Stack Overflow и найдите вопрос по знакомой вам
+   технологии с высоко оценённым ответом. Затем найдите вопрос, который
+   закрыли или сильно заминусовали. Сравните их с советами из лекции;
+   было ли предсказуемо, какой из вопросов получит ответы получше?

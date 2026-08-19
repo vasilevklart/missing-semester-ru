@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Agentic Coding"
+title: "Агентное программирование"
 description: >
-  Learn how to use AI coding agents effectively for software development tasks.
+  Научитесь эффективно использовать ИИ-агентов для программирования в задачах разработки ПО.
 thumbnail: /static/assets/thumbnails/2026/lec7.png
 date: 2026-01-21
 ready: true
@@ -11,9 +11,9 @@ video:
   id: sTdz6PZoAnw
 ---
 
-Coding agents are conversational AI models with access to tools such as reading/writing files, web search, and invoking shell commands. They live either in the IDE or in standalone command-line or GUI tools. Coding agents are highly autonomous and powerful tools, enabling a wide variety of use cases.
+Агенты для программирования — это диалоговые ИИ-модели с доступом к инструментам вроде чтения и записи файлов, веб-поиска и запуска команд оболочки (shell). Они живут либо в IDE, либо в отдельных инструментах — с интерфейсом командной строки или графическим. Агенты для программирования — мощные и весьма автономные инструменты, открывающие широкий спектр сценариев использования.
 
-This lecture builds on the AI-powered development material from the [Development Environment and Tools](/2026/development-environment/) lecture. As a quick demo, let's continue with the example from the [AI-powered development](/2026/development-environment/#ai-powered-development) section:
+Эта лекция опирается на материал о разработке с помощью ИИ из лекции [Среда разработки и инструменты](/2026/development-environment/). В качестве быстрой демонстрации продолжим пример из раздела [Разработка с помощью ИИ](/2026/development-environment/#ai-powered-development):
 
 ```python
 from urllib.request import urlopen
@@ -30,159 +30,159 @@ def extract(content: str) -> list[str]:
 print(extract(download_contents("https://raw.githubusercontent.com/missing-semester/missing-semester/refs/heads/master/_2026/development-environment.md")))
 ```
 
-We can try prompting a coding agent with the following task:
+Попробуем дать агенту для программирования следующую задачу:
 
 ```
 Turn this into a proper command-line program, with argparse for argument parsing. Add type annotations, and make sure the program passes type checking.
 ```
 
-The agent will read the file to understand it, then make some edits, and finally invoke the type checker to make sure the type annotations are correct. If it makes a mistake such that it fails type checking, it will likely iterate, though this is a simple task so that is unlikely to happen. Because coding agents have access to tools that may be harmful, by default, agent harnesses prompt the user to confirm tool calls.
+Агент прочитает файл, чтобы разобраться в нём, затем внесёт правки и напоследок запустит проверку типов, чтобы убедиться, что аннотации типов корректны. Если он ошибётся так, что проверка типов не пройдёт, он, скорее всего, сделает ещё одну итерацию, хотя задача простая, так что это маловероятно. Поскольку у агентов для программирования есть доступ к инструментам, способным навредить, по умолчанию обвязка агента (agent harness) просит пользователя подтверждать вызовы инструментов.
 
-> If the coding agent makes a mistake --- for example, if you have the `mypy` binary available directly on `$PATH` but the agent tries calling `python -m mypy` --- you can give it text feedback to help it course correct.
+> Если агент ошибается — например, у вас бинарник `mypy` доступен прямо в `$PATH`, а агент пытается вызвать `python -m mypy`, — вы можете дать ему обратную связь текстом, чтобы он скорректировал курс.
 
-Coding agents support multi-turn interaction, so you can iterate on work over a back-and-forth conversation with the agent. You can even interrupt the agent if it's going down the wrong track. One helpful mental model might be that of a manager of an intern: the intern will do the nitty gritty work, but will require guidance, and will occasionally do the wrong thing and need to be corrected.
+Агенты для программирования поддерживают многоходовое взаимодействие, так что работу можно итеративно дорабатывать в диалоге с агентом. Агента можно даже прервать, если он свернул не туда. Полезная ментальная модель — руководитель и стажёр: стажёр возьмёт на себя всю кропотливую работу, но ему нужны указания, а время от времени он будет делать что-то не то — и его придётся поправлять.
 
-> For a more illustrative demo, try asking the agent as a follow-up to run the resulting script. Observe the outputs, and try asking it to make a change (e.g., ask it to include only absolute URLs).
+> Для более наглядной демонстрации попробуйте следующим сообщением попросить агента запустить получившийся скрипт. Посмотрите на вывод и попросите его внести изменение (например, оставить только абсолютные URL).
 
-# How AI models and agents work
+# Как работают ИИ-модели и агенты {#how-ai-models-and-agents-work}
 
-Fully explaining the inner workings of modern [large language models (LLMs)](https://en.wikipedia.org/wiki/Large_language_model) and infrastructure such as agent harnesses is beyond the scope of this course. However, having a high-level understanding of some of the key ideas is helpful for effectively _using_ this bleeding edge technology and understanding its limitations.
+Полное объяснение внутреннего устройства современных [больших языковых моделей (LLM)](https://en.wikipedia.org/wiki/Large_language_model) и инфраструктуры вроде агентных обвязок выходит за рамки этого курса. Однако общее представление о нескольких ключевых идеях помогает эффективно _использовать_ эту новейшую технологию и понимать её ограничения.
 
-LLMs can be viewed as modeling the probability distribution of completion strings (outputs) given prompt strings (inputs). LLM inference (what happens when you, e.g., supply a query to a conversational chat app) _samples_ from this probability distribution. LLMs have a fixed _context window_, the maximum length of the input and output strings.
+LLM можно рассматривать как модель распределения вероятностей строк-дополнений (выходов) при условии строк-промптов (входов). Инференс (inference) LLM — то, что происходит, когда вы, например, отправляете запрос в диалоговое чат-приложение, — _сэмплирует_ из этого распределения вероятностей. У LLM фиксированное _контекстное окно_ — максимальная длина входной и выходной строк.
 
 {% comment %}
-> In mathematical notation, the LLM models the probability distribution $\pi_\theta$ of completions $y$ conditioned on prompts $x$, and we sample from this distribution: $\hat{y} \sim \pi_\theta(\cdot \mid x)$.
+> В математической записи LLM моделирует распределение вероятностей $\pi_\theta$ дополнений $y$ при условии промптов $x$, и мы сэмплируем из этого распределения: $\hat{y} \sim \pi_\theta(\cdot \mid x)$.
 {% endcomment %}
 
-AI tools such as conversational chat and coding agents build on top of this primitive. For multi-turn interactions, chat apps and agents use turn markers and supply the entire conversation history as the prompt string every time there is a new user prompt, invoking LLM inference once per user prompt. For tool-calling agents, the harness interprets certain LLM outputs as requests to invoke a tool, and the harness supplies the results of the tool call back to the model as part of the prompt string (so LLM inference runs again every time there is a tool call/response). The core concepts in tool-calling agents can be [implemented in 200 lines of code](https://www.mihaileric.com/The-Emperor-Has-No-Clothes/).
+Инструменты ИИ, такие как диалоговый чат и агенты для программирования, строятся поверх этого примитива. Для многоходового взаимодействия чат-приложения и агенты используют маркеры реплик и при каждом новом промпте пользователя передают в качестве строки-промпта всю историю диалога, запуская инференс LLM по одному разу на каждый промпт пользователя. В агентах с вызовом инструментов обвязка интерпретирует определённые выходы LLM как запросы на вызов инструмента и передаёт результаты вызова обратно модели как часть строки-промпта (так что инференс LLM запускается заново при каждом вызове инструмента и ответе на него). Ключевые концепции агентов с вызовом инструментов можно [реализовать в 200 строк кода](https://www.mihaileric.com/The-Emperor-Has-No-Clothes/).
 
-## Privacy
+## Приватность
 
-Most AI coding tools in their standard configurations send a lot of your data to the cloud. Sometimes the harness runs locally while LLM inference runs in the cloud, other times even more of the software is running in the cloud (and, e.g., the service provider might effectively get a copy of your entire repository as well as all interactions you have with the AI tool).
+Большинство ИИ-инструментов для программирования в стандартной конфигурации отправляют в облако немало ваших данных. Иногда обвязка агента работает локально, а инференс LLM выполняется в облаке; в других случаях в облако вынесена ещё большая часть софта (и тогда, например, провайдер сервиса фактически получает копию всего вашего репозитория, а заодно и всех ваших взаимодействий с ИИ-инструментом).
 
-There are open-source AI coding tools and open-source LLMs that are pretty good (though not quite as good as the proprietary models), but at the present, for most users, running bleeding-edge open LLMs locally will be infeasible due to hardware limitations.
+Существуют вполне неплохие ИИ-инструменты для программирования с открытым исходным кодом и открытые LLM (хотя они всё же не так хороши, как проприетарные модели), но на данный момент для большинства пользователей запускать передовые открытые LLM локально нереально из-за аппаратных ограничений.
 
-# Use cases
+# Сценарии использования
 
-Coding agents can be helpful for a wide variety of tasks. Some examples:
+Агенты для программирования могут быть полезны в самых разных задачах. Несколько примеров:
 
-- **Implementing new features.** As in the example above, you can ask a coding agent to implement a feature. Giving a good specification is more of an art than a science at this point; you want the input to the agent to be descriptive enough so that the agent does what you want it to do (at least heading in the right direction so you can iterate), but not overly descriptive to the point where you're doing too much work yourself. Test-driven development can be particularly effective: write tests (or use the coding agent to help you write tests), audit them to ensure they capture what you want, and then ask the coding agent to implement the feature. Models are continually improving, so you'll have to keep your intuition up-to-date on what the models are capable of.
-    > We used Claude Code to [implement](https://github.com/missing-semester/missing-semester/pull/345) these Tufte-style sidenotes.
+- **Реализация новых фич.** Как в примере выше, вы можете попросить агента для программирования реализовать фичу. Составление хорошей спецификации на сегодняшний день — скорее искусство, чем наука: вход для агента должен быть достаточно подробным, чтобы агент сделал именно то, что вам нужно (или хотя бы двигался в правильном направлении, чтобы можно было итерировать), но не настолько подробным, чтобы вы делали слишком много работы сами. Особенно эффективной может оказаться разработка через тестирование (test-driven development): напишите тесты (или напишите их с помощью агента), проверьте, что они отражают именно то, чего вы хотите, а затем попросите агента реализовать фичу. Модели непрерывно улучшаются, так что придётся постоянно обновлять свои представления о том, на что они способны.
+    > Мы использовали Claude Code, чтобы [реализовать](https://github.com/missing-semester/missing-semester/pull/345) эти боковые заметки в стиле Тафти.
 {%- comment %}
-No need to demo this, since the intro of a lecture was a small demo of adding a new feature.
+Демонстрировать это не нужно: вступление лекции уже было небольшой демонстрацией добавления новой фичи.
 {% endcomment %}
-- **Fixing errors.** If you have errors from your compiler, linter, type checker, or tests, you can ask your agent to correct them, for example with a prompt like "fix the issues with mypy". Coding models are particularly effective when you can get them in a feedback loop, so try to set things up so that the model can run the failing check directly, which will let it iterate autonomously. If this is impractical, you can give the model feedback manually.
-    > On commit [f552b55](https://github.com/missing-semester/missing-semester/commit/f552b5523462b22b8893a8404d2110c4e59613dd) of the missing-semester repo, we prompted Claude Code with "Review the agentic coding lecture for typos and grammatical issues" and subsequently asked it to fix the issues it found, which were committed in [f1e1c41](https://github.com/missing-semester/missing-semester/commit/f1e1c417adba6b4149f7eef91ff5624de40dc637).
+- **Исправление ошибок.** Если у вас есть ошибки от компилятора, линтера, проверки типов или тестов, вы можете попросить агента их исправить — например, промптом вроде «fix the issues with mypy». Модели для программирования особенно эффективны, когда их удаётся замкнуть в цикл обратной связи, поэтому постарайтесь устроить всё так, чтобы модель могла сама запускать падающую проверку — это позволит ей итерировать автономно. Если это непрактично, можно давать модели обратную связь вручную.
+    > На коммите [f552b55](https://github.com/missing-semester/missing-semester/commit/f552b5523462b22b8893a8404d2110c4e59613dd) репозитория missing-semester мы дали Claude Code промпт «Review the agentic coding lecture for typos and grammatical issues», а затем попросили исправить найденные проблемы; исправления закоммичены в [f1e1c41](https://github.com/missing-semester/missing-semester/commit/f1e1c417adba6b4149f7eef91ff5624de40dc637).
 {%- comment %}
-Demo a coding agent fixing the bug in https://github.com/anishathalye/dotbot/commit/cef40c902ef0f52f484153413142b5154bbc5e99.
+Продемонстрировать, как агент для программирования исправляет баг из https://github.com/anishathalye/dotbot/commit/cef40c902ef0f52f484153413142b5154bbc5e99.
 
-Write the failing tests to demo the bug, and then ask the agent to fix. Prepped in branch demo-bugfix.
+Написать падающие тесты, демонстрирующие баг, а затем попросить агента его исправить. Подготовлено в ветке demo-bugfix.
 
-Can run the failing test with:
+Запустить падающий тест можно так:
 
     hatch test tests/test_cli.py::test_issue_357
 
-Can prompt coding agent with:
+Промпт для агента может быть таким:
 
     There is a bug I wrote a failing test for, you can repro it with `hatch test tests/test_cli.py::test_issue_357`. Fix the bug.
 
-Get it to commit the changes.
+Попросить агента закоммитить изменения.
 {% endcomment %}
-- **Refactoring.** You can use coding agents to refactor code in various ways, from simple tasks like renaming a method (this kind of refactoring is also supported by [code intelligence](/2026/development-environment/#code-intelligence-and-language-servers)) to more complex tasks like breaking out functionality into a separate module.
-    > We used Claude Code to [split](https://github.com/missing-semester/missing-semester/pull/344) agentic coding into its own lecture.
+- **Рефакторинг.** С помощью агентов для программирования можно рефакторить код самыми разными способами: от простых задач вроде переименования метода (такой рефакторинг умеют делать и средства [интеллектуальной работы с кодом](/2026/development-environment/#code-intelligence-and-language-servers)) до более сложных — например, выделения функциональности в отдельный модуль.
+    > Мы использовали Claude Code, чтобы [выделить](https://github.com/missing-semester/missing-semester/pull/344) агентное программирование в отдельную лекцию.
 {%- comment %}
-Show usage in Missing Semester, point out that the agent did make some mistakes.
+Показать использование на репозитории Missing Semester и отметить, что агент всё же допустил несколько ошибок.
 {% endcomment %}
-- **Code review.** You can ask coding agents to review code. You can give them basic guidance, like "review my latest changes that are not yet committed". If you want to review a pull request and your coding agent supports web fetch, or you have command-line tools like the [GitHub CLI](https://cli.github.com/) installed, you might even be able to ask the coding agent "Review the pull request {link}" and it'll handle it from there.
+- **Код-ревью.** Агентов для программирования можно просить делать ревью кода. Можно давать им простые указания вроде «review my latest changes that are not yet committed». Если вы хотите сделать ревью пул-реквеста и ваш агент умеет загружать веб-страницы (web fetch) или у вас установлены инструменты командной строки вроде [GitHub CLI](https://cli.github.com/), может хватить даже промпта «Review the pull request {link}» — дальше агент разберётся сам.
 {%- comment %}
-In Porcupine repo, prompt agent with:
+В репозитории Porcupine дать агенту промпт:
 
     Review this PR: https://github.com/anishathalye/porcupine/pull/39
 {% endcomment %}
-- **Code understanding.** You can ask a coding agent questions about a codebase, which can be particularly helpful for onboarding.
+- **Понимание кода.** Агенту для программирования можно задавать вопросы о кодовой базе — это особенно полезно при погружении в новый проект (onboarding).
 {%- comment %}
-Some prompts to try in the missing-semester repo:
+Промпты, которые можно попробовать в репозитории missing-semester:
 
     How do I run this site locally?
 
     How are the social preview cards implemented?
 {% endcomment %}
-- **As a shell.** You can ask the coding agent to use a particular tool to solve a task, so you can invoke a shell command using natural language, such as "use the find command to find all files older than 30 days" or "use mogrify to resize all the jpgs to 50% of their original size".
+- **Как командная оболочка.** Агента можно попросить решить задачу конкретным инструментом, то есть вызывать команды оболочки на естественном языке: например, «use the find command to find all files older than 30 days» или «use mogrify to resize all the jpgs to 50% of their original size».
 {%- comment %}
-In Dotbot repo, prompt agent with:
+В репозитории Dotbot дать агенту промпт:
 
     Use the ag command to find all Python renaming imports
 {% endcomment %}
-- **Vibe coding.** Agents are powerful enough that you can implement some applications without writing a single line of code yourself.
-    > [Here is an example](https://github.com/cleanlab/office-presence-dashboard) of a real-world project that one of the instructors vibe-coded.
+- **Вайб-кодинг (vibe coding).** Агенты уже достаточно мощны, чтобы некоторые приложения можно было реализовать, не написав самостоятельно ни строчки кода.
+    > [Вот пример](https://github.com/cleanlab/office-presence-dashboard) реального проекта, который навайбкодил один из преподавателей.
 {%- comment %}
-In missing-semester repo, prompt agent with:
+В репозитории missing-semester дать агенту промпт:
 
     Make this site look retro.
 {% endcomment %}
 
-# Advanced agents
+# Продвинутые агенты
 
-Here, we give a brief overview of some more advanced usage patterns and capabilities of coding agents.
+Здесь мы кратко рассмотрим несколько более продвинутых паттернов использования и возможностей агентов для программирования.
 
-- **Reusable prompts.** Create reusable prompts or templates. For example, you can write a detailed prompt to do code review in a particular way, and save that as a reusable prompt.
-    > Agent tooling evolves quickly. In some tools, reusable prompts as a standalone feature are deprecated. For example, in Codex and Claude Code, they are [subsumed](https://developers.openai.com/codex/custom-prompts) by [skills](https://code.claude.com/docs/en/skills).
-- **Parallel agents.** Coding agents can be slow: you can prompt the agent, and it can work at a problem for tens of minutes. You can run multiple copies of agents at the same time, either working on the same task (LLMs are stochastic, so it can be helpful to run the same thing multiple times and take the best solution) or different tasks (e.g., implement two non-overlapping features at the same time). To keep the different agents' changes from interfering with each other, you can use [git worktrees](https://git-scm.com/docs/git-worktree), which we cover in the lecture on [version control](/2026/version-control/).
-- **MCPs.** MCP, which stands for _Model Context Protocol_, is an open protocol that you can use to connect your coding agents with tools. For example, this [Notion MCP server](https://github.com/makenotion/notion-mcp-server) can let your agent read/write Notion docs, enabling use cases like "read the spec linked in {Notion doc}, draft an implementation plan as a new page in Notion, and then implement a prototype". For discovering MCPs, you can use directories like [Pulse](https://www.pulsemcp.com/servers) and [Glama](https://glama.ai/mcp/servers).
-- **Context management.** As we noted [above](#how-ai-models-and-agents-work), the LLMs that underlie coding agents have a limited _context window_. Effective use of coding agents necessitates making good use of context. You want to make sure the agent has access to the information it needs, but avoid unnecessary context to avoid overflowing the context window or degrading the performance of the model (which tends to happen as context size grows, even if it doesn't overflow the context window). Agent harnesses automatically supply, and to some degree, manage context, but a lot of control is left to the user.
-    - **Clearing the context window.** The most basic control, coding agents support clearing the context window (starting a new conversation), which you should do for unrelated queries.
-    - **Rewinding the conversation.** Some coding agents support undoing steps in the conversation history. Rather than give a follow-up message steering the agent in a different direction, in situations where an "undo" makes more sense, this more effectively manages context.
+- **Переиспользуемые промпты.** Создавайте переиспользуемые промпты или шаблоны. Например, вы можете написать подробный промпт, задающий определённую манеру код-ревью, и сохранить его как переиспользуемый промпт.
+    > Инструментарий агентов быстро развивается. В некоторых инструментах переиспользуемые промпты как самостоятельная функция уже объявлены устаревшими. Например, в Codex и Claude Code они [поглощены](https://developers.openai.com/codex/custom-prompts) [навыками (skills)](https://code.claude.com/docs/en/skills).
+- **Параллельные агенты.** Агенты для программирования могут быть медленными: вы даёте агенту промпт, и он может трудиться над задачей десятки минут. Можно запускать несколько копий агентов одновременно — либо над одной и той же задачей (LLM стохастичны, поэтому бывает полезно запустить одно и то же несколько раз и взять лучшее решение), либо над разными (например, реализовать две непересекающиеся фичи одновременно). Чтобы изменения разных агентов не мешали друг другу, можно использовать [git worktrees](https://git-scm.com/docs/git-worktree), которые мы разбираем в лекции о [контроле версий](/2026/version-control/).
+- **MCP.** MCP, что расшифровывается как _Model Context Protocol_, — это открытый протокол, с помощью которого можно подключать инструменты к вашим агентам для программирования. Например, вот этот [MCP-сервер для Notion](https://github.com/makenotion/notion-mcp-server) может дать вашему агенту возможность читать и редактировать документы Notion, открывая сценарии вроде «read the spec linked in {Notion doc}, draft an implementation plan as a new page in Notion, and then implement a prototype». Искать MCP можно в каталогах вроде [Pulse](https://www.pulsemcp.com/servers) и [Glama](https://glama.ai/mcp/servers).
+- **Управление контекстом.** Как мы отмечали [выше](#how-ai-models-and-agents-work), у LLM, лежащих в основе агентов для программирования, ограниченное _контекстное окно_. Эффективное использование агентов для программирования требует разумного обращения с контекстом. Нужно, чтобы агент имел доступ ко всей необходимой ему информации, но лишнего контекста стоит избегать — иначе можно переполнить контекстное окно или ухудшить качество работы модели (оно, как правило, снижается с ростом размера контекста, даже если окно не переполняется). Обвязки агентов подставляют контекст автоматически и до некоторой степени сами им управляют, но значительная часть контроля остаётся за пользователем.
+    - **Очистка контекстного окна.** Самый базовый механизм управления: агенты для программирования поддерживают очистку контекстного окна (начало нового диалога) — делайте это для не связанных между собой запросов.
+    - **Перемотка диалога назад.** Некоторые агенты для программирования поддерживают отмену шагов в истории диалога. В ситуациях, когда уместнее именно «отмена», это управляет контекстом эффективнее, чем ещё одно сообщение, разворачивающее агента в другую сторону.
 {%- comment %}
-Make up a quick demo.
+Придумать быструю демонстрацию.
 {% endcomment %}
-    - **Compaction.** To enable conversations of unbounded length, coding agents support context _compaction_: if the conversation history grows too long, they will automatically call an LLM to summarize the prefix of the conversation, and replace the conversation history with the summary. Some agents give control to the user to invoke compaction when desired.
+    - **Сжатие контекста (compaction).** Чтобы диалоги могли быть неограниченной длины, агенты для программирования поддерживают _сжатие_ (compaction) контекста: если история диалога становится слишком длинной, они автоматически вызовут LLM, чтобы суммаризовать начало диалога, и заменят историю этим резюме. Некоторые агенты дают пользователю возможность запускать сжатие по требованию.
 {%- comment %}
-Show `/compact` in Claude Code, show full summary.
+Показать `/compact` в Claude Code, показать полное резюме.
 {% endcomment %}
-    - **llms.txt.** The `/llms.txt` file is a proposed [standard](https://llmstxt.org/) location for a document meant for LLMs to use at inference time. Products (e.g., [cursor.com/llms.txt](https://cursor.com/llms.txt)), software libraries (e.g., [ai.pydantic.dev/llms.txt](https://ai.pydantic.dev/llms.txt)), and APIs (e.g., [apify.com/llms.txt](https://apify.com/llms.txt)) might have `llms.txt` files that are handy for development. Such documents are more information dense per token, and so they are more context-efficient than asking your coding agent to fetch and read an HTML page. External documentation is handy when a coding agent doesn't have built-in knowledge about a dependency you are trying to use (e.g., because it was published after the LLM's knowledge cutoff).
+    - **llms.txt.** Файл `/llms.txt` — предлагаемое [стандартное](https://llmstxt.org/) расположение документа, рассчитанного на чтение LLM во время инференса. У продуктов (например, [cursor.com/llms.txt](https://cursor.com/llms.txt)), программных библиотек (например, [ai.pydantic.dev/llms.txt](https://ai.pydantic.dev/llms.txt)) и API (например, [apify.com/llms.txt](https://apify.com/llms.txt)) могут быть файлы `llms.txt`, полезные при разработке. Такие документы несут больше информации в расчёте на токен, поэтому расходуют контекст экономнее, чем просьба к агенту скачать и прочитать HTML-страницу. Внешняя документация выручает, когда у агента для программирования нет встроенных знаний о зависимости, которую вы пытаетесь использовать (например, потому что она была опубликована после даты отсечения знаний LLM — knowledge cutoff).
 {%- comment %}
-Side-by-side comparison in an empty repo (on Desktop or some other self-contained place, with `git init` run in it):
+Сравнение бок о бок в пустом репозитории (на рабочем столе или в другом изолированном месте, с выполненным в нём `git init`):
 
     Write a single-file Python program example in demo.py using semlib to sort "Ilya Sutskever", "Soumith Chintala", and "Donald Knuth" in terms of their fame as AI researchers.
 
     Write a single-file Python program example in demo.py using semlib to sort "Ilya Sutskever", "Soumith Chintala", and "Donald Knuth" in terms of their fame as AI researchers. See https://semlib.anish.io/llms.txt. Follow links to Markdown versions of any pages linked in llms.txt files.
 
-Not sure why the agent doesn't do this by default. You'd probably put that last sentence in a CLAUDE.md file.
+Непонятно, почему агент не делает этого по умолчанию. Последнее предложение, вероятно, стоило бы поместить в файл CLAUDE.md.
 {% endcomment %}
-    - **AGENTS.md.** Most coding agents support [AGENTS.md](https://agents.md/) or similar (e.g., Claude Code looks for `CLAUDE.md`) as a README for coding agents. When the agent starts, it pre-fills the context with the entire contents of `AGENTS.md`. You can use this to give the agent advice that is common across sessions (e.g., instruct it to always run the type-checker after making code changes, explain how to run unit tests, or provide links to third-party docs that the agent can browse). Some coding agents can auto-generate this file (e.g., the `/init` command in Claude Code). See [here](https://github.com/pydantic/pydantic-ai/blob/main/CLAUDE.md) for a real-world example of an `AGENTS.md`.
+    - **AGENTS.md.** Большинство агентов для программирования поддерживают [AGENTS.md](https://agents.md/) или что-то похожее (например, Claude Code ищет `CLAUDE.md`) — своего рода README для агентов. При запуске агент заранее заполняет контекст всем содержимым `AGENTS.md`. Так агенту можно давать советы, общие для всех сессий (например, велеть ему всегда запускать проверку типов после изменения кода, объяснить, как запускать модульные тесты, или дать ссылки на стороннюю документацию, которую агент может просматривать). Некоторые агенты умеют генерировать этот файл автоматически (например, команда `/init` в Claude Code). Реальный пример `AGENTS.md` можно посмотреть [здесь](https://github.com/pydantic/pydantic-ai/blob/main/CLAUDE.md).
 {%- comment %}
-Dotbot example, CLAUDE.md that includes @DEVELOPMENT.md and says to always run the type checker and code formatter after making any changes to Python code.
+Пример с Dotbot: CLAUDE.md, который включает @DEVELOPMENT.md и велит всегда запускать проверку типов и форматтер кода после любых изменений в Python-коде.
 
-Example prompt, off of master:
+Пример промпта, от ветки master:
 
     Remove the "--version" command-line flag.
 
-This is something that'll be fast, for demonstration purposes.
+Это будет быстро — как раз для демонстрации.
 {% endcomment %}
-    - **Skills.** Content in the `AGENTS.md` is always loaded, in its entirety, into the context window of an agent. _Skills_ add one level of indirection to avoid context bloat: you can provide the agent with a list of skills along with descriptions, and the agent can "open" the skill (load it into its context window) as desired.
-    - **Subagents.** Some coding agents let you define subagents, which are agents for task-specific workflows. The top-level coding agent can invoke a sub-agent to complete a particular task, which enables both the top-level agent and subagent to more effectively manage context. The top-level agent's context isn't bloated with everything the subagent sees, and the subagent can get just the context it needs for its task. As one example, some coding agents implement web research as a subagent: the top-level agent will pose a query to the subagent, which will run web search, retrieve individual web pages, analyze them, and provide an answer to the query to the top-level agent. This way, the top-level agent doesn't have its context bloated by the full content of all retrieved web pages, and the subagent doesn't have in its context the rest of the conversation history of the top-level agent.
+    - **Навыки.** Содержимое `AGENTS.md` всегда загружается в контекстное окно агента целиком. _Навыки_ добавляют один уровень косвенности, чтобы не раздувать контекст: вы даёте агенту список навыков с описаниями, а агент по мере необходимости «открывает» навык (загружает его в своё контекстное окно).
+    - **Субагенты.** Некоторые агенты для программирования позволяют определять субагентов — агентов для специализированных рабочих процессов. Агент верхнего уровня может вызвать субагента для выполнения конкретной задачи, что позволяет и агенту верхнего уровня, и субагенту эффективнее управлять контекстом. Контекст агента верхнего уровня не раздувается всем, что видит субагент, а субагент получает ровно тот контекст, который нужен для его задачи. Один из примеров: некоторые агенты для программирования реализуют веб-исследование в виде субагента — агент верхнего уровня формулирует субагенту запрос, тот выполняет веб-поиск, скачивает отдельные веб-страницы, анализирует их и возвращает агенту верхнего уровня ответ на запрос. Благодаря этому контекст агента верхнего уровня не раздувается полным содержимым всех скачанных веб-страниц, а у субагента в контексте нет остальной истории диалога агента верхнего уровня.
 
-For many of the advanced features that require writing prompts (e.g., skills or subagents), you can use LLMs to get you started. Some coding agents even have built-in support for doing this. For example, Claude Code can generate a subagent from a short prompt (invoke `/agents` and create a new agent). Try creating a subagent with this prompt:
+Для многих продвинутых возможностей, требующих написания промптов (например, навыков или субагентов), первый набросок можно получить с помощью LLM. В некоторых агентах для программирования это даже поддерживается «из коробки». Например, Claude Code может сгенерировать субагента из короткого промпта (вызовите `/agents` и создайте нового агента). Попробуйте создать субагента с таким промптом:
 
 ```
 A Python code checking agent that uses `mypy` and `ruff` to type-check, lint, and format *check* any files that have been modified from the last git commit.
 ```
 
-Then, you can use the top-level agent to explicitly invoke the subagent with a message like "use the code checker subagent". You might also be able to get the top-level agent to automatically invoke the subagent when appropriate, for example, after modifying any Python files.
+Затем субагента можно явно вызвать через агента верхнего уровня сообщением вроде «use the code checker subagent». Возможно, вам также удастся добиться, чтобы агент верхнего уровня вызывал субагента автоматически, когда это уместно, — например, после изменения любых Python-файлов.
 
-# What to watch out for
+# На что обращать внимание
 
-AI tools can make mistakes. They are built on LLMs, which are just probabilistic next-token-prediction models. They are not "intelligent" in the same way as humans. Review AI output for correctness and security bugs. Sometimes verifying code can be harder than writing the code yourself; for critical code, consider writing it by hand. AI can go down rabbit holes and try to gaslight you; be aware of debugging spirals. Don't use AI as a crutch, and be wary of overreliance or having a shallow understanding. There's still a huge class of programming tasks that AI is still incapable of doing. Computational thinking is still valuable.
+Инструменты ИИ могут ошибаться. Они построены на LLM — всего лишь вероятностных моделях предсказания следующего токена. Они не «интеллектуальны» в том смысле, в каком интеллектуальны люди. Проверяйте вывод ИИ на корректность и на уязвимости. Иногда проверить код бывает труднее, чем написать его самому; критически важный код, возможно, стоит писать вручную. ИИ может уходить в кроличьи норы и пытаться вас газлайтить; помните о спиралях отладки (debugging spirals). Не используйте ИИ как костыль и остерегайтесь чрезмерной зависимости и поверхностного понимания. По-прежнему существует огромный класс задач программирования, которые ИИ не способен решить. Вычислительное мышление всё ещё ценно.
 
-# Recommended software
+# Рекомендуемое ПО
 
-Many IDEs / AI coding extensions include coding agents (see recommendations from the [development environment lecture](/2026/development-environment/)). Other popular coding agents include Anthropic's [Claude Code](https://www.claude.com/product/claude-code), OpenAI's [Codex](https://openai.com/codex/), and open-source agents like [opencode](https://github.com/anomalyco/opencode).
+Многие IDE и ИИ-расширения для программирования включают в себя агентов для программирования (см. рекомендации из [лекции о среде разработки](/2026/development-environment/)). Среди других популярных агентов для программирования — [Claude Code](https://www.claude.com/product/claude-code) от Anthropic, [Codex](https://openai.com/codex/) от OpenAI и open-source-агенты вроде [opencode](https://github.com/anomalyco/opencode).
 
-# Exercises
+# Упражнения
 
-1. Compare the experience of coding by hand, using AI autocomplete, inline chat, and agents by doing the same programming task four times. The best candidate is a small-sized feature from a project you're already working on. If you're looking for other ideas, you could consider completing "good first issue" style tasks in open-source projects on GitHub, or [Advent of Code](https://adventofcode.com/) or [LeetCode](https://leetcode.com/) problems.
-1. Use an AI coding agent to navigate an unfamiliar codebase. This is best done in the context of wanting to debug or add a new feature to a project you actually care about. If you don't have any that come to mind, try using an AI agent to understand how security-related features work in the [opencode](https://github.com/anomalyco/opencode) agent.
-1. Vibe code a small app from scratch. Do not write a single line of code by hand.
-1. For your coding agent of choice, create and test an `AGENTS.md` (or analogous for your agent of choice, such as `CLAUDE.md`), a skill (e.g., [skill in Claude Code](https://code.claude.com/docs/en/skills) or [skill in Codex](https://developers.openai.com/codex/skills/)), and a subagent (e.g., [subagent in Claude Code](https://code.claude.com/docs/en/sub-agents)). Think about when you'd want to use one of these versus another. Note that your coding agent of choice might not support some of these functionalities; you can either skip them, or try a different coding agent that has support.
-1. Use a coding agent to accomplish the same goal as in the Markdown bullet points regex exercise from the [Code Quality lecture](/2026/code-quality/). Does it complete the tasks via direct file edits? What are the downsides and limitations of an agent editing the file directly to complete such a task? Figure out how to prompt the agent such that it doesn't complete the task via direct file edits. Hint: ask the agent to use one of the command-line tools mentioned in the [first lecture](/2026/course-shell/).
-1. Most coding agents support a form of "yolo mode" (e.g., in Claude Code, `--dangerously-skip-permissions`). It is not secure to use this mode directly, but it may be acceptable to run a coding agent in an isolated environment like a virtual machine or container and then enable autonomous operation. Get this setup running on your machine. Documentation such as [Claude Code devcontainers](https://code.claude.com/docs/en/devcontainer) or [Docker Sandboxes / Claude Code](https://docs.docker.com/ai/sandboxes/agents/claude-code/) may come in handy. There is more than one way to set this up.
+1. Сравните опыт программирования вручную, с ИИ-автодополнением, со встроенным чатом (inline chat) и с агентами, выполнив одну и ту же задачу по программированию четыре раза. Лучший кандидат — небольшая фича в проекте, над которым вы уже работаете. Если нужны другие идеи, можно взять задачи в духе «good first issue» в open-source-проектах на GitHub либо задачи с [Advent of Code](https://adventofcode.com/) или [LeetCode](https://leetcode.com/).
+1. Используйте ИИ-агента для программирования, чтобы сориентироваться в незнакомой кодовой базе. Лучше всего делать это, когда вы хотите что-то отладить или добавить новую фичу в проект, который вам действительно небезразличен. Если ничего подходящего не приходит в голову, попробуйте с помощью ИИ-агента разобраться, как устроены связанные с безопасностью функции в агенте [opencode](https://github.com/anomalyco/opencode).
+1. Навайбкодьте небольшое приложение с нуля. Не пишите ни одной строчки кода вручную.
+1. Для выбранного вами агента для программирования создайте и протестируйте `AGENTS.md` (или аналог для вашего агента, например `CLAUDE.md`), навык (skill; например, [навык в Claude Code](https://code.claude.com/docs/en/skills) или [навык в Codex](https://developers.openai.com/codex/skills/)) и субагента (например, [субагент в Claude Code](https://code.claude.com/docs/en/sub-agents)). Подумайте, в каких случаях вы бы предпочли один из этих механизмов другому. Учтите, что ваш агент может не поддерживать какие-то из этих возможностей; в таком случае либо пропустите эти пункты, либо попробуйте другого агента для программирования, где поддержка есть.
+1. С помощью агента для программирования решите ту же задачу, что и в упражнении с регулярными выражениями про маркеры списков в Markdown из [лекции «Качество кода»](/2026/code-quality/). Выполняет ли он эти задачи прямым редактированием файла? Каковы недостатки и ограничения подхода, при котором агент для такой задачи правит файл напрямую? Придумайте, как сформулировать промпт, чтобы агент не решал задачу прямым редактированием файлов. Подсказка: попросите агента использовать один из инструментов командной строки, упомянутых в [первой лекции](/2026/course-shell/).
+1. Большинство агентов для программирования поддерживают своего рода «yolo-режим» (например, в Claude Code это `--dangerously-skip-permissions`). Использовать этот режим напрямую небезопасно, но запустить агента для программирования в изолированном окружении вроде виртуальной машины или контейнера и уже там включить автономную работу может быть вполне приемлемо. Настройте такую схему у себя на машине. Может пригодиться документация вроде [devcontainer'ов в Claude Code](https://code.claude.com/docs/en/devcontainer) или [Docker Sandboxes / Claude Code](https://docs.docker.com/ai/sandboxes/agents/claude-code/). Настроить это можно не одним способом.
