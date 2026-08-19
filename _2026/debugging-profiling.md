@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Debugging and Profiling"
+title: "Отладка и профилирование"
 description: >
-  Learn how to debug programs using logging and debuggers, and how to profile code for performance.
+  Узнайте, как отлаживать программы с помощью логирования и отладчиков и как профилировать код для повышения производительности.
 thumbnail: /static/assets/thumbnails/2026/lec4.png
 date: 2026-01-15
 ready: true
@@ -12,69 +12,69 @@ video:
   id: 8VYT9TcUmKs
 ---
 
-A golden rule in programming is that code does not do what you expect it to do, but what you tell it to do. Bridging that gap can sometimes be a quite difficult feat. In this lecture we are going to cover useful techniques for dealing with buggy and resource hungry code: debugging and profiling.
+Золотое правило программирования гласит: код делает не то, чего вы от него ожидаете, а то, что вы ему сказали. Преодолеть этот разрыв порой бывает совсем непросто. В этой лекции мы рассмотрим полезные приёмы работы с глючным и жадным до ресурсов кодом: отладку и профилирование.
 
-# Debugging
+# Отладка
 
-## Printf Debugging and Logging
+## Отладка через printf и логирование
 
-> "The most effective debugging tool is still careful thought, coupled with judiciously placed print statements" — Brian Kernighan, _Unix for Beginners_.
+> "Самым эффективным инструментом отладки остаётся внимательное размышление в сочетании с разумно расставленными операторами print" — Брайан Керниган, _Unix for Beginners_.
 
-A first approach to debug a program is to add print statements around where you have detected the problem, and keep iterating until you have extracted enough information to understand what is responsible for the issue.
+Первый подход к отладке программы — добавить операторы print вокруг того места, где вы обнаружили проблему, и повторять это до тех пор, пока не соберёте достаточно информации, чтобы понять, что именно вызывает проблему.
 
-A second approach is to use logging in your program, instead of ad hoc print statements. Logging is essentially "printing with more care", and is usually done through a logging framework that includes built-in support for things like:
+Второй подход — использовать в программе логирование вместо разовых операторов print. Логирование — это, по сути, «более аккуратная печать», и обычно оно делается через фреймворк для логирования, в который уже встроена поддержка таких вещей, как:
 
-- the ability to direct the logs (or subsets of the logs) to other output locations;
-- setting severity levels (such as INFO, DEBUG, WARN, ERROR, etc.) and allow you to filter the output according to those; and
-- support for structured logging of data related to the log entries, which can then be extracted more easily after the fact.
+- возможность направлять логи (или их часть) в другие места вывода;
+- уровни важности (например, INFO, DEBUG, WARN, ERROR и т. д.), позволяющие фильтровать вывод по уровню;
+- поддержка структурированного логирования — к записям лога привязываются данные, которые потом проще извлекать.
 
-Logging statements you'll also usually proactively put in while
-programming so that the data you need to debug may already be there!
-And indeed, once you've found and fixed a problem using print
-statements, it's often worthwhile to convert those prints into proper
-log statements before removing them. This way, if similar bugs occur
-in the future, you'll already have the diagnostic information you need
-without modifying the code.
+К тому же операторы логирования вы, как правило, расставляете заранее,
+ещё во время написания программы, так что нужные для отладки данные,
+возможно, уже будут на месте! И действительно: когда вы нашли и исправили проблему
+с помощью операторов print, часто имеет смысл превратить эти print'ы в
+полноценные операторы логирования, а не просто удалить их. Тогда, если похожие
+ошибки возникнут в будущем, у вас уже будет нужная диагностическая
+информация без правки кода.
 
-> **Third-party logs**: Many programs support the `-v` or `--verbose` flag to print more information when they run. This can be useful for discovering why a given command fails. Some even allow repeating the flag for more details. When debugging issues with services (databases, web servers, etc.), check their logs—often in `/var/log/` on Linux. Use `journalctl -u <service>` to view logs for systemd services. For third-party libraries, check if they support debug logging via environment variables or configuration.
+> **Логи сторонних программ**: многие программы поддерживают флаг `-v` или `--verbose`, чтобы выводить больше информации во время работы. Это помогает выяснить, почему та или иная команда падает. Некоторые даже позволяют указать флаг несколько раз, чтобы получить ещё больше подробностей. При отладке проблем с сервисами (базами данных, веб-серверами и т. д.) смотрите их логи — в Linux они часто лежат в `/var/log/`. Для просмотра логов сервисов systemd используйте `journalctl -u <service>`. Для сторонних библиотек проверьте, поддерживают ли они отладочное логирование через переменные окружения или конфигурацию.
 
-## Debuggers
+## Отладчики
 
-Print debugging works well when you know what to print and can easily modify and re-run your code. Debuggers become valuable when you're not sure what information you need, when the bug only manifests in hard-to-reproduce conditions, or when modifying and restarting the program is expensive (long startup times, complex state to recreate, etc.).
+Отладка через print хорошо работает, когда вы знаете, что печатать, и можете легко изменить и перезапустить код. Отладчики становятся ценными, когда вы не уверены, какая информация вам нужна, когда ошибка проявляется только в трудновоспроизводимых условиях или когда изменять и перезапускать программу дорого (долгий запуск, сложное состояние, которое нужно воссоздать, и т. д.).
 
-Debuggers are programs that let you interact with the execution of a program as it happens, allowing you to:
+Отладчики — это инструменты, которые позволяют взаимодействовать с выполнением программы прямо по ходу дела, давая возможность:
 
-- Halt execution when it reaches a certain line.
-- Step through one instruction at a time.
-- Inspect values of variables after a crash.
-- Conditionally halt execution when a given condition is met.
-- And many more advanced features.
+- останавливать выполнение при достижении определённой строки;
+- выполнять программу пошагово, по одной инструкции;
+- просматривать значения переменных после падения;
+- останавливать выполнение при срабатывании заданного условия;
+- и пользоваться множеством более продвинутых функций.
 
-Most programming languages support (or come with) some form of debugger. The most versatile are **general-purpose debuggers** like [`gdb`](https://www.gnu.org/software/gdb/) (GNU Debugger) and [`lldb`](https://lldb.llvm.org/) (LLVM Debugger), which can debug any native binary. Many languages also have **language-specific debuggers** that integrate more tightly with the runtime (like Python's pdb or Java's jdb).
+Большинство языков программирования поддерживают ту или иную форму отладчика (или поставляются с ним). Самые универсальные — это **отладчики общего назначения** вроде [`gdb`](https://www.gnu.org/software/gdb/) (GNU Debugger) и [`lldb`](https://lldb.llvm.org/) (LLVM Debugger), которые умеют отлаживать любой нативный бинарник. У многих языков есть также **специализированные отладчики**, теснее интегрированные со средой выполнения (например, pdb в Python или jdb в Java).
 
-`gdb` is the de-facto standard debugger for C, C++, Rust, and other compiled languages. It lets you probe pretty much any process and get its current machine state: registers, stack, program counter, and more.
+`gdb` — де-факто стандартный отладчик для C, C++, Rust и других компилируемых языков. Он позволяет заглянуть практически в любой процесс и получить его текущее машинное состояние: регистры, стек, счётчик команд и многое другое.
 
-Some useful GDB commands:
+Несколько полезных команд GDB:
 
-- `run` - Start the program
-- `b {function}` or `b {file}:{line}` - Set a breakpoint
-- `c` - Continue execution
-- `step` / `next` / `finish` - Step in / step over / step out
-- `p {variable}` - Print value of variable
-- `bt` - Show backtrace (call stack)
-- `watch {expression}` - Break when the value changes
+- `run` — запустить программу
+- `b {function}` или `b {file}:{line}` — поставить точку останова
+- `c` — продолжить выполнение
+- `step` / `next` / `finish` — шаг с заходом / шаг с обходом / шаг с выходом
+- `p {variable}` — вывести значение переменной
+- `bt` — показать backtrace (стек вызовов)
+- `watch {expression}` — остановиться при изменении значения
 
-> Consider using GDB's TUI mode (`gdb -tui` or press `Ctrl-x a` inside GDB) for a split-screen view showing source code alongside the command prompt.
+> Попробуйте TUI-режим GDB (`gdb -tui` или нажмите `Ctrl-x a` внутри GDB): экран делится на две части, и исходный код отображается рядом с командной строкой.
 
-### Record-Replay Debugging
+### Отладка с записью и воспроизведением
 
-Some of the most frustrating bugs are _Heisenbugs_: bugs that seem to disappear or change behavior when you try to observe them. Race conditions, timing-dependent bugs, and issues that only appear under certain system conditions fall into this category. Traditional debugging is often useless here because running the program again produces different behavior (e.g., print statements may slow down the code sufficiently that the race no longer happens).
+Одни из самых изматывающих багов — _гейзенбаги_ (Heisenbugs): баги, которые словно исчезают или меняют поведение, как только вы пытаетесь за ними наблюдать. Сюда относятся состояния гонки, ошибки, зависящие от тайминга, и проблемы, которые проявляются только при определённых условиях в системе. Традиционная отладка здесь часто бесполезна, потому что при повторном запуске программа ведёт себя иначе (например, отладочные print'ы могут замедлить код настолько, что гонка перестанет возникать).
 
-**Record-replay debugging** solves this by recording a program's execution and allowing you to replay it deterministically as many times as you need. Even better, you can _reverse_ through the execution to find exactly where things went wrong.
+**Отладка с записью и воспроизведением (record-replay debugging)** решает эту проблему: выполнение программы записывается, и затем его можно детерминированно воспроизводить столько раз, сколько нужно. Более того, по записанному выполнению можно двигаться _в обратном направлении_ и найти, где именно всё пошло не так.
 
-[rr](https://rr-project.org/) is a powerful tool for Linux that records program execution and allows deterministic replay with full debugging capabilities. It works with GDB, so you already know the interface.
+[rr](https://rr-project.org/) — мощный инструмент для Linux, который записывает выполнение программы и позволяет детерминированно воспроизводить его с полноценными возможностями отладки. Он работает с GDB, так что интерфейс вам уже знаком.
 
-Basic usage:
+Базовое использование:
 
 ```bash
 # Record a program execution
@@ -84,37 +84,37 @@ rr record ./my_program
 rr replay
 ```
 
-The magic happens during replay. Because the execution is deterministic, you can use **reverse debugging** commands:
+Вся магия происходит при воспроизведении. Поскольку выполнение детерминировано, можно использовать команды **обратной отладки**:
 
-- `reverse-continue` (`rc`) - Run backwards until hitting a breakpoint
-- `reverse-step` (`rs`) - Step backwards one line
-- `reverse-next` (`rn`) - Step backwards, skipping function calls
-- `reverse-finish` - Run backwards until entering the current function
+- `reverse-continue` (`rc`) — выполнять назад до срабатывания точки останова
+- `reverse-step` (`rs`) — шаг назад на одну строку
+- `reverse-next` (`rn`) — шаг назад с пропуском вызовов функций
+- `reverse-finish` — выполнять назад до момента входа в текущую функцию
 
-This is incredibly powerful for debugging. Say you have a crash—instead of guessing where the bug is and setting breakpoints, you can:
+Для отладки это невероятно мощно. Допустим, программа падает — вместо того чтобы гадать, где баг, и расставлять точки останова, вы можете:
 
-1. Run to the crash
-2. Inspect the corrupted state
-3. Set a watchpoint on the corrupted variable
-4. `reverse-continue` to find exactly where it was corrupted
+1. Дойти до падения
+2. Изучить повреждённое состояние
+3. Поставить точку наблюдения (watchpoint) на повреждённую переменную
+4. Выполнить `reverse-continue`, чтобы найти, где именно она была повреждена
 
-**When to use rr:**
-- Flaky tests that fail intermittently
-- Race conditions and threading bugs
-- Crashes that are hard to reproduce
-- Any bug where you wish you could "go back in time"
+**Когда использовать rr:**
+- Нестабильные (flaky) тесты, которые падают время от времени
+- Состояния гонки и ошибки многопоточности
+- Падения, которые трудно воспроизвести
+- Любой баг, при котором хочется «вернуться назад во времени»
 
-> Note: rr only works on Linux and requires hardware performance counters. It doesn't work in VMs that don't expose these counters, such as on most AWS EC2 instances, and it doesn't support GPU access. For macOS, check out [Warpspeed](https://warpspeed.dev/).
+> Примечание: rr работает только на Linux и требует аппаратных счётчиков производительности. Он не работает в виртуальных машинах, которые не пробрасывают эти счётчики (например, на большинстве инстансов AWS EC2), и не поддерживает доступ к GPU. Для macOS посмотрите на [Warpspeed](https://warpspeed.dev/).
 
-> **rr and concurrency**: Because rr records execution deterministically, it serializes thread scheduling. This means some race conditions may not manifest under rr if they depend on specific timing. rr is still useful for debugging races—once you capture a failing run, you can replay it reliably—but you may need multiple recording attempts to catch an intermittent bug. For bugs that don't involve concurrency, rr shines brightest: you can always reproduce the exact execution and use reverse debugging to hunt down corruption.
+> **rr и конкурентность**: поскольку rr записывает выполнение детерминированно, он сериализует планирование потоков. Это значит, что некоторые состояния гонки под rr могут не проявиться, если они зависят от конкретного тайминга. rr всё равно полезен для отладки гонок — как только вы поймали неудачный запуск, его можно надёжно воспроизводить, — но, чтобы поймать плавающий баг, может понадобиться несколько попыток записи. А для багов, не связанных с конкурентностью, rr раскрывается во всей красе: вы всегда можете воспроизвести точно то же выполнение и с помощью обратной отладки выследить, где именно повредились данные.
 
-## System Call Tracing
+## Трассировка системных вызовов
 
-Sometimes you need to understand how your program interacts with the operating system. Programs make [system calls](https://en.wikipedia.org/wiki/System_call) to request services from the kernel—opening files, allocating memory, creating processes, and more. Tracing these calls can reveal why a program is hanging, what files it's trying to access, or where it's spending time waiting.
+Иногда нужно понять, как ваша программа взаимодействует с операционной системой. Программы делают [системные вызовы](https://en.wikipedia.org/wiki/System_call), чтобы запросить услуги у ядра — открыть файл, выделить память, создать процесс и так далее. Трассировка этих вызовов может показать, почему программа зависла, к каким файлам она пытается обратиться или где она тратит время на ожидание.
 
-### strace (Linux) and dtruss (macOS)
+### strace (Linux) и dtruss (macOS)
 
-[`strace`](https://www.man7.org/linux/man-pages/man1/strace.1.html) lets you observe every system call a program makes:
+[`strace`](https://www.man7.org/linux/man-pages/man1/strace.1.html) позволяет наблюдать за каждым системным вызовом, который делает программа:
 
 ```bash
 # Trace all system calls
@@ -133,13 +133,13 @@ strace -p <PID>
 strace -T ./my_program
 ```
 
-> On macOS and BSD, use [`dtruss`](https://www.manpagez.com/man/1/dtruss/) (which wraps `dtrace`) for similar functionality:
+> На macOS и BSD для тех же целей используйте [`dtruss`](https://www.manpagez.com/man/1/dtruss/) (обёртку над `dtrace`):
 
-> For deeper dives into `strace`, check out Julia Evans' excellent [strace zine](https://jvns.ca/strace-zine-unfolded.pdf).
+> Чтобы глубже разобраться в `strace`, загляните в отличный [зин про strace](https://jvns.ca/strace-zine-unfolded.pdf) Джулии Эванс.
 
-### bpftrace and eBPF
+### bpftrace и eBPF
 
-[eBPF](https://ebpf.io/) (extended Berkeley Packet Filter) is a powerful Linux technology that allows running sandboxed programs in the kernel. [`bpftrace`](https://github.com/iovisor/bpftrace) provides a high-level syntax for writing eBPF programs. These are arbitrary programs running in the kernel, and thus have huge expressive power (though also a somewhat clumsy awk-like syntax). The most common use-case for them is to investigate what system calls are being invoked, including aggregations (like counts or latency statistics) or introspecting (or even filtering on) system call arguments.
+[eBPF](https://ebpf.io/) (extended Berkeley Packet Filter) — мощная технология Linux, позволяющая запускать изолированные (sandboxed) программы внутри ядра. [`bpftrace`](https://github.com/iovisor/bpftrace) предоставляет высокоуровневый синтаксис для написания eBPF-программ. Это произвольные программы, работающие в ядре, а потому у них огромная выразительная сила (хотя и несколько неуклюжий синтаксис в духе awk). Чаще всего их используют, чтобы выяснить, какие системные вызовы выполняются, — включая агрегацию (например, подсчёт или статистику задержек) или изучение аргументов системных вызовов (или даже фильтрацию по ним).
 
 ```bash
 # Trace file opens system-wide (prints immediately)
@@ -149,9 +149,9 @@ sudo bpftrace -e 'tracepoint:syscalls:sys_enter_openat { printf("%s %s\n", comm,
 sudo bpftrace -e 'tracepoint:syscalls:sys_enter_* { @[probe] = count(); }'
 ```
 
-However, you can also write eBPF programs directly in C using a toolchain like [`bcc`](https://github.com/iovisor/bcc), which also ships with [many handy tools](https://www.brendangregg.com/blog/2015-09-22/bcc-linux-4.3-tracing.html) like `biosnoop` for printing latency distributions for disk operations or `opensnoop` for printing all open files.
+Впрочем, eBPF-программы можно писать и напрямую на C с помощью такого набора инструментов, как [`bcc`](https://github.com/iovisor/bcc), — в комплекте с ним также идёт [много удобных утилит](https://www.brendangregg.com/blog/2015-09-22/bcc-linux-4.3-tracing.html), например `biosnoop` для вывода распределения задержек дисковых операций или `opensnoop` для вывода всех открываемых файлов.
 
-Where `strace` is useful because it's easy to "just get up and running", `bpftrace` is what you should reach for when you need lower overhead, want to trace through kernel functions, need to do any kind of aggregation, etc. Note that `bpftrace` has to run as `root` though, and that it generally monitors the entire kernel, not just a particular process. To target a specific program, you can filter by command name or PID:
+Если `strace` хорош тем, что его легко «просто взять и запустить», то за `bpftrace` стоит браться, когда вам нужны меньшие накладные расходы, хочется трассировать вызовы вглубь функций ядра, требуется какая-либо агрегация и так далее. Учтите, впрочем, что `bpftrace` должен запускаться от `root` и что он, как правило, наблюдает за всем ядром, а не за отдельным процессом. Чтобы нацелиться на конкретную программу, можно фильтровать по имени команды или по PID:
 
 ```bash
 # Filter by command name (prints summary on Ctrl-C)
@@ -161,11 +161,11 @@ sudo bpftrace -e 'tracepoint:syscalls:sys_enter_* /comm == "bash"/ { @[probe] = 
 sudo bpftrace -e 'tracepoint:syscalls:sys_enter_* /pid == cpid/ { @[probe] = count(); }' -c 'ls -la'
 ```
 
-The `-c` flag runs the specified command and sets `cpid` to its PID, which is useful for tracing a program from the moment it starts. When the traced command exits, bpftrace prints the aggregated results.
+Флаг `-c` запускает указанную команду и записывает её PID в `cpid` — это удобно, чтобы трассировать программу с самого момента запуска. Когда трассируемая команда завершается, bpftrace выводит агрегированные результаты.
 
-### Network Debugging
+### Отладка сети
 
-For network issues, [`tcpdump`](https://www.man7.org/linux/man-pages/man1/tcpdump.1.html) and [Wireshark](https://www.wireshark.org/) let you capture and analyze network packets:
+Для сетевых проблем есть [`tcpdump`](https://www.man7.org/linux/man-pages/man1/tcpdump.1.html) и [Wireshark](https://www.wireshark.org/), которые позволяют перехватывать и анализировать сетевые пакеты:
 
 ```bash
 # Capture packets on port 80
@@ -175,19 +175,19 @@ sudo tcpdump -i any port 80
 sudo tcpdump -i any -w capture.pcap
 ```
 
-For HTTPS traffic, the encryption makes tcpdump less useful. Tools like [mitmproxy](https://mitmproxy.org/) can act as an intercepting proxy to inspect encrypted traffic. Browser developer tools (Network tab) are often the easiest way to debug HTTPS requests from web applications—they show decrypted request/response data, headers, and timing.
+С HTTPS-трафиком tcpdump менее полезен из-за шифрования. Такие инструменты, как [mitmproxy](https://mitmproxy.org/), могут работать как перехватывающий прокси и позволяют заглянуть в зашифрованный трафик. Для отладки HTTPS-запросов из веб-приложений зачастую проще всего воспользоваться инструментами разработчика в браузере (вкладка Network) — они показывают расшифрованные данные запросов и ответов, заголовки и тайминги.
 
-## Memory Debugging
+## Отладка памяти
 
-Memory bugs—buffer overflows, use-after-free, memory leaks—are among the most dangerous and difficult to debug. They often don't crash immediately but corrupt memory in ways that cause problems much later.
+Ошибки работы с памятью — переполнения буфера, use-after-free, утечки памяти — одни из самых опасных и трудных в отладке. Часто они не приводят к падению сразу, а портят память так, что проблемы проявляются гораздо позже.
 
-### Sanitizers
+### Санитайзеры
 
-One approach to finding memory bugs is to use **sanitizers**, which are compiler features that instrument your code to detect errors at runtime. For example, the widely used **AddressSanitizer (ASan)** detects:
-- Buffer overflows (stack, heap, and global)
-- Use-after-free
-- Use-after-return
-- Memory leaks
+Один из способов находить ошибки работы с памятью — использовать **санитайзеры (sanitizers)**: это возможности компилятора, которые инструментируют ваш код, чтобы обнаруживать ошибки во время выполнения. Например, широко используемый **AddressSanitizer (ASan)** обнаруживает:
+- переполнения буфера (на стеке, в куче и в глобальных данных);
+- use-after-free;
+- use-after-return;
+- утечки памяти.
 
 ```bash
 # Compile with AddressSanitizer
@@ -195,66 +195,70 @@ gcc -fsanitize=address -g program.c -o program
 ./program
 ```
 
-There are a variety of useful sanitizers:
+Полезных санитайзеров существует немало:
 
-- **ThreadSanitizer (TSan)**: Detects data races in multithreaded code (`-fsanitize=thread`)
-- **MemorySanitizer (MSan)**: Detects reads of uninitialized memory (`-fsanitize=memory`)
-- **UndefinedBehaviorSanitizer (UBSan)**: Detects undefined behavior like integer overflow (`-fsanitize=undefined`)
+- **ThreadSanitizer (TSan)**: обнаруживает гонки данных в многопоточном коде (`-fsanitize=thread`)
+- **MemorySanitizer (MSan)**: обнаруживает чтение неинициализированной памяти (`-fsanitize=memory`)
+- **UndefinedBehaviorSanitizer (UBSan)**: обнаруживает неопределённое поведение вроде переполнения целых чисел (`-fsanitize=undefined`)
 
-Sanitizers require recompilation but are fast enough to use in CI pipelines and during regular development.
+Санитайзеры требуют перекомпиляции, но при этом достаточно быстры, чтобы использовать их в CI-конвейерах и в повседневной разработке.
 
-### Valgrind: When You Can't Recompile
+### Valgrind: когда перекомпилировать нельзя
 
-[Valgrind](https://valgrind.org/) instead runs your program in something akin to a virtual machine to detect memory errors. It's slower than sanitizers but doesn't require recompilation:
+[Valgrind](https://valgrind.org/) идёт другим путём: он запускает вашу программу в чём-то вроде виртуальной машины и так обнаруживает ошибки работы с памятью. Он медленнее санитайзеров, зато не требует перекомпиляции:
 
 ```bash
 valgrind --leak-check=full ./my_program
 ```
 
-Use Valgrind when:
-- You don't have source code
-- You can't recompile (third-party libraries)
-- You need specific tools not available as sanitizers
+Используйте Valgrind, когда:
+- у вас нет исходного кода;
+- вы не можете перекомпилировать программу (сторонние библиотеки);
+- вам нужны специфические инструменты, которых нет среди санитайзеров.
 
-Valgrind is actually a really powerful controlled execution environment, and we'll see more of it later when we get to profiling!
+На самом деле Valgrind — очень мощная среда контролируемого выполнения, и мы ещё вернёмся к нему, когда дойдём до профилирования!
 
-## AI for Debugging
+## ИИ для отладки
 
-Large language models have become surprisingly useful debugging assistants. They excel at certain debugging tasks that complement traditional tools.
+Большие языковые модели (LLM) неожиданно оказались весьма полезными помощниками в отладке. Есть отладочные задачи, в которых они особенно сильны и хорошо дополняют традиционные инструменты.
 
-**Where LLMs shine:**
+**Где LLM особенно сильны:**
 
-- **Explaining cryptic error messages**: Compiler errors, especially from C++ templates or Rust's borrow checker, can be notoriously cryptic. LLMs can translate them into plain English and suggest fixes.
+- **Объяснение загадочных сообщений об ошибках**: ошибки компилятора, особенно от шаблонов C++ или borrow checker'а в Rust, славятся своей непонятностью. LLM могут перевести их на человеческий язык и предложить исправления.
 
-- **Traversing language and abstraction boundaries**: If you're debugging a problem that spans multiple languages (say, a bug in a C library that manifests through a Python binding), LLMs can help navigate the different layers. They're particularly good at understanding FFI boundaries, build system issues, and cross-language debugging (e.g., my program errors, but I believe it is because of a bug in one of my dependencies).
+- **Переходы через границы языков и уровней абстракции**: если вы отлаживаете проблему, охватывающую несколько языков (скажем, баг в библиотеке на C, который проявляется через привязку (binding) к Python), LLM помогут сориентироваться в разных слоях. Они особенно хорошо разбираются в границах FFI, проблемах систем сборки и межъязыковой отладке (например: моя программа падает с ошибкой, но я подозреваю, что виноват баг в одной из моих зависимостей).
 
-- **Correlating symptoms with root causes**: "My program works fine but uses 10x more memory than expected" is the kind of vague symptom that LLMs can help investigate, suggesting likely causes and what to look for.
+- **Сопоставление симптомов с первопричинами**: «моя программа работает нормально, но потребляет в 10 раз больше памяти, чем ожидалось» — как раз тот тип расплывчатого симптома, с расследованием которого LLM могут помочь, подсказав вероятные причины и то, на что стоит обратить внимание.
 
-- **Analyzing crash dumps and stack traces**: Paste a stack trace and ask what might have caused it.
+- **Анализ дампов падений и трассировок стека**: вставьте трассировку стека и спросите, что могло её вызвать.
 
-> **Note on debug symbols**: For meaningful stack traces and debugging, ensure your binaries (and any linked libraries) are compiled with debug symbols (`-g` flag). Debug information is typically stored in DWARF format. Additionally, compiling with frame pointers (`-fno-omit-frame-pointer`) makes stack traces more reliable, especially for profiling tools. Without these, stack traces may show only memory addresses or be incomplete. This matters more for natively compiled programs (C++, Rust) than Python or Java.
+> **Замечание об отладочных символах**: чтобы трассировки стека и отладка были осмысленными, убедитесь, что ваши бинарники (и все подключаемые библиотеки) скомпилированы с отладочными символами (флаг `-g`). Отладочная информация обычно хранится в формате DWARF. Кроме того, компиляция с указателями кадров (`-fno-omit-frame-pointer`) делает трассировки стека надёжнее, что особенно важно для инструментов профилирования. Без этого трассировки стека могут показывать только адреса памяти или быть неполными. Для программ, компилируемых в машинный код (C++, Rust), это важнее, чем для Python или Java.
 
-**Limitations to keep in mind:**
-- LLMs can hallucinate plausible-sounding but wrong explanations
-- They may suggest fixes that mask the bug rather than fix it
-- Always verify suggestions with actual debugging tools
-- They work best as a complement to, not replacement for, understanding your code
+**Ограничения, о которых стоит помнить:**
+- LLM могут галлюцинировать: выдавать правдоподобные, но неверные объяснения
+- они могут предлагать исправления, которые маскируют баг, а не устраняют его
+- всегда проверяйте предложения настоящими инструментами отладки
+- лучше всего они работают как дополнение к пониманию вашего кода, а не как его замена
 
-> This is distinct from the [general AI coding capabilities](/2026/development-environment/#ai-powered-development) covered in the Development Environment lecture. Here we're specifically talking about using LLMs as a debugging aid.
+> Это не то же самое, что [общие возможности ИИ для программирования](/2026/development-environment/#ai-powered-development), о которых шла речь в лекции «Среда разработки и инструменты». Здесь мы говорим именно об использовании LLM как подспорья в отладке.
 
-# Profiling
+# Профилирование
 
-Even if your code functionally behaves as you would expect, that might not be good enough if it takes all your CPU or memory in the process. Algorithms classes often teach big _O_ notation but not how to find hot spots in your programs. Since [premature optimization is the root of all evil](https://wiki.c2.com/?PrematureOptimization), you should learn about profilers and monitoring tools. They will help you understand which parts of your program are taking most of the time and/or resources so you can focus on optimizing those parts.
+Даже если ваш код функционально ведёт себя так, как вы ожидаете, этого может быть недостаточно, если по пути он съедает весь ваш CPU или всю память. На курсах по алгоритмам часто учат нотации «_O_ большое», но не тому, как находить горячие точки (hot spots) в ваших программах. Поскольку [преждевременная оптимизация — корень всех зол](https://wiki.c2.com/?PrematureOptimization), вам стоит познакомиться с профилировщиками и инструментами мониторинга. Они помогут понять, какие части вашей программы отнимают больше всего времени и/или ресурсов, чтобы вы могли сосредоточиться именно на их оптимизации.
 
-## Timing
+## Замер времени
 
-The simplest way to measure performance is to time things. In many scenarios it can be enough to just print the time it took your code between two points.
+Самый простой способ измерить производительность — засечь время. Во многих
+случаях достаточно просто вывести, сколько времени ваш код выполнялся между
+двумя точками.
 
-However, wall clock time can be misleading since your computer might be running other processes at the same time or waiting for events to happen. The `time` command distinguishes between _Real_, _User_, and _Sys_ time:
+Однако астрономическое время (wall clock time) может вводить в заблуждение:
+компьютер параллельно может выполнять другие процессы или ждать каких-то
+событий. Команда `time` различает время _Real_, _User_ и _Sys_:
 
-- **Real** - Wall clock time from start to finish, including time spent waiting
-- **User** - Time spent in the CPU running user code
-- **Sys** - Time spent in the CPU running kernel code
+- **Real** — астрономическое время от начала до конца, включая время ожидания
+- **User** — время, проведённое процессором в пользовательском коде
+- **Sys** — время, проведённое процессором в коде ядра
 
 ```bash
 $ time curl https://missing.csail.mit.edu &> /dev/null
@@ -263,58 +267,109 @@ user	0m0.079s
 sys	    0m0.028s
 ```
 
-Here the request took nearly 300 milliseconds (real time) but only 107ms of CPU time (user + sys). The rest was waiting for the network.
+Здесь запрос занял почти 300 миллисекунд (время real), но процессорного
+времени (user + sys) набежало лишь 107 мс. Остальное — ожидание сети.
 
-## Resource Monitoring
+## Мониторинг ресурсов
 
-Sometimes the first step towards analyzing the performance of your program is to understand what its actual resource consumption is. Programs often run slowly when they are resource constrained.
+Иногда первый шаг к анализу производительности программы — понять, сколько
+ресурсов она на самом деле потребляет. Программы часто работают медленно,
+когда им не хватает ресурсов.
 
-- **General Monitoring**: [`htop`](https://htop.dev/) is an improved version of `top` that presents various statistics for currently running processes. Useful keybinds: `<F6>` to sort processes, `t` to show tree hierarchy, `h` to toggle threads. There's also [`btop`](https://github.com/aristocratos/btop) which monitors _way_ more things.
+- **Общий мониторинг**: [`htop`](https://htop.dev/) — улучшенная версия `top`,
+  которая показывает разнообразную статистику по запущенным процессам.
+  Полезные сочетания клавиш: `<F6>` — сортировка процессов, `t` — показать
+  дерево процессов, `h` — включить/выключить показ потоков. Есть ещё
+  [`btop`](https://github.com/aristocratos/btop), который отслеживает
+  _намного_ больше показателей.
 
-- **I/O Operations**: [`iotop`](https://www.man7.org/linux/man-pages/man8/iotop.8.html) displays live I/O usage information.
+- **Операции ввода-вывода**:
+  [`iotop`](https://www.man7.org/linux/man-pages/man8/iotop.8.html) показывает
+  использование ввода-вывода в реальном времени.
 
-- **Memory Usage**: [`free`](https://www.man7.org/linux/man-pages/man1/free.1.html) displays total free and used memory.
+- **Использование памяти**:
+  [`free`](https://www.man7.org/linux/man-pages/man1/free.1.html) показывает
+  общий объём свободной и занятой памяти.
 
-- **Open Files**: [`lsof`](https://www.man7.org/linux/man-pages/man8/lsof.8.html) lists file information about files opened by processes. Useful for checking which process has opened a specific file.
+- **Открытые файлы**:
+  [`lsof`](https://www.man7.org/linux/man-pages/man8/lsof.8.html) выводит
+  информацию о файлах, открытых процессами. Полезно, чтобы узнать, какой
+  процесс открыл конкретный файл.
 
-- **Network Connections**: [`ss`](https://www.man7.org/linux/man-pages/man8/ss.8.html) lets you monitor network connections. A common use case is figuring out what process is using a given port: `ss -tlnp | grep :8080`.
+- **Сетевые соединения**:
+  [`ss`](https://www.man7.org/linux/man-pages/man8/ss.8.html) позволяет
+  следить за сетевыми соединениями. Типичный случай — выяснить, какой процесс
+  занял тот или иной порт: `ss -tlnp | grep :8080`.
 
-- **Network Usage**: [`nethogs`](https://github.com/raboof/nethogs) and [`iftop`](https://pdw.ex-parrot.com/iftop/) are good interactive CLI tools for monitoring network usage per process.
+- **Использование сети**: [`nethogs`](https://github.com/raboof/nethogs) и
+  [`iftop`](https://pdw.ex-parrot.com/iftop/) — хорошие интерактивные
+  CLI-инструменты для мониторинга сетевого трафика по процессам.
 
-## Visualizing Performance Data
+## Визуализация данных о производительности
 
-Humans spot patterns in graphs much faster than in tables of numbers. When analyzing performance, plotting your data often reveals trends, spikes, and anomalies that would be invisible in raw numbers.
+Люди замечают закономерности на графиках гораздо быстрее, чем в таблицах
+с числами. При анализе производительности построение графика по вашим данным
+часто выявляет тренды, всплески и аномалии, которые в сырых числах были бы
+незаметны.
 
-**Making data plottable**: When adding print or log statements for debugging, consider formatting the output so it can be easily graphed later. A simple timestamp and value in CSV format (`1705012345,42.5`) is much easier to plot than a prose sentence. JSON-structured logs can also be parsed and plotted with minimal effort. In other words, log your data [in a tidy way](https://vita.had.co.nz/papers/tidy-data.pdf).
+**Делайте данные пригодными для графиков**: добавляя отладочный вывод или
+логирование, сразу форматируйте его так, чтобы потом по нему легко было
+построить график. Простую пару «метка времени, значение» в формате CSV
+(`1705012345,42.5`) нанести на график куда проще, чем предложение
+в свободной форме. Логи со структурой JSON тоже можно распарсить и
+визуализировать с минимальными усилиями. Иными словами, ведите логи
+[в опрятном виде](https://vita.had.co.nz/papers/tidy-data.pdf).
 
-**Quick plotting with gnuplot**: For simple command-line plotting, [`gnuplot`](http://www.gnuplot.info/) can generate graphs directly from data files:
+**Быстрые графики с gnuplot**: для простых графиков из командной строки
+[`gnuplot`](http://www.gnuplot.info/) умеет строить графики прямо из файлов
+с данными:
 
 ```bash
 # Plot a simple CSV with timestamp,value
 gnuplot -e "set datafile separator ','; plot 'latency.csv' using 1:2 with lines"
 ```
 
-**Iterative exploration with matplotlib and ggplot2**: For deeper analysis, Python's [`matplotlib`](https://matplotlib.org/) and R's [`ggplot2`](https://ggplot2.tidyverse.org/) enable iterative exploration. Unlike one-off plotting, these tools let you quickly slice and transform data to investigate hypotheses. ggplot2's facet plots are particularly powerful—you can split a single dataset across multiple subplots by category (e.g., faceting request latency by endpoint or time-of-day) to tease out patterns that would otherwise be hidden.
+**Итеративное исследование с matplotlib и ggplot2**: для более глубокого
+анализа [`matplotlib`](https://matplotlib.org/) в Python и
+[`ggplot2`](https://ggplot2.tidyverse.org/) в R позволяют исследовать данные
+итеративно. В отличие от разовых графиков, эти инструменты дают возможность
+быстро нарезать и преобразовывать данные, чтобы проверять гипотезы. Особенно
+мощны facet-графики в ggplot2 — один набор данных можно разбить на несколько
+подграфиков по категории (например, разложить задержку запросов по эндпоинтам
+или по времени суток), чтобы вытащить закономерности, которые иначе остались
+бы скрытыми.
 
-**Example use cases:**
-- Plotting request latency over time reveals periodic slowdowns (garbage collection, cron jobs, traffic patterns) that raw percentiles obscure
-- Visualizing insert times for a growing data structure can expose algorithmic complexity issues—a plot of vector insertions will show characteristic spikes when the backing array doubles in size
-- Faceting metrics by different dimensions (request type, user cohort, server) often reveals that a "system-wide" problem is actually isolated to one category
+**Примеры применения:**
+- График задержки запросов во времени выявляет периодические замедления
+  (сборка мусора, cron-задачи, характер трафика), которых не разглядеть
+  за сырыми перцентилями
+- Визуализация времени вставки в растущую структуру данных может обнажить
+  проблемы с алгоритмической сложностью — на графике вставок в вектор будут
+  видны характерные всплески в моменты, когда внутренний массив удваивается
+- Разбиение метрик по разным измерениям (тип запроса, когорта пользователей,
+  сервер) часто показывает, что «общесистемная» проблема на самом деле
+  ограничена одной категорией
 
-## CPU Profilers
+## CPU-профилировщики
 
-Most of the time when people refer to _profilers_ they mean _CPU profilers_. There are two main types:
+Чаще всего, говоря о _профилировщиках_, люди имеют в виду
+_CPU-профилировщики_. Есть два основных типа:
 
-- **Tracing profilers** keep a record of every function call your program makes
-- **Sampling profilers** probe your program periodically (commonly every millisecond) and record the program's stack
+- **Трассирующие профилировщики** записывают каждый вызов функции, который
+  делает ваша программа
+- **Сэмплирующие профилировщики** периодически (обычно раз в миллисекунду)
+  опрашивают вашу программу и записывают её стек
 
-Sampling profilers have lower overhead and are generally preferred for production use.
+У сэмплирующих профилировщиков меньше накладных расходов, и для продакшена
+обычно предпочитают именно их.
 
-### perf: the sampling profiler
+### perf: сэмплирующий профилировщик
 
-[`perf`](https://www.man7.org/linux/man-pages/man1/perf.1.html) is the standard Linux profiler. It can profile any program without recompilation:
+[`perf`](https://www.man7.org/linux/man-pages/man1/perf.1.html) — стандартный
+профилировщик в Linux. Он умеет профилировать любую программу без
+перекомпиляции:
 
-`perf stat` gives you a quick overview of where time is spent:
+`perf stat` даёт быстрый обзор того, на что уходит время:
 
 ```bash
 $ perf stat ./slow_program
@@ -331,13 +386,19 @@ $ perf stat ./slow_program
        12,345,678      branch-misses             #    1.00% of all branches
 ```
 
-Profiler output for real world programs will contain large amounts of information. Humans are visual creatures and are quite terrible at reading large amounts of numbers. [Flame graphs](https://www.brendangregg.com/flamegraphs.html) are a visualization that makes profiling data much easier to understand.
+Вывод профилировщика для реальных программ содержит огромное количество
+информации. Люди — существа визуальные и довольно плохо справляются с чтением
+больших массивов чисел. [Flame graphs](https://www.brendangregg.com/flamegraphs.html)
+(флейм-графики) — это визуализация, которая делает данные профилирования
+намного понятнее.
 
-A flame graph displays a hierarchy of function calls across the Y axis and time taken proportional to the X axis. They're interactive—you can click to zoom into specific parts of the program.
+Flame graph показывает иерархию вызовов функций по оси Y, а затраченное время
+откладывает пропорционально по оси X. Флейм-графики интерактивны — можно
+кликнуть и приблизить интересующую вас часть программы.
 
 [![FlameGraph](https://www.brendangregg.com/FlameGraphs/cpu-bash-flamegraph.svg)](https://www.brendangregg.com/FlameGraphs/cpu-bash-flamegraph.svg)
 
-To generate a flame graph from `perf` data:
+Чтобы построить flame graph из данных `perf`:
 
 ```bash
 # Record profile
@@ -347,11 +408,11 @@ perf record -g ./my_program
 perf script | stackcollapse-perf.pl | flamegraph.pl > flamegraph.svg
 ```
 
-> Consider using [Speedscope](https://www.speedscope.app/) for an interactive web-based flame graph viewer, or [Perfetto](https://perfetto.dev/) for comprehensive system-level analysis.
+> Для интерактивного просмотра flame graph в браузере попробуйте [Speedscope](https://www.speedscope.app/), а для комплексного анализа на уровне всей системы — [Perfetto](https://perfetto.dev/).
 
-### Valgrind's Callgrind: the tracing profiler
+### Callgrind из Valgrind: трассирующий профилировщик
 
-[`callgrind`](https://valgrind.org/docs/manual/cl-manual.html) is a profiling tool that records the call history and instruction counts of your program. Unlike sampling profilers, it provides exact call counts and can show the relationship between callers and callees:
+[`callgrind`](https://valgrind.org/docs/manual/cl-manual.html) — это инструмент профилирования, который записывает историю вызовов и число выполненных инструкций вашей программы. В отличие от сэмплирующих профилировщиков, он даёт точное число вызовов и умеет показывать связь между вызывающими и вызываемыми функциями:
 
 ```bash
 # Run with callgrind
@@ -362,30 +423,30 @@ callgrind_annotate callgrind.out.<pid>
 kcachegrind callgrind.out.<pid>
 ```
 
-Callgrind is slower than sampling profilers but provides precise call counts and can optionally simulate cache behavior (with `--cache-sim=yes`) if you need that information.
+Callgrind работает медленнее сэмплирующих профилировщиков, зато даёт точное число вызовов и при желании может симулировать поведение кэша (с флагом `--cache-sim=yes`), если вам нужна такая информация.
 
-> If you're using a particular language, there may be more specialized profilers. For example, Python has [`cProfile`](https://docs.python.org/3/library/profile.html) and [`py-spy`](https://github.com/benfred/py-spy), Go has [`go tool pprof`](https://pkg.go.dev/cmd/pprof), and Rust has [`cargo-flamegraph`](https://github.com/flamegraph-rs/flamegraph) (which actually works for any compiled program!).
+> Если вы пишете на каком-то конкретном языке, для него могут существовать более специализированные профилировщики. Например, у Python есть [`cProfile`](https://docs.python.org/3/library/profile.html) и [`py-spy`](https://github.com/benfred/py-spy), у Go — [`go tool pprof`](https://pkg.go.dev/cmd/pprof), а у Rust — [`cargo-flamegraph`](https://github.com/flamegraph-rs/flamegraph) (который на самом деле работает для любой скомпилированной программы!).
 
-## Memory Profilers
+## Профилировщики памяти
 
-Memory profilers help you understand how your program uses memory over time and find memory leaks.
+Профилировщики памяти помогают понять, как ваша программа использует память с течением времени, и найти утечки памяти.
 
-### Valgrind's Massif
+### Massif из Valgrind
 
-[`massif`](https://valgrind.org/docs/manual/ms-manual.html) profiles heap memory usage:
+[`massif`](https://valgrind.org/docs/manual/ms-manual.html) профилирует использование памяти в куче:
 
 ```bash
 valgrind --tool=massif ./my_program
 ms_print massif.out.<pid>
 ```
 
-This shows you heap usage over time, helping identify memory leaks and excessive allocation.
+Он показывает использование кучи с течением времени, помогая находить утечки памяти и избыточные выделения памяти.
 
-> For Python, [`memory-profiler`](https://pypi.org/project/memory-profiler/) provides line-by-line memory usage information.
+> Для Python есть [`memory-profiler`](https://pypi.org/project/memory-profiler/), который показывает использование памяти построчно.
 
-## Benchmarking
+## Бенчмаркинг
 
-When you need to compare the performance of different implementations or tools, [`hyperfine`](https://github.com/sharkdp/hyperfine) is excellent for benchmarking command-line programs:
+Когда нужно сравнить производительность разных реализаций или инструментов, для бенчмарков программ командной строки отлично подходит [`hyperfine`](https://github.com/sharkdp/hyperfine):
 
 ```bash
 $ hyperfine --warmup 3 'fd -e jpg' 'find . -iname "*.jpg"'
@@ -402,13 +463,13 @@ Summary
    21.89 ± 2.33 times faster than 'find . -iname "*.jpg"'
 ```
 
-> For web development, browser developer tools include excellent profilers. See the [Firefox Profiler](https://profiler.firefox.com/docs/) and [Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/rendering-tools) documentation.
+> Для веб-разработки отличные профилировщики встроены в инструменты разработчика браузеров. См. документацию [Firefox Profiler](https://profiler.firefox.com/docs/) и [Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/rendering-tools).
 
-# Exercises
+# Упражнения
 
-## Debugging
+## Отладка
 
-1. **Debug a sorting algorithm**: The following pseudocode implements merge sort but contains a bug. Implement it in a language of your choice, then use a debugger (gdb, lldb, pdb, or your IDE's debugger) to find and fix the bug.
+1. **Отладьте алгоритм сортировки**: следующий псевдокод реализует сортировку слиянием, но содержит ошибку. Реализуйте его на языке по вашему выбору, а затем с помощью отладчика (gdb, lldb, pdb или отладчика вашей IDE) найдите и исправьте ошибку.
 
    ```
    function merge_sort(arr):
@@ -433,9 +494,9 @@ Summary
        return result
    ```
 
-   Test vector: `merge_sort([3, 1, 4, 1, 5, 9, 2, 6])` should return `[1, 1, 2, 3, 4, 5, 6, 9]`. Use breakpoints and step through the merge function to find where the incorrect element is being selected.
+   Тестовый пример: `merge_sort([3, 1, 4, 1, 5, 9, 2, 6])` должен вернуть `[1, 1, 2, 3, 4, 5, 6, 9]`. Расставьте точки останова и пошагово пройдите функцию merge, чтобы найти место, где выбирается не тот элемент.
 
-1. Install [`rr`](https://rr-project.org/) and use reverse debugging to find a corruption bug. Save this program as `corruption.c`:
+1. Установите [`rr`](https://rr-project.org/) и с помощью обратной отладки найдите ошибку, портящую данные. Сохраните эту программу как `corruption.c`:
 
    ```c
    #include <stdio.h>
@@ -486,9 +547,9 @@ Summary
    }
    ```
 
-   Compile with `gcc -g corruption.c -o corruption` and run it. Student 1's ID gets corrupted, but the corruption happens in a function that only touches student 0. Use `rr record ./corruption` and `rr replay` to find the culprit. Set a watchpoint on `students[1].id` and use `reverse-continue` after the corruption to find exactly which line of code overwrote it.
+   Скомпилируйте командой `gcc -g corruption.c -o corruption` и запустите. ID студента 1 оказывается испорчен, хотя портит данные функция, которая работает только со студентом 0. С помощью `rr record ./corruption` и `rr replay` найдите виновника. Поставьте точку наблюдения (watchpoint) на `students[1].id` и после порчи выполните `reverse-continue`, чтобы точно узнать, какая строка кода перезаписала значение.
 
-1. Debug a memory error with AddressSanitizer. Save this as `uaf.c`:
+1. Отладьте ошибку работы с памятью с помощью AddressSanitizer. Сохраните этот код как `uaf.c`:
 
    ```c
    #include <stdlib.h>
@@ -509,17 +570,17 @@ Summary
    }
    ```
 
-   First compile and run without sanitizers: `gcc uaf.c -o uaf && ./uaf`. It may appear to work. Now compile with AddressSanitizer: `gcc -fsanitize=address -g uaf.c -o uaf && ./uaf`. Read the error report. What bug does ASan find? Fix the issue it identifies.
+   Сначала скомпилируйте и запустите без санитайзеров: `gcc uaf.c -o uaf && ./uaf`. Может показаться, что всё работает. Теперь скомпилируйте с AddressSanitizer: `gcc -fsanitize=address -g uaf.c -o uaf && ./uaf`. Прочитайте отчёт об ошибке. Какую ошибку находит ASan? Исправьте проблему, на которую он указывает.
 
-1. Use `strace` (Linux) or `dtruss` (macOS) to trace the system calls made by a command like `ls -l`. What system calls is it making? Try tracing a more complex program and see what files it opens.
+1. С помощью `strace` (Linux) или `dtruss` (macOS) отследите системные вызовы, которые делает какая-нибудь команда вроде `ls -l`. Какие системные вызовы она выполняет? Попробуйте оттрассировать программу посложнее и посмотрите, какие файлы она открывает.
 
-1. Use an LLM to help debug a cryptic error message. Try copying a compiler error (especially from C++ templates or Rust) and asking for an explanation and fix. Try putting some of the output from `strace` or the address sanitizer into it.
+1. Используйте LLM, чтобы разобраться с непонятным сообщением об ошибке. Попробуйте скопировать ошибку компилятора (особенно из шаблонов C++ или из Rust) и попросить объяснить её и предложить исправление. Попробуйте скормить модели часть вывода `strace` или AddressSanitizer.
 
-## Profiling
+## Профилирование
 
-1. Use `perf stat` to get basic performance statistics for a program of your choice. What do the different counters mean?
+1. С помощью `perf stat` соберите базовую статистику производительности для любой программы на ваш выбор. Что означают разные счётчики?
 
-1. Profile with `perf record`. Save this as `slow.c`:
+1. Проведите профилирование с помощью `perf record`. Сохраните этот код как `slow.c`:
 
    ```c
    #include <math.h>
@@ -545,10 +606,10 @@ Summary
    }
    ```
 
-   Compile with debug symbols: `gcc -g -O2 slow.c -o slow -lm`. Run `perf record -g ./slow`, then `perf report` to see where time is spent. Try generating a flame graph using the flamegraph scripts.
+   Скомпилируйте с отладочными символами: `gcc -g -O2 slow.c -o slow -lm`. Запустите `perf record -g ./slow`, а затем `perf report`, чтобы увидеть, на что уходит время. Попробуйте построить flame graph с помощью скриптов flamegraph.
 
-1. Use `hyperfine` to benchmark two different implementations of the same task (e.g., `find` vs `fd`, `grep` vs `ripgrep`, or two versions of your own code).
+1. С помощью `hyperfine` сравните производительность двух разных реализаций одной и той же задачи (например, `find` и `fd`, `grep` и `ripgrep` или двух версий вашего собственного кода).
 
-1. Use `htop` to monitor your system while running a resource-intensive program. Try using `taskset` to limit which CPUs a process can use: `taskset --cpu-list 0,2 stress -c 3`. Why doesn't `stress` use three CPUs?
+1. Понаблюдайте в `htop` за системой во время работы ресурсоёмкой программы. Попробуйте ограничить с помощью `taskset` набор процессоров, доступных процессу: `taskset --cpu-list 0,2 stress -c 3`. Почему `stress` не использует три процессора?
 
-1. A common issue is that a port you want to listen on is already taken by another process. Learn how to discover that process: First execute `python -m http.server 4444` to start a minimal web server on port 4444. On a separate terminal run `ss -tlnp | grep 4444` to find the process. Terminate it with `kill <PID>`.
+1. Частая проблема: порт, который вы хотите слушать, уже занят другим процессом. Научитесь находить этот процесс: сначала выполните `python -m http.server 4444`, чтобы запустить минимальный веб-сервер на порту 4444. В другом терминале выполните `ss -tlnp | grep 4444`, чтобы найти процесс. Завершите его командой `kill <PID>`.

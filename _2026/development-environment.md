@@ -1,8 +1,8 @@
 ---
 layout: lecture
-title: "Development Environment and Tools"
+title: "Среда разработки и инструменты"
 description: >
-  Learn about IDEs, Vim, language servers, and AI-powered development tools.
+  Узнайте об IDE, Vim, языковых серверах и ИИ-инструментах для разработки.
 thumbnail: /static/assets/thumbnails/2026/lec3.png
 date: 2026-01-14
 ready: true
@@ -11,121 +11,121 @@ video:
   id: QnM1nVzrkx8
 ---
 
-A _development environment_ is a set of tools for developing software. At the heart of a development environment is text editing functionality, along with accompanying features such as syntax highlighting, type checking, code formatting, and autocomplete. _Integrated development environments_ (IDEs) such as [VS Code][vs-code] bring together all of this functionality into a single application. Terminal-based development workflows combine tools such as [tmux](https://github.com/tmux/tmux) (a terminal multiplexer), [Vim](https://www.vim.org/) (a text editor), [Zsh](https://www.zsh.org/) (a shell), and language-specific command-line tools, such as [Ruff](https://docs.astral.sh/ruff/) (a Python linter and code formatter) and [Mypy](https://mypy-lang.org/) (a Python type checker).
+_Среда разработки_ — это набор инструментов для разработки программного обеспечения. В основе среды разработки лежит редактирование текста вместе с сопутствующими возможностями: подсветкой синтаксиса, проверкой типов, форматированием кода и автодополнением. _Интегрированные среды разработки_ (IDE), такие как [VS Code][vs-code], объединяют всё это в одном приложении. Терминальные рабочие процессы разработки сочетают такие инструменты, как [tmux](https://github.com/tmux/tmux) (мультиплексор терминала), [Vim](https://www.vim.org/) (текстовый редактор), [Zsh](https://www.zsh.org/) (командная оболочка (shell)) и специфичные для языка инструменты командной строки, например [Ruff](https://docs.astral.sh/ruff/) (линтер и форматтер кода для Python) и [Mypy](https://mypy-lang.org/) (средство проверки типов для Python).
 
-IDEs and terminal-based workflows each have their strengths and weaknesses. For example, graphical IDEs can be easier to learn, and today's IDEs generally have better out-of-the-box AI integrations like AI autocomplete; on the other hand, terminal-based workflows are lightweight, and they may be your only option in environments where you don't have a GUI or can't install software. We recommend you develop basic familiarity with both and develop mastery of at least one. If you don't already have a preferred IDE, we recommend starting with [VS Code][vs-code].
+У IDE и у терминальных рабочих процессов есть свои сильные и слабые стороны. Например, графические IDE могут быть проще в освоении, и в современных IDE, как правило, лучше работает интеграция с ИИ «из коробки», например ИИ-автодополнение; с другой стороны, терминальные рабочие процессы легковесны и могут оказаться единственным вариантом в средах, где у вас нет графического интерфейса или нельзя установить программы. Мы рекомендуем базово освоить и то и другое, а хотя бы одним из подходов овладеть в совершенстве. Если у вас ещё нет любимой IDE, советуем начать с [VS Code][vs-code].
 
-In this lecture, we'll cover:
+В этой лекции мы рассмотрим:
 
-- [Text editing and Vim](#text-editing-and-vim)
-- [Code intelligence and language servers](#code-intelligence-and-language-servers)
-- [AI-powered development](#ai-powered-development)
-- [Extensions and other IDE functionality](#extensions-and-other-ide-functionality)
+- [Редактирование текста и Vim](#text-editing-and-vim)
+- [Интеллектуальная работа с кодом и языковые серверы](#code-intelligence-and-language-servers)
+- [Разработка с помощью ИИ](#ai-powered-development)
+- [Расширения и другие возможности IDE](#extensions-and-other-ide-functionality)
 
 [vs-code]: https://code.visualstudio.com/
 
-# Text editing and Vim
+# Редактирование текста и Vim {#text-editing-and-vim}
 
-When programming, you spend most of your time navigating through code, reading snippets of code, and making edits to code, rather than writing long streams or reading files top-to-bottom. [Vim] is a text editor that is optimized for this distribution of tasks.
+При программировании большую часть времени вы перемещаетесь по коду, читаете его фрагменты и вносите правки, а не пишете длинные потоки текста и не читаете файлы сверху донизу. [Vim] — это текстовый редактор, оптимизированный именно под такое распределение задач.
 
-**The philosophy of Vim.** Vim has a beautiful idea as its foundation: its interface is itself a programming language, designed for navigating and editing text. Keystrokes (with mnemonic names) are commands, and these commands are composable. Vim avoids the use of the mouse, because it's too slow; Vim even avoids use of the arrow keys because it requires too much movement. The result: an editor that feels like a brain-computer interface and matches the speed at which you think.
+**Философия Vim.** В основе Vim лежит красивая идея: его интерфейс сам по себе является языком программирования, созданным для навигации по тексту и его редактирования. Нажатия клавиш (с мнемоническими названиями) — это команды, и эти команды можно комбинировать. Vim избегает мыши, потому что она слишком медленная; Vim избегает даже клавиш со стрелками, потому что до них слишком далеко тянуться. В результате получается редактор, который ощущается как интерфейс «мозг — компьютер» и поспевает за скоростью вашей мысли.
 
-**Vim support in other software.** You don't have to use [Vim] itself to benefit from the ideas at its core. Many programs that involve any kind of text editing support "Vim mode", either as built-in functionality or as a plugin. For example, VS Code has the [VSCodeVim](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim) plugin, Zsh has [built-in support](https://zsh.sourceforge.io/Guide/zshguide04.html) for Vim emulation, and even Claude Code has [built-in support](https://code.claude.com/docs/en/interactive-mode#vim-editor-mode) for Vim editor mode. Chances are that any tool you use that involves text editing supports Vim mode in one way or another.
+**Поддержка Vim в другом ПО.** Чтобы пользоваться заложенными в [Vim] идеями, не обязательно использовать сам Vim. Многие программы, в которых есть хоть какое-то редактирование текста, поддерживают «режим Vim» — либо как встроенную функцию, либо через плагин. Например, у VS Code есть плагин [VSCodeVim](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim), в Zsh есть [встроенная поддержка](https://zsh.sourceforge.io/Guide/zshguide04.html) эмуляции Vim, и даже в Claude Code есть [встроенная поддержка](https://code.claude.com/docs/en/interactive-mode#vim-editor-mode) режима редактора Vim. Скорее всего, любой инструмент, которым вы пользуетесь и в котором есть редактирование текста, так или иначе поддерживает режим Vim.
 
-## Modal editing
+## Модальное редактирование
 
-Vim is a _modal editor_: it has different operating modes for different classes of tasks.
+Vim — _модальный редактор_: у него есть разные режимы работы для разных классов задач.
 
-- **Normal**: for moving around a file and making edits
-- **Insert**: for inserting text
-- **Replace**: for replacing text
-- **Visual** (plain, line, or block): for selecting blocks of text
-- **Command-line**: for running a command
+- **Normal** (обычный): для перемещения по файлу и внесения правок
+- **Insert** (вставка): для ввода текста
+- **Replace** (замена): для замены текста
+- **Visual** (визуальный; обычный, строчный или блочный): для выделения фрагментов текста
+- **Command-line** (командная строка): для выполнения команды
 
-Keystrokes have different meanings in different operating modes. For example, the letter `x` in Insert mode will just insert a literal character "x", but in Normal mode, it will delete the character under the cursor, and in Visual mode, it will delete the selection.
+В разных режимах нажатия клавиш означают разное. Например, буква `x` в режиме Insert просто вставит символ «x», в режиме Normal — удалит символ под курсором, а в режиме Visual — удалит выделение.
 
-In its default configuration, Vim shows the current mode in the bottom left. The initial/default mode is Normal mode. You'll generally spend most of your time between Normal mode and Insert mode.
+В конфигурации по умолчанию Vim показывает текущий режим в левом нижнем углу. Начальный режим (по умолчанию) — Normal. Как правило, большую часть времени вы будете проводить, переключаясь между режимами Normal и Insert.
 
-You change modes by pressing `<ESC>` (the escape key) to switch from any mode back to Normal mode. From Normal mode, enter Insert mode with `i`, Replace mode with `R`, Visual mode with `v`, Visual Line mode with `V`, Visual Block mode with `<C-v>` (Ctrl-V, sometimes also written `^V`), and Command-line mode with `:`.
+Режимы переключаются так: нажатие `<ESC>` (клавиша Escape) возвращает из любого режима в режим Normal. Из режима Normal в режим Insert можно перейти с помощью `i`, в режим Replace — `R`, в режим Visual — `v`, в режим Visual Line — `V`, в режим Visual Block — `<C-v>` (Ctrl-V, иногда также записывается как `^V`), а в режим Command-line — `:`.
 
-You use the `<ESC>` key a lot when using Vim: consider remapping Caps Lock to Escape ([macOS instructions](https://vim.fandom.com/wiki/Map_caps_lock_to_escape_in_macOS)) or create an [alternative mapping](https://vim.fandom.com/wiki/Avoid_the_escape_key#Mappings) for `<ESC>` with a simple key sequence.
+При работе с Vim клавиша `<ESC>` нужна очень часто: подумайте о том, чтобы переназначить Caps Lock на Escape ([инструкция для macOS](https://vim.fandom.com/wiki/Map_caps_lock_to_escape_in_macOS)) или назначить для `<ESC>` [альтернативное сочетание](https://vim.fandom.com/wiki/Avoid_the_escape_key#Mappings) — какую-нибудь простую последовательность клавиш.
 
-## Basics: inserting text
+## Основы: ввод текста
 
-From Normal mode, press `i` to enter Insert mode. Now, Vim behaves like any other text editor, until you press `<ESC>` to return to Normal mode. This, along with the basics explained above, are all you need to start editing files using Vim (though not particularly efficiently, if you're spending all your time editing from Insert mode).
+Из обычного режима (Normal) нажмите `i`, чтобы перейти в режим вставки (Insert). Теперь Vim ведёт себя как любой другой текстовый редактор — до тех пор, пока вы не нажмёте `<ESC>`, чтобы вернуться в обычный режим. Этого, вместе с основами, описанными выше, уже достаточно, чтобы начать редактировать файлы в Vim (хотя и не особенно эффективно, если всё время проводить в режиме вставки).
 
-## Vim's interface is a programming language
+## Интерфейс Vim — это язык программирования
 
-Vim's interface is a programming language. Keystrokes (with mnemonic names) are commands, and these commands _compose_. This enables efficient movement and edits, especially once the commands become muscle memory, just like typing becomes super efficient once you've learned your keyboard layout.
+Интерфейс Vim — это язык программирования. Нажатия клавиш (с мнемоническими названиями) — это команды, и эти команды _комбинируются_. Это позволяет эффективно перемещаться и редактировать, особенно когда команды становятся мышечной памятью — точно так же, как набор текста становится сверхэффективным, когда вы выучили раскладку клавиатуры.
 
-### Movement
+### Перемещение
 
-You should spend most of your time in Normal mode, using movement commands to navigate the file. Movements in Vim are also called "nouns", because they refer to chunks of text.
+Большую часть времени вы должны проводить в обычном режиме, передвигаясь по файлу с помощью команд перемещения. Перемещения в Vim также называют «существительными», потому что они обозначают фрагменты текста.
 
-- Basic movement: `hjkl` (left, down, up, right)
-- Words: `w` (next word), `b` (beginning of word), `e` (end of word)
-- Lines: `0` (beginning of line), `^` (first non-blank character), `$` (end of line)
-- Screen: `H` (top of screen), `M` (middle of screen), `L` (bottom of screen)
-- Scroll: `Ctrl-u` (up), `Ctrl-d` (down)
-- File: `gg` (beginning of file), `G` (end of file)
-- Line numbers: `:{number}<CR>` or `{number}G` (line {number})
-    - `<CR>` refers to the carriage return / enter key
-- Misc: `%` (matching item, like parenthesis or brace)
-- Find: `f{character}`, `t{character}`, `F{character}`, `T{character}`
-    - find/to forward/backward {character} on the current line
-    - `,` / `;` for navigating matches
-- Search: `/{regex}`, `n` / `N` for navigating matches
+- Базовое перемещение: `hjkl` (влево, вниз, вверх, вправо)
+- Слова: `w` (следующее слово), `b` (начало слова), `e` (конец слова)
+- Строки: `0` (начало строки), `^` (первый непробельный символ), `$` (конец строки)
+- Экран: `H` (верх экрана), `M` (середина экрана), `L` (низ экрана)
+- Прокрутка: `Ctrl-u` (вверх), `Ctrl-d` (вниз)
+- Файл: `gg` (начало файла), `G` (конец файла)
+- Номера строк: `:{number}<CR>` или `{number}G` (строка {number})
+    - `<CR>` означает возврат каретки / клавишу Enter
+- Разное: `%` (парный элемент, например круглая или фигурная скобка)
+- Поиск символа: `f{character}`, `t{character}`, `F{character}`, `T{character}`
+    - найти {character} / перейти к нему, вперёд / назад по текущей строке
+    - `,` / `;` для перехода между совпадениями
+- Поиск: `/{regex}`, `n` / `N` для перехода между совпадениями
 
-### Selection
+### Выделение
 
-Visual modes:
+Визуальные режимы:
 
 - Visual: `v`
 - Visual Line: `V`
 - Visual Block: `Ctrl-v`
 
-Can use movement keys to make selection.
+Для выделения можно использовать клавиши перемещения.
 
-### Edits
+### Правки
 
-Everything that you used to do with the mouse, you now do with the keyboard using editing commands that compose with movement commands. Here's where Vim's interface starts to look like a programming language. Vim's editing commands are also called "verbs", because verbs act on nouns.
+Всё, что вы раньше делали мышью, теперь вы делаете с клавиатуры — командами редактирования, которые комбинируются с командами перемещения. Именно здесь интерфейс Vim начинает походить на язык программирования. Команды редактирования в Vim также называют «глаголами», потому что глаголы действуют на существительные.
 
-- `i` enter Insert mode
-    - but for manipulating/deleting text, want to use something more than backspace
-- `o` / `O` insert line below / above
-- `d{motion}` delete {motion}
-    - e.g. `dw` is delete word, `d$` is delete to end of line, `d0` is delete to beginning of line
-- `c{motion}` change {motion}
-    - e.g. `cw` is change word
-    - like `d{motion}` followed by `i`
-- `x` delete character (equivalent to `dl`)
-- `s` substitute character (equivalent to `cl`)
-- Visual mode + manipulation
-    - select text, `d` to delete it or `c` to change it
-- `u` to undo, `<C-r>` to redo
-- `y` to copy / "yank" (some other commands like `d` also copy)
-- `p` to paste
-- Lots more to learn: for example, `~` flips the case of a character, and `J` joins together lines
+- `i` перейти в режим вставки
+    - но для изменения/удаления текста хочется чего-то большего, чем Backspace
+- `o` / `O` вставить строку ниже / выше
+- `d{motion}` удалить {motion}
+    - например, `dw` — удалить слово, `d$` — удалить до конца строки, `d0` — удалить до начала строки
+- `c{motion}` изменить {motion}
+    - например, `cw` — изменить слово
+    - то же, что `d{motion}`, а затем `i`
+- `x` удалить символ (эквивалентно `dl`)
+- `s` заменить символ (эквивалентно `cl`)
+- Визуальный режим + действие
+    - выделите текст, затем `d`, чтобы удалить его, или `c`, чтобы изменить
+- `u` отменить, `<C-r>` вернуть отменённое
+- `y` скопировать / «выдернуть» (yank) (некоторые другие команды, например `d`, тоже копируют)
+- `p` вставить
+- Учить предстоит ещё многое: например, `~` меняет регистр символа, а `J` объединяет строки
 
-### Counts
+### Счётчики
 
-You can combine nouns and verbs with a count, which will perform a given action a number of times.
+Существительные и глаголы можно сочетать со счётчиком — тогда действие будет выполнено заданное число раз.
 
-- `3w` move 3 words forward
-- `5j` move 5 lines down
-- `7dw` delete 7 words
+- `3w` переместиться на 3 слова вперёд
+- `5j` переместиться на 5 строк вниз
+- `7dw` удалить 7 слов
 
-### Modifiers
+### Модификаторы
 
-You can use modifiers to change the meaning of a noun. Some modifiers are `i`, which means "inner" or "inside", and `a`, which means "around".
+С помощью модификаторов можно изменить смысл существительного. Примеры модификаторов: `i` — «inner» или «inside» (внутри) и `a` — «around» (вокруг).
 
-- `ci(` change the contents inside the current pair of parentheses
-- `ci[` change the contents inside the current pair of square brackets
-- `da'` delete a single-quoted string, including the surrounding single quotes
+- `ci(` изменить содержимое внутри текущей пары круглых скобок
+- `ci[` изменить содержимое внутри текущей пары квадратных скобок
+- `da'` удалить строку в одинарных кавычках вместе с самими кавычками
 
-## Putting it all together
+## Собираем всё вместе
 
-Here is a broken [fizz buzz](https://en.wikipedia.org/wiki/Fizz_buzz) implementation:
+Вот сломанная реализация [fizz buzz](https://en.wikipedia.org/wiki/Fizz_buzz):
 
 ```python
 def fizz_buzz(limit):
@@ -142,73 +142,73 @@ def main():
     fizz_buzz(20)
 ```
 
-We use the following sequence of commands to fix the issues, beginning in Normal mode:
+Чтобы исправить ошибки, мы используем следующую последовательность команд, начиная с обычного режима (Normal):
 
-- Main is never called
-    - `G` to jump to the end of the file
-    - `o` to **o**pen a new line below
-    - Type in `if __name__ == "__main__": main()`
-        - If your editor has Python language support, it might do some auto-indentation for you in Insert mode
-    - `<ESC>` to go back to Normal mode
-- Starts at 0 instead of 1
-    - `/` followed by `range` and `<CR>` to search for "range"
-    - `ww` to move forward two **w**ords (you could also use `2w`, but in practice, for small counts it's common to repeat the key instead of using the count functionality)
-    - `i` to switch to **i**nsert mode, and add `1,`
-    - `<ESC>` to go back to Normal mode
-    - `e` to jump to the **e**nd of the next word
-    - `a` to start **a**ppending text, and add `+ 1`
-    - `<ESC>` to go back to Normal mode
-- Prints "fizz" for multiples of 5
-    - `:6<CR>` to go to line 6
-    - `ci"` to **c**hange **i**nside the '**"**', change to `"buzz"`
-    - `<ESC>` to go back to Normal mode
+- Функция main нигде не вызывается
+    - `G`, чтобы перейти в конец файла
+    - `o`, чтобы открыть (**o**pen) новую строку ниже
+    - Набрать `if __name__ == "__main__": main()`
+        - Если в вашем редакторе есть поддержка Python, он может сам расставить отступы в режиме вставки
+    - `<ESC>`, чтобы вернуться в обычный режим
+- Отсчёт начинается с 0, а не с 1
+    - `/`, затем `range` и `<CR>`, чтобы найти «range»
+    - `ww`, чтобы переместиться вперёд на два слова (**w**ords; можно было бы использовать и `2w`, но на практике для небольших счётчиков принято повторять клавишу, а не пользоваться счётчиком)
+    - `i`, чтобы перейти в режим вставки (**i**nsert), и добавить `1,`
+    - `<ESC>`, чтобы вернуться в обычный режим
+    - `e`, чтобы перейти в конец (**e**nd) следующего слова
+    - `a`, чтобы начать дописывать (**a**ppend) текст, и добавить `+ 1`
+    - `<ESC>`, чтобы вернуться в обычный режим
+- Для чисел, кратных 5, печатается «fizz»
+    - `:6<CR>`, чтобы перейти к строке 6
+    - `ci"`, чтобы изменить (**c**hange) содержимое внутри (**i**nside) '**"**', заменить на `"buzz"`
+    - `<ESC>`, чтобы вернуться в обычный режим
 
-## Learning Vim
+## Изучение Vim
 
-The best way to learn Vim is to learn the fundamentals (what we've covered so far) and then just enable Vim mode in all your software and start using it in practice. Avoid the temptation to use the mouse or the arrow keys; in some editors, you can unbind the arrow keys to force yourself to build good habits.
+Лучший способ выучить Vim — освоить основы (то, что мы разобрали выше), а затем просто включить режим Vim во всех своих программах и начать пользоваться им на практике. Не поддавайтесь соблазну потянуться к мыши или клавишам со стрелками; в некоторых редакторах клавиши со стрелками можно вовсе отвязать, чтобы заставить себя выработать правильные привычки.
 
-### Additional resources
+### Дополнительные ресурсы
 
-- The [Vim lecture](/2020/editors/) from the previous iteration of this class --- we have covered Vim in more depth there
-- `vimtutor` is a tutorial that comes installed with Vim --- if Vim is installed, you should be able to run `vimtutor` from your shell
-- [Vim Adventures](https://vim-adventures.com/) is a game to learn Vim
+- [Лекция о Vim](/2020/editors/) из предыдущего выпуска этого курса — там мы разобрали Vim подробнее
+- `vimtutor` — это туториал, который поставляется вместе с Vim: если Vim установлен, вы сможете запустить `vimtutor` прямо из командной оболочки
+- [Vim Adventures](https://vim-adventures.com/) — игра для изучения Vim
 - [Vim Tips Wiki](https://vim.fandom.com/wiki/Vim_Tips_Wiki)
-- [Vim Advent Calendar](https://vimways.org/2019/) has various Vim tips
-- [VimGolf](https://www.vimgolf.com/) is [code golf](https://en.wikipedia.org/wiki/Code_golf), but where the programming language is Vim's UI
+- [Vim Advent Calendar](https://vimways.org/2019/) — подборка разных советов по Vim
+- [VimGolf](https://www.vimgolf.com/) — это [код-гольф](https://en.wikipedia.org/wiki/Code_golf), только языком программирования здесь служит интерфейс Vim
 - [Vi/Vim Stack Exchange](https://vi.stackexchange.com/)
-- [Vim Screencasts](http://vimcasts.org/)
-- [Practical Vim](https://pragprog.com/titles/dnvim2/) (book)
+- [Скринкасты по Vim](http://vimcasts.org/)
+- [Practical Vim](https://pragprog.com/titles/dnvim2/) (книга)
 
 [Vim]: https://www.vim.org/
 
-# Code intelligence and language servers
+# Интеллектуальная работа с кодом и языковые серверы {#code-intelligence-and-language-servers}
 
-IDEs generally offer language-specific support that requires semantic understanding of the code through IDE extensions that connect to _language servers_ that implement [Language Server Protocol](https://microsoft.github.io/language-server-protocol/). For example, the [Python extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python) relies on [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance), and the [Go extension for VS Code](https://marketplace.visualstudio.com/items?itemName=golang.go) relies on the first-party [gopls](https://go.dev/gopls/). By installing the extension and language server for the languages you work with, you can enable many language-specific features in your IDE, such as:
+Поддержку конкретных языков, требующую семантического понимания кода, IDE обычно обеспечивают через расширения, которые подключаются к _языковым серверам_ (language servers), реализующим [Language Server Protocol](https://microsoft.github.io/language-server-protocol/). Например, [расширение Python для VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python) опирается на [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance), а [расширение Go для VS Code](https://marketplace.visualstudio.com/items?itemName=golang.go) — на [gopls](https://go.dev/gopls/), который разрабатывают сами авторы языка. Установив расширение и языковой сервер для языков, с которыми вы работаете, вы получите в своей IDE множество специфичных для языка возможностей, например:
 
-- **Code completion.** Better autocomplete and autosuggest, such as being able to see an object's fields and methods after typing `object.`.
-- **Inline documentation.** Seeing documentation on hover and autosuggest.
-- **Jump-to-definition.** Jumping from a use site to the definition, such as being able to go from a field reference `object.field` to the definition of the field.
-- **Find references.** The inverse of the above, find all sites where a particular item such as a field or type is referenced.
-- **Help with imports.** Organizing imports, removing unused imports, flagging missing imports.
-- **Code quality.** These tools can be used standalone, but this functionality is often provided by language servers as well. Code formatting auto-indents and auto-formats code, and type checkers and linters find errors in your code, as you type. We will cover this class of functionality in greater depth in the [lecture on code quality](/2026/code-quality/).
+- **Дополнение кода.** Более качественное автодополнение и подсказки — например, возможность увидеть поля и методы объекта, набрав `object.`.
+- **Встроенная документация.** Документация показывается при наведении курсора и в подсказках автодополнения.
+- **Переход к определению.** Переход от места использования к определению — например, от обращения к полю `object.field` к определению этого поля.
+- **Поиск использований.** Обратная операция: найти все места, где используется тот или иной элемент, например поле или тип.
+- **Помощь с импортами.** Упорядочивание импортов, удаление неиспользуемых, пометка отсутствующих.
+- **Качество кода.** Соответствующие инструменты можно использовать и отдельно, но часто эту функциональность предоставляют и языковые серверы. Форматирование кода автоматически расставляет отступы и приводит код к единому виду, а средства проверки типов и линтеры находят ошибки в коде прямо по мере набора. Подробнее этот класс функциональности мы разберём в [лекции о качестве кода](/2026/code-quality/).
 
-## Configuring language servers
+## Настройка языковых серверов
 
-For some languages, all you need to do is install the extension and language server, and you'll be all set. For others, to get the maximum benefit from the language server, you need to tell the IDE about your environment. For example, pointing VS Code to your [Python environment](https://code.visualstudio.com/docs/python/environments) will enable the language server to see your installed packages. Environments are covered in more depth in our [lecture on packaging and shipping code](/2026/shipping-code/).
+Для некоторых языков достаточно установить расширение и языковой сервер — и всё готово. Для других, чтобы получить от языкового сервера максимум пользы, нужно рассказать IDE о вашем окружении. Например, если указать VS Code ваше [окружение Python](https://code.visualstudio.com/docs/python/environments), языковой сервер сможет видеть установленные у вас пакеты. Подробнее об окружениях мы поговорим в [лекции об упаковке и доставке кода](/2026/shipping-code/).
 
-Depending on the language, there might be some settings you can configure for your language server. For example, using the Python support in VS Code, you can disable static type checking for projects that don't make use of Python's optional type annotations.
+В зависимости от языка у языкового сервера могут быть свои настройки. Например, поддержка Python в VS Code позволяет отключить статическую проверку типов для проектов, которые не используют необязательные аннотации типов Python.
 
-# AI-powered development
+# Разработка с помощью ИИ {#ai-powered-development}
 
-Since the introduction of [GitHub Copilot][github-copilot] using OpenAI's [Codex model](https://openai.com/index/openai-codex/) in mid 2021, [LLMs](https://en.wikipedia.org/wiki/Large_language_model) have become widely adopted in software engineering. There are three main form factors in use right now: autocomplete, inline chat, and coding agents.
+С момента появления [GitHub Copilot][github-copilot] на основе [модели Codex](https://openai.com/index/openai-codex/) от OpenAI в середине 2021 года [LLM](https://en.wikipedia.org/wiki/Large_language_model) получили широкое распространение в разработке ПО. Сейчас в ходу три основных формата: автодополнение, встроенный чат (inline chat) и агенты для программирования.
 
 [github-copilot]: https://github.com/features/copilot/ai-code-editor
 
-## Autocomplete
+## Автодополнение
 
-AI-powered autocomplete has the same form factor as traditional autocomplete in your IDE, suggesting completions at your cursor position as you type. Sometimes, it's used as a passive feature that "just works". Beyond that, AI autocomplete is generally [prompted](https://en.wikipedia.org/wiki/Prompt_engineering) using code comments.
+ИИ-автодополнение по форме ничем не отличается от традиционного автодополнения в вашей IDE: оно предлагает варианты дополнения в позиции курсора по мере того, как вы печатаете. Иногда им пользуются как пассивной функцией, которая «просто работает». Помимо этого, ИИ-автодополнению обычно [задают промпт](https://en.wikipedia.org/wiki/Prompt_engineering) с помощью комментариев в коде.
 
-For example, let's write a script to download the contents of these lecture notes and extract all the links. We can start with:
+Например, напишем скрипт, который скачивает содержимое этого конспекта лекции и извлекает из него все ссылки. Начать можно так:
 
 ```python
 import requests
@@ -216,34 +216,34 @@ import requests
 def download_contents(url: str) -> str:
 ```
 
-The model will autocomplete the body of the function:
+Модель автоматически допишет тело функции:
 
 ```python
     response = requests.get(url)
     return response.text
 ```
 
-We can further guide completions using comments. For example, if we start writing a function to extract all Markdown links, but it doesn't have a particularly descriptive name:
+Дальше направлять дополнения можно с помощью комментариев. Например, если мы начнём писать функцию, извлекающую все Markdown-ссылки, но не дадим ей особо говорящего имени:
 
 ```python
 def extract(contents: str) -> list[str]:
 ```
 
-The model will autocomplete something like this:
+Модель допишет что-то вроде этого:
 
 ```python
     lines = contents.splitlines()
     return [line for line in lines if line.strip()]
 ```
 
-We can guide the completion through code comments:
+Мы можем направить дополнение через комментарии в коде:
 
 ```python
 def extract(content: str) -> list[str]:
     # extract all Markdown links from the content
 ```
 
-This time, the model gives a better completion:
+На этот раз модель выдаёт дополнение получше:
 
 ```python
     import re
@@ -251,27 +251,27 @@ This time, the model gives a better completion:
     return re.findall(pattern, content)
 ```
 
-Here, we see one downside of this AI coding tool: it can only provide completions at the cursor. In this case, it would be better practice to put the `import re` at the module level, rather than inside the function.
+Здесь мы видим один из недостатков этого ИИ-инструмента для программирования: он умеет предлагать дополнения только в позиции курсора. В данном случае правильнее было бы вынести `import re` на уровень модуля, а не оставлять внутри функции.
 
-The example above used a poorly-named function to demonstrate how code completion can be steered using comments; in practice, you'd want to write code with functions named more descriptively, like `extract_links`, and you'd want to write docstrings (and based on this, the model should generate a completion analogous to the one above).
+В примере выше функция была намеренно названа неудачно, чтобы показать, как дополнение кода можно направлять с помощью комментариев; на практике же стоит писать код с более говорящими именами функций, например `extract_links`, и добавлять docstring'и (и на их основе модель должна сгенерировать дополнение, аналогичное приведённому выше).
 
-For demonstration purposes, we can complete the script:
+Для наглядности допишем скрипт до конца:
 
 ```python
 print(extract(download_contents("https://raw.githubusercontent.com/missing-semester/missing-semester/refs/heads/master/_2026/development-environment.md")))
 ```
 
-## Inline chat
+## Встроенный чат
 
-Inline chat lets you select a line or block and then directly prompt the AI model to propose an edit. In this interaction mode, the model can make changes to existing code (which differs from autocomplete, which only completes code beyond the cursor).
+Встроенный чат (inline chat) позволяет выделить строку или блок кода и прямо на месте попросить ИИ-модель предложить правку. В этом режиме взаимодействия модель может изменять уже существующий код (в отличие от автодополнения, которое лишь дописывает код после курсора).
 
-Continuing the example from above, suppose we decided not to use the third-party `requests` library. We could select the relevant three lines of code, invoke inline chat, and say something like:
+Продолжим пример выше: допустим, мы решили не использовать стороннюю библиотеку `requests`. Можно выделить соответствующие три строки кода, вызвать встроенный чат и написать что-нибудь вроде:
 
 ```
 use built-in libraries instead
 ```
 
-The model proposes:
+Модель предлагает:
 
 ```python
 from urllib.request import urlopen
@@ -281,25 +281,25 @@ def download_contents(url: str) -> str:
         return response.read().decode('utf-8')
 ```
 
-## Coding agents
+## Агенты для программирования
 
-Coding agents are covered in depth in the [Agentic Coding](/2026/agentic-coding/) lecture.
+Агенты для программирования подробно разбираются в [лекции об агентном программировании](/2026/agentic-coding/).
 
-## Recommended software
+## Рекомендуемое ПО
 
-Some popular AI IDEs are [VS Code][vs-code] with the [GitHub Copilot][github-copilot] extension and [Cursor](https://cursor.com/). GitHub Copilot is currently available [for free for students](https://github.com/education/students), teachers, and maintainers of popular open source projects. This is a rapidly evolving space. Many of the leading products have roughly equivalent functionality.
+Из популярных ИИ-IDE можно назвать [VS Code][vs-code] с расширением [GitHub Copilot][github-copilot] и [Cursor](https://cursor.com/). GitHub Copilot сейчас доступен [бесплатно для студентов](https://github.com/education/students), преподавателей и мейнтейнеров популярных open source проектов. Эта область стремительно развивается. У многих ведущих продуктов функциональность примерно одинаковая.
 
-# Extensions and other IDE functionality
+# Расширения и другие возможности IDE {#extensions-and-other-ide-functionality}
 
-IDEs are powerful tools, made even more powerful by _extensions_. We can't cover all of these features in a single lecture, but here we provide some pointers to a couple popular extensions. We encourage you to explore this space on your own; there are many lists of popular IDE extensions available online, such as [Vim Awesome](https://vimawesome.com/) for Vim plugins and [VS Code extensions sorted by popularity](https://marketplace.visualstudio.com/search?target=VSCode&category=All%20categories&sortBy=Installs).
+IDE — мощные инструменты, а _расширения_ делают их ещё мощнее. Мы не можем охватить все эти возможности в одной лекции, но дадим здесь несколько ориентиров по паре популярных расширений. Советуем исследовать эту область самостоятельно: в интернете полно списков популярных расширений для IDE, например [Vim Awesome](https://vimawesome.com/) для плагинов Vim и [расширения VS Code, отсортированные по популярности](https://marketplace.visualstudio.com/search?target=VSCode&category=All%20categories&sortBy=Installs).
 
-- [Development containers](https://containers.dev/): supported by popular IDEs (e.g., [supported by VS Code](https://code.visualstudio.com/docs/devcontainers/containers)), dev containers let you use a container to run development tools. This can be helpful for portability or isolation. The [lecture on packaging and shipping code](/2026/shipping-code/) covers containers in more depth.
-- Remote development: do development on a remote machine using SSH (e.g., with the [Remote SSH plugin for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)). This can be handy, for example, if you want to develop and run code on a beefy GPU machine in the cloud.
-- Collaborative editing: edit the same file, Google Docs style (e.g., with the [Live Share plugin for VS Code](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)).
+- [Контейнеры для разработки (development containers)](https://containers.dev/): поддерживаются популярными IDE (например, [поддерживаются в VS Code](https://code.visualstudio.com/docs/devcontainers/containers)); dev-контейнеры позволяют запускать инструменты разработки внутри контейнера. Это может пригодиться для переносимости или изоляции. Подробнее контейнеры разбираются в [лекции об упаковке и доставке кода](/2026/shipping-code/).
+- Удалённая разработка: разработка на удалённой машине по SSH (например, с помощью [плагина Remote SSH для VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)). Это удобно, например, если вы хотите писать и запускать код на мощной GPU-машине в облаке.
+- Совместное редактирование: правка одного и того же файла в стиле Google Docs (например, с помощью [плагина Live Share для VS Code](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare)).
 
-# Exercises
+# Упражнения
 
-1. Enable Vim mode in all the software you use that supports it, such as your editor and your shell, and use Vim mode for all your text editing for the next month. Whenever something seems inefficient, or when you think "there must be a better way", try Googling it, there probably is a better way.
-1. Complete a challenge from [VimGolf](https://www.vimgolf.com/).
-1. Configure an IDE extension and language server for a project that you're working on. Ensure that all the expected functionality, such as jump-to-definition for library dependencies, works as expected. If you don't have code that you can use for this exercise, you can use some open-source project from GitHub (such as [this one](https://github.com/spf13/cobra)).
-1. Browse a list of IDE extensions and install one that seems useful to you.
+1. Включите режим Vim во всех программах, которыми вы пользуетесь и которые его поддерживают, например в редакторе и в командной оболочке, и в течение следующего месяца редактируйте весь текст только в режиме Vim. Всякий раз, когда что-то кажется неэффективным или когда вы думаете: «Наверняка есть способ получше», попробуйте погуглить — скорее всего, способ получше действительно есть.
+1. Пройдите задание на [VimGolf](https://www.vimgolf.com/).
+1. Настройте расширение IDE и языковой сервер для проекта, над которым вы работаете. Убедитесь, что вся ожидаемая функциональность, например переход к определению для библиотечных зависимостей, работает как надо. Если у вас нет кода, подходящего для этого упражнения, возьмите какой-нибудь open source проект с GitHub (например, [вот этот](https://github.com/spf13/cobra)).
+1. Просмотрите список расширений IDE и установите то, которое покажется вам полезным.

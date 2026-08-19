@@ -159,6 +159,8 @@
 | tutorial | туториал |
 | session (terminal/tmux) | сессия |
 | pinning (versions) | закрепление (pinning) версий |
+| hot spot (profiling) | горячая точка (hot spot) |
+| binding (language binding) | привязка (binding) |
 
 ### Названия лекций 2026 (использовать везде одинаково)
 
