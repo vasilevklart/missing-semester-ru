@@ -26,7 +26,7 @@ phony: true
   {% for lecture in lectures %}
     {% if lecture.phony != true %}
       <li>
-        <a href="{{ lecture.url }}">{{ lecture.title }}</a>
+        <a href="{{ lecture.url | relative_url }}">{{ lecture.title }}</a>
       </li>
     {% endif %}
   {% endfor %}

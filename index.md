@@ -8,14 +8,14 @@ subtitle: "2026"
 nositetitle: true
 ---
 
-Учебные курсы рассказывают о продвинутых темах computer science — от операционных
-систем до машинного обучения, — но есть один критически важный предмет, который
+Учебные курсы рассказывают о продвинутых темах computer science – от операционных
+систем до машинного обучения, – но есть один критически важный предмет, который
 почти никогда не преподают, а оставляют студентам осваивать самостоятельно:
 умение владеть своими инструментами. Мы научим вас уверенно работать в командной
 строке, пользоваться мощным текстовым редактором, применять продвинутые
 возможности систем контроля версий и многому другому!
 
-За время учёбы студенты проводят с этими инструментами сотни часов (а за карьеру —
+За время учёбы студенты проводят с этими инструментами сотни часов (а за карьеру –
 тысячи), поэтому имеет смысл сделать эту работу максимально гладкой и
 комфортной. Владение инструментами не только позволяет тратить меньше времени на
 попытки подчинить их своей воле, но и даёт возможность решать задачи, которые
@@ -24,12 +24,12 @@ nositetitle: true
 Сегодня многие стороны разработки ПО к тому же меняются с появлением инструментов
 и рабочих процессов на основе ИИ или дополненных ИИ. При уместном использовании и
 понимании их недостатков они часто приносят специалистам по CS ощутимую пользу,
-а значит, стоит выработать практические навыки работы с ними. Поскольку ИИ —
+а значит, стоит выработать практические навыки работы с ними. Поскольку ИИ –
 сквозная вспомогательная технология, отдельной лекции про ИИ нет; вместо этого мы
 встроили использование новейших применимых ИИ-инструментов и приёмов прямо в
 каждую лекцию.
 
-Прочитайте о [мотивации создания этого курса](/about/).
+Прочитайте о [мотивации создания этого курса]({{ site.baseurl }}/about/).
 
 {% comment %}
 # Registration
@@ -51,7 +51,7 @@ Sign up for the IAP 2026 class by filling out this [registration form](https://f
         <li>
         <strong>{{ lecture.date | date: '%-d.%-m.%y' }}</strong>:
         {% if lecture.ready %}
-            <a href="{{ lecture.url }}">{{ lecture.title }}</a>
+            <a href="{{ lecture.url | relative_url }}">{{ lecture.title }}</a>
         {% else %}
             {{ lecture.title }} {% if lecture.noclass %}[занятия нет]{% endif %}
         {% endif %}
@@ -77,7 +77,7 @@ Sign up for the IAP 2026 class by filling out this [registration form](https://f
             {% if lecture.special == true %}
                 <li>
                     <strong>{{ lecture.date | date: '%-d.%-m.%y' }}</strong>:
-                    <a href="{{ lecture.url }}">{{ lecture.title }}</a>
+                    <a href="{{ lecture.url | relative_url }}">{{ lecture.title }}</a>
                 </li>
             {% endif %}
         {% endfor %}
@@ -89,7 +89,7 @@ Sign up for the IAP 2026 class by filling out this [registration form](https://f
 Lecture videos will be made available to MIT students immediately after lecture (via Panopto). The system has a limitation that only those with an MIT Kerberos can access the raw lecture videos. We are working on editing lecture videos and uploading them to YouTube. A couple have been uploaded already; we expect the rest to be uploaded by mid-February.
 
 If you can't wait until January 2026, you can also take a look at the lectures
-from the [previous offering of the course](/2020/), which covers many of the
+from the [previous offering of the course]({{ site.baseurl }}/2020/), which covers many of the
 same topics.
 {% endcomment %}
 
@@ -97,7 +97,7 @@ same topics.
 
 **Преподаватели**: курс совместно ведут [Anish](https://anish.io/), [Jon](https://thesquareplanet.com/) и [Jose](https://josejg.com/).<br>
 **Вопросы**: пишите нам на [missing-semester@mit.edu](mailto:missing-semester@mit.edu).<br>
-**Обсуждение**: [Discord OSSU](https://ossu.dev/#community) (канал `#missing-semester-forum` используйте как Piazza, а `#missing-semester` — для общения с группой и преподавателями).
+**Обсуждение**: [Discord OSSU](https://ossu.dev/#community) (канал `#missing-semester-forum` используйте как Piazza, а `#missing-semester` – для общения с группой и преподавателями).
 
 # За пределами MIT
 
@@ -139,7 +139,7 @@ same topics.
 - [Японский](https://missing-semester-jp.github.io/)
 
 Примечание: это внешние ссылки на переводы, сделанные сообществом. Авторы курса
-их не проверяли. Этот сайт — русский перевод сообщества; оригинал находится по
+их не проверяли. Этот сайт – русский перевод сообщества; оригинал находится по
 адресу [missing.csail.mit.edu](https://missing.csail.mit.edu/).
 
 Сделали перевод конспектов этого курса? Отправьте [pull request](https://github.com/missing-semester/missing-semester/pulls)
@@ -158,5 +158,5 @@ same topics.
 <div class="small center">
 <p><a href="https://github.com/missing-semester-rus/missing-semester-rus.github.io">Исходный код перевода</a> · <a href="https://github.com/missing-semester/missing-semester">исходный код оригинала</a>.</p>
 <p>Лицензия CC BY-NC-SA.</p>
-<p><a href="/license/">Правила</a> участия и перевода.</p>
+<p><a href="{{ site.baseurl }}/license/">Правила</a> участия и перевода.</p>
 </div>

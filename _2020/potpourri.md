@@ -131,7 +131,7 @@ Given the significant growth of web applications, large amounts of your data are
 For instance, your webmail, social media photos, music playlists in streaming services or online docs are gone if you lose access to the corresponding accounts.
 Having an offline copy of this information is the way to go, and you can find online tools that people have built to fetch the data and save it.
 
-For a more detailed explanation, see 2019's lecture notes on [Backups](/2019/backups).
+For a more detailed explanation, see 2019's lecture notes on [Backups]({{ site.baseurl }}/2019/backups).
 
 
 ## APIs

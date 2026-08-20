@@ -147,7 +147,7 @@ utilities, examples, and tutorials
 # Exercises
 
 1. Create a folder for your dotfiles and set up [version
-   control](/2019/version-control/).
+   control]({{ site.baseurl }}/2019/version-control/).
 
 1. Add a configuration for at least one program, e.g. your shell, with some
    customization (to start off, it can be something as simple as customizing

@@ -1,6 +1,7 @@
 # Setup
 title: 'Пропущенный семестр'
-url: https://missing-semester-rus.github.io
+url: https://vasilevklart.github.io
+baseurl: /missing-semester-ru
 thumbnail: "/static/assets/thumbnails/default.png"
 
 # Settings
